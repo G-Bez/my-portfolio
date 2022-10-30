@@ -1,0 +1,23 @@
+{
+  "about.qmd": {
+    "about.html": "542f36c1"
+  },
+  "index.qmd": {
+    "index.html": "66443acd"
+  },
+  "posts/post-with-code/index.qmd": {
+    "index.html": "6c1e7bf8"
+  },
+  "posts/welcome/index.qmd": {
+    "index.html": "bd180ecb"
+  },
+  "posts/viridisLite/index.qmd": {
+    "index.html": "39254cd2"
+  },
+  "posts/renv_get_started/index.qmd": {
+    "index.html": "90033ea6"
+  },
+  "posts/Case_study_Cyclistic/index.qmd": {
+    "index.html": "761c9264"
+  }
+}

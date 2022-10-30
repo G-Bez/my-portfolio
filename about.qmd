@@ -1,0 +1,17 @@
+---
+title: "Hi, I'm Gianluca Bezziccheri"
+image: profile.jpg
+about:
+  template: jolla
+  links:
+    - icon: linkedin
+      text: LinkedIn
+      href: https://linkedin.com
+    - icon: github
+      text: Github
+      href: https://github.com/G-Bez
+---
+
+::: {style="text-align: justify"}
+I'm a Management & Marketing graduate, and currently a Financial and actuarial science student, with a passion for R language, data visualization, statistics and, generally speaking, data analysis as a whole. On this blog I share and explain what I learn.
+:::
