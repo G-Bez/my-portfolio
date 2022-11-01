@@ -549,11 +549,29 @@
     },
     "jsonlite": {
       "Package": "jsonlite",
-      "Version": "1.8.2",
+      "Version": "1.8.3",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "2e7ed071fd6bd047fe2366d3adf4fe46",
+      "Hash": "8b1bd0be62956f2a6b91ce84fac79a45",
       "Requirements": []
+    },
+    "kaggler": {
+      "Package": "kaggler",
+      "Version": "0.0.0.9000",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteRepo": "kaggler",
+      "RemoteUsername": "ldurazo",
+      "RemoteRef": "HEAD",
+      "RemoteSha": "bfb8fb696f6458bc5d98a45dd4c34a13b6ab5baa",
+      "Hash": "e95286d8382e2442ffb036772369696b",
+      "Requirements": [
+        "glue",
+        "httr",
+        "jsonlite",
+        "tibble"
+      ]
     },
     "knitr": {
       "Package": "knitr",
@@ -734,10 +752,10 @@
     },
     "openssl": {
       "Package": "openssl",
-      "Version": "2.0.3",
+      "Version": "2.0.4",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "b9621e75c0652041002a19609fb23c5a",
+      "Hash": "e86c5ffeb8474a9e03d75f5d2919683e",
       "Requirements": [
         "askpass"
       ]
@@ -1053,10 +1071,10 @@
     },
     "sys": {
       "Package": "sys",
-      "Version": "3.4",
+      "Version": "3.4.1",
       "Source": "Repository",
       "Repository": "CRAN",
-      "Hash": "b227d13e29222b4574486cfcbde077fa",
+      "Hash": "34c16f1ef796057bfa06d3f4ff818a5d",
       "Requirements": []
     },
     "testthat": {

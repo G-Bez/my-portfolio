@@ -19,5 +19,11 @@
   },
   "posts/Case_study_Cyclistic/index.qmd": {
     "index.html": "761c9264"
+  },
+  "posts/kaggle/index.qmd": {
+    "index.html": "ad975b2f"
+  },
+  "posts/janitor/index.qmd": {
+    "index.html": "cb9d7ff6"
   }
 }

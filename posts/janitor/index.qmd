@@ -1,0 +1,13 @@
+---
+title: "Data cleansing with Janitor R package"
+date: "2022-11-01"
+categories: [R, Data cleansing]
+image: janitor_thumbnail.png
+format:
+  html:
+    df-print: paged
+    embed-resources: true
+    standalone: true
+    fontsize: 0.9em
+editor: visual
+---

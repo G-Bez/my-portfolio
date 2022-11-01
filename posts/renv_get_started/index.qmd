@@ -1,7 +1,7 @@
 ---
 title: "Get started - Use renv package for dependency management in R"
 date: "2022-10-29"
-categories: [R, renv, Dependency management]
+categories: [R, Dependency management]
 image: renv_thumbnail.png
 format:
   html:
