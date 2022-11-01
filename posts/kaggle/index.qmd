@@ -3,6 +3,8 @@ title: "Download zipped datasets from Kaggle with kaggler R package"
 date: "2022-11-01"
 categories: [R, Kaggle, Web scraping]
 image: kaggle_thumbnail.jpg
+execute: 
+  eval: false
 format:
   html:
     df-print: paged
@@ -30,13 +32,11 @@ When clicking on that button, a file called 'kaggle.json' is downloaded. It's a 
 Install `kaggler` package with:
 
 ```{r}
-#| eval: false
 devtools::install_github("ldurazo/kaggler")
 library(kaggler)
 ```
 
 ```{r}
-#| echo: false
 library(kaggler)
 ```
 
@@ -47,14 +47,12 @@ Remember, this is only a fork of the actual [`kaggler`](https://github.com/mkear
 You can use `kaggler::kgl_auth()` function to set your API credentials for the current R session, from the .json file mentioned earlier.
 
 ```{r}
-#| eval: false
 kaggler::kgl_auth(creds_file = "path/to/credentials/json/file")
 ```
 
 You can also manually set the username and API key with the respective arguments.
 
 ```{r}
-#| eval: false
 kaggler::kgl_auth(username = "your_username", key = "your_API_key")
 ```
 
@@ -64,7 +62,6 @@ Now we can download our desired Kaggle datasets. We get a list of those datasets
 
 ```{r}
 kgl.list <- kaggler::kgl_datasets_list()
-kgl.list
 ```
 
 After choosing one dataset (see 'ref' column from 'kgl.list'), we download the archive with `kaggler::kgl_datasets_download_all()` function, and then we need to unzip it, and read the file contained in it. To accomplish this task, we write a custom function.
@@ -84,6 +81,5 @@ Where 'owner.dataset' parameter is the corresponding 'ref' value from 'kgl.list'
 
 ```{r}
 EV <- kgl_download_custom("mohamedalishiha/electric-vehicles")
-EV
 ```
 :::
