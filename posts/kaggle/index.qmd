@@ -1,7 +1,7 @@
 ---
 title: "Download zipped datasets from Kaggle with kaggler R package"
 date: "2022-11-01"
-categories: [R, Kaggle, Web scraping]
+categories: [R, Kaggle, Web scraping, API]
 image: kaggle_thumbnail.jpg
 execute: 
   eval: false

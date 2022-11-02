@@ -3,7 +3,7 @@ project:
   output-dir: docs
 
 website:
-  title: "Blog"
+  title: "Portfolio"
   navbar:
     right:
       - icon: github
