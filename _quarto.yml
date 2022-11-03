@@ -5,6 +5,7 @@ project:
 website:
   title: "Portfolio"
   navbar:
+    pinned: true
     right:
       - icon: github
         href: https://github.com/G-Bez

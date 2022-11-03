@@ -37,6 +37,7 @@ library(kaggler)
 ```
 
 ```{r}
+#| echo: false
 library(kaggler)
 ```
 

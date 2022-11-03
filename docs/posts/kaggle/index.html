@@ -4091,7 +4091,7 @@ vertical-align: -.125em;
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kaggler)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kaggler)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+
 </div>
 <p>Remember, this is only a fork of the actual <a href="https://github.com/mkearney/kaggler"><code>kaggler</code></a> package, and it may be discontinued in the future.</p>
 </section>
@@ -4099,33 +4099,33 @@ vertical-align: -.125em;
 <h2 class="anchored" data-anchor-id="step-3-set-credentials">Step 3: Set credentials</h2>
 <p>You can use <code>kaggler::kgl_auth()</code> function to set your API credentials for the current R session, from the .json file mentioned earlier.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>kaggler<span class="sc">::</span><span class="fu">kgl_auth</span>(<span class="at">creds_file =</span> <span class="st">&quot;path/to/credentials/json/file&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>kaggler<span class="sc">::</span><span class="fu">kgl_auth</span>(<span class="at">creds_file =</span> <span class="st">&quot;path/to/credentials/json/file&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>You can also manually set the username and API key with the respective arguments.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>kaggler<span class="sc">::</span><span class="fu">kgl_auth</span>(<span class="at">username =</span> <span class="st">&quot;your_username&quot;</span>, <span class="at">key =</span> <span class="st">&quot;your_API_key&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>kaggler<span class="sc">::</span><span class="fu">kgl_auth</span>(<span class="at">username =</span> <span class="st">&quot;your_username&quot;</span>, <span class="at">key =</span> <span class="st">&quot;your_API_key&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="step-4-download-and-unzip-datasets" class="level2">
 <h2 class="anchored" data-anchor-id="step-4-download-and-unzip-datasets">Step 4: Download and unzip datasets</h2>
 <p>Now we can download our desired Kaggle datasets. We get a list of those datasets with:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>kgl.list <span class="ot">&lt;-</span> kaggler<span class="sc">::</span><span class="fu">kgl_datasets_list</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>kgl.list <span class="ot">&lt;-</span> kaggler<span class="sc">::</span><span class="fu">kgl_datasets_list</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>After choosing one dataset (see ‘ref’ column from ‘kgl.list’), we download the archive with <code>kaggler::kgl_datasets_download_all()</code> function, and then we need to unzip it, and read the file contained in it. To accomplish this task, we write a custom function.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>kgl_download_custom <span class="ot">&lt;-</span> <span class="cf">function</span>(owner.dataset, <span class="at">Mode =</span> <span class="st">&quot;wb&quot;</span>) {</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  resp <span class="ot">&lt;-</span> kaggler<span class="sc">::</span><span class="fu">kgl_datasets_download_all</span>(<span class="at">owner_dataset =</span> owner.dataset)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  temp <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">&quot;.zip&quot;</span>)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">download.file</span>(resp[[<span class="st">&quot;url&quot;</span>]], temp, <span class="at">mode =</span> <span class="st">&quot;wb&quot;</span>)</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  temp <span class="ot">&lt;-</span> <span class="fu">unzip</span>(temp, <span class="at">exdir =</span> <span class="fu">tempdir</span>())</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(temp, <span class="at">na.strings =</span> <span class="fu">c</span>(<span class="st">&quot;&quot;</span>, <span class="cn">NA</span>))</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(df)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>kgl_download_custom <span class="ot">&lt;-</span> <span class="cf">function</span>(owner.dataset, <span class="at">Mode =</span> <span class="st">&quot;wb&quot;</span>) {</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  resp <span class="ot">&lt;-</span> kaggler<span class="sc">::</span><span class="fu">kgl_datasets_download_all</span>(<span class="at">owner_dataset =</span> owner.dataset)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  temp <span class="ot">&lt;-</span> <span class="fu">tempfile</span>(<span class="at">fileext =</span> <span class="st">&quot;.zip&quot;</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">download.file</span>(resp[[<span class="st">&quot;url&quot;</span>]], temp, <span class="at">mode =</span> <span class="st">&quot;wb&quot;</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  temp <span class="ot">&lt;-</span> <span class="fu">unzip</span>(temp, <span class="at">exdir =</span> <span class="fu">tempdir</span>())</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(temp, <span class="at">na.strings =</span> <span class="fu">c</span>(<span class="st">&quot;&quot;</span>, <span class="cn">NA</span>))</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(df)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>Where ‘owner.dataset’ parameter is the corresponding ‘ref’ value from ‘kgl.list’. For example, let’s say we want to download the ‘electric vehicles’ dataset. We run:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>EV <span class="ot">&lt;-</span> <span class="fu">kgl_download_custom</span>(<span class="st">&quot;mohamedalishiha/electric-vehicles&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>EV <span class="ot">&lt;-</span> <span class="fu">kgl_download_custom</span>(<span class="st">&quot;mohamedalishiha/electric-vehicles&quot;</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </div>

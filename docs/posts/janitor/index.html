@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2022-11-01">
+<meta name="dcterms.date" content="2022-11-03">
 
 <title>Portfolio - Data cleansing with Janitor R package</title>
 <style>
@@ -308,14 +308,6 @@ window.document.addEventListener("DOMContentLoaded", function () {
     }
   }
 });
-</script>
-<script>/*!
- * headroom.js v0.12.0 - Give your page some headroom. Hide your header until you need it
- * Copyright (c) 2020 Nick Williams - http://wicky.nillia.ms/headroom.js
- * License: MIT
- */
-
-!function(t,n){"object"==typeof exports&&"undefined"!=typeof module?module.exports=n():"function"==typeof define&&define.amd?define(n):(t=t||self).Headroom=n()}(this,function(){"use strict";function t(){return"undefined"!=typeof window}function d(t){return function(t){return t&&t.document&&function(t){return 9===t.nodeType}(t.document)}(t)?function(t){var n=t.document,o=n.body,s=n.documentElement;return{scrollHeight:function(){return Math.max(o.scrollHeight,s.scrollHeight,o.offsetHeight,s.offsetHeight,o.clientHeight,s.clientHeight)},height:function(){return t.innerHeight||s.clientHeight||o.clientHeight},scrollY:function(){return void 0!==t.pageYOffset?t.pageYOffset:(s||o.parentNode||o).scrollTop}}}(t):function(t){return{scrollHeight:function(){return Math.max(t.scrollHeight,t.offsetHeight,t.clientHeight)},height:function(){return Math.max(t.offsetHeight,t.clientHeight)},scrollY:function(){return t.scrollTop}}}(t)}function n(t,s,e){var n,o=function(){var n=!1;try{var t={get passive(){n=!0}};window.addEventListener("test",t,t),window.removeEventListener("test",t,t)}catch(t){n=!1}return n}(),i=!1,r=d(t),l=r.scrollY(),a={};function c(){var t=Math.round(r.scrollY()),n=r.height(),o=r.scrollHeight();a.scrollY=t,a.lastScrollY=l,a.direction=l<t?"down":"up",a.distance=Math.abs(t-l),a.isOutOfBounds=t<0||o<t+n,a.top=t<=s.offset[a.direction],a.bottom=o<=t+n,a.toleranceExceeded=a.distance>s.tolerance[a.direction],e(a),l=t,i=!1}function h(){i||(i=!0,n=requestAnimationFrame(c))}var u=!!o&&{passive:!0,capture:!1};return t.addEventListener("scroll",h,u),c(),{destroy:function(){cancelAnimationFrame(n),t.removeEventListener("scroll",h,u)}}}function o(t){return t===Object(t)?t:{down:t,up:t}}function s(t,n){n=n||{},Object.assign(this,s.options,n),this.classes=Object.assign({},s.options.classes,n.classes),this.elem=t,this.tolerance=o(this.tolerance),this.offset=o(this.offset),this.initialised=!1,this.frozen=!1}return s.prototype={constructor:s,init:function(){return s.cutsTheMustard&&!this.initialised&&(this.addClass("initial"),this.initialised=!0,setTimeout(function(t){t.scrollTracker=n(t.scroller,{offset:t.offset,tolerance:t.tolerance},t.update.bind(t))},100,this)),this},destroy:function(){this.initialised=!1,Object.keys(this.classes).forEach(this.removeClass,this),this.scrollTracker.destroy()},unpin:function(){!this.hasClass("pinned")&&this.hasClass("unpinned")||(this.addClass("unpinned"),this.removeClass("pinned"),this.onUnpin&&this.onUnpin.call(this))},pin:function(){this.hasClass("unpinned")&&(this.addClass("pinned"),this.removeClass("unpinned"),this.onPin&&this.onPin.call(this))},freeze:function(){this.frozen=!0,this.addClass("frozen")},unfreeze:function(){this.frozen=!1,this.removeClass("frozen")},top:function(){this.hasClass("top")||(this.addClass("top"),this.removeClass("notTop"),this.onTop&&this.onTop.call(this))},notTop:function(){this.hasClass("notTop")||(this.addClass("notTop"),this.removeClass("top"),this.onNotTop&&this.onNotTop.call(this))},bottom:function(){this.hasClass("bottom")||(this.addClass("bottom"),this.removeClass("notBottom"),this.onBottom&&this.onBottom.call(this))},notBottom:function(){this.hasClass("notBottom")||(this.addClass("notBottom"),this.removeClass("bottom"),this.onNotBottom&&this.onNotBottom.call(this))},shouldUnpin:function(t){return"down"===t.direction&&!t.top&&t.toleranceExceeded},shouldPin:function(t){return"up"===t.direction&&t.toleranceExceeded||t.top},addClass:function(t){this.elem.classList.add.apply(this.elem.classList,this.classes[t].split(" "))},removeClass:function(t){this.elem.classList.remove.apply(this.elem.classList,this.classes[t].split(" "))},hasClass:function(t){return this.classes[t].split(" ").every(function(t){return this.classList.contains(t)},this.elem)},update:function(t){t.isOutOfBounds||!0!==this.frozen&&(t.top?this.top():this.notTop(),t.bottom?this.bottom():this.notBottom(),this.shouldUnpin(t)?this.unpin():this.shouldPin(t)&&this.pin())}},s.options={tolerance:{up:0,down:0},offset:0,scroller:t()?window:null,classes:{frozen:"headroom--frozen",pinned:"headroom--pinned",unpinned:"headroom--unpinned",top:"headroom--top",notTop:"headroom--not-top",bottom:"headroom--bottom",notBottom:"headroom--not-bottom",initial:"headroom"}},s.cutsTheMustard=!!(t()&&function(){}.bind&&"classList"in document.documentElement&&Object.assign&&Object.keys&&requestAnimationFrame),s});
 </script>
 <script>/*!
  * clipboard.js v2.0.10
@@ -5318,7 +5310,7 @@ window.onload = function() {
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">November 1, 2022</p>
+        <p class="date">November 3, 2022</p>
       </div>
     </div>
     
@@ -5461,7 +5453,7 @@ window.onload = function() {
 </section>
 <section id="remove-constant-column" class="level2">
 <h2 class="anchored" data-anchor-id="remove-constant-column">Remove constant column</h2>
-<p>There’s also a function to remove columns with constant values, called <code>janitor::remove_constant</code> . Previously I added to our dataset a ‘const’ column with all values equal to 1. Let’s remove it:</p>
+<p>There’s also a function to remove columns with constant values, called <code>janitor::remove_constant()</code> . Previously I added to our dataset a ‘const’ column with all values equal to 1. Let’s remove it:</p>
 <div class="cell" data-rows.print="5">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>iris_dirty <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">remove_constant</span>(iris_dirty, <span class="at">quiet =</span> F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -5469,6 +5461,79 @@ window.onload = function() {
 </div>
 </div>
 <p>You can also set <code>na.rm = T</code> to ignore NA values when considering if a column is a constant.</p>
+</section>
+<section id="frequency-and-contingency-tables" class="level2">
+<h2 class="anchored" data-anchor-id="frequency-and-contingency-tables">Frequency and contingency tables</h2>
+<p>Before proceding, we set ‘iris_dirty’ columns to the correct datatypes, since previous manipulations changed all variables datatypes to character.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>iris_dirty[,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(iris_dirty[,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], as.numeric)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>iris_dirty<span class="sc">$</span>species <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(iris_dirty<span class="sc">$</span>species)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(iris_dirty)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&#39;data.frame&#39;:   149 obs. of  5 variables:
+ $ sepal_length_cm: num  5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 5.4 ...
+ $ sepal_width_cm : num  3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.7 ...
+ $ petal_length_cm: num  1.4 1.4 1.3 1.5 1.4 1.7 1.4 1.5 1.4 1.5 ...
+ $ petal_width_cm : num  0.2 0.2 0.2 0.2 0.2 0.4 0.3 0.2 0.2 0.2 ...
+ $ species        : Factor w/ 3 levels &quot;setosa&quot;,&quot;versicolor&quot;,..: 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+</div>
+</div>
+<p>With <code>janitor::tabyl()</code> function we can produce frequency and contingency table. The main advantage of <code>tabyl()</code> , compared to R base <code>table()</code> function, is the former returns a data.frame object. The following code returns a frequency table with ‘species’ being the grouping variable.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>freq_tbl <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">tabyl</span>(iris_dirty, species)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>freq_tbl</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source type="application/json">
+{"columns":[{"label":["species"],"name":[1],"type":["fct"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]},{"label":["percent"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"setosa","2":"49","3":"0.3288591"},{"1":"versicolor","2":"50","3":"0.3355705"},{"1":"virginica","2":"50","3":"0.3355705"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>We can also return a contingency table for species and petal width, for example:</p>
+<div class="cell" data-rows.print="5">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>con_tbl <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">tabyl</span>(iris_dirty, petal_width_cm, species)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>con_tbl</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source type="application/json">
+{"columns":[{"label":["petal_width_cm"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["setosa"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["versicolor"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["virginica"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"0.1","2":"4","3":"0","4":"0"},{"1":"0.2","2":"29","3":"0","4":"0"},{"1":"0.3","2":"7","3":"0","4":"0"},{"1":"0.4","2":"7","3":"0","4":"0"},{"1":"0.5","2":"1","3":"0","4":"0"},{"1":"0.6","2":"1","3":"0","4":"0"},{"1":"1.0","2":"0","3":"7","4":"0"},{"1":"1.1","2":"0","3":"3","4":"0"},{"1":"1.2","2":"0","3":"5","4":"0"},{"1":"1.3","2":"0","3":"13","4":"0"},{"1":"1.4","2":"0","3":"7","4":"1"},{"1":"1.5","2":"0","3":"10","4":"2"},{"1":"1.6","2":"0","3":"3","4":"1"},{"1":"1.7","2":"0","3":"1","4":"1"},{"1":"1.8","2":"0","3":"1","4":"11"},{"1":"1.9","2":"0","3":"0","4":"5"},{"1":"2.0","2":"0","3":"0","4":"6"},{"1":"2.1","2":"0","3":"0","4":"6"},{"1":"2.2","2":"0","3":"0","4":"3"},{"1":"2.3","2":"0","3":"0","4":"8"},{"1":"2.4","2":"0","3":"0","4":"3"},{"1":"2.5","2":"0","3":"0","4":"3"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[5],"max":[5]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</section>
+<section id="formatting-tabulated-data" class="level2">
+<h2 class="anchored" data-anchor-id="formatting-tabulated-data">Formatting tabulated data</h2>
+<p><code>janitor::adorn_*()</code> functions can be used to format tabulated data; these functions are useful for reporting in Quarto and Markdown documents, when paired with <code>knitr::kable()</code> and similar functions. For example, <code>adorn_pct_formatting()</code> can be used to format the percentage output of <code>tabyl()</code> . Below, we round the percentages to 2 decimal places, and add the percentage sign at the end.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>freq_tbl <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">adorn_pct_formatting</span>(freq_tbl, <span class="at">digits =</span> <span class="dv">2</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>freq_tbl</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source type="application/json">
+{"columns":[{"label":["species"],"name":[1],"type":["fct"],"align":["left"]},{"label":["n"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["percent"],"name":[3],"type":["chr"],"align":["left"]}],"data":[{"1":"setosa","2":"49","3":"32.89%"},{"1":"versicolor","2":"50","3":"33.56%"},{"1":"virginica","2":"50","3":"33.56%"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>By default, the values in contingency tables are shown as counts. They can be changed to percentages with <code>adorn_percentages()</code> function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>con_tbl <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">adorn_percentages</span>(con_tbl) <span class="sc">|&gt;</span> </span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">adorn_pct_formatting</span>(<span class="at">digits =</span> <span class="dv">2</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>con_tbl</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source type="application/json">
+{"columns":[{"label":["petal_width_cm"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["setosa"],"name":[2],"type":["chr"],"align":["left"]},{"label":["versicolor"],"name":[3],"type":["chr"],"align":["left"]},{"label":["virginica"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"0.1","2":"100.00%","3":"0.00%","4":"0.00%"},{"1":"0.2","2":"100.00%","3":"0.00%","4":"0.00%"},{"1":"0.3","2":"100.00%","3":"0.00%","4":"0.00%"},{"1":"0.4","2":"100.00%","3":"0.00%","4":"0.00%"},{"1":"0.5","2":"100.00%","3":"0.00%","4":"0.00%"},{"1":"0.6","2":"100.00%","3":"0.00%","4":"0.00%"},{"1":"1.0","2":"0.00%","3":"100.00%","4":"0.00%"},{"1":"1.1","2":"0.00%","3":"100.00%","4":"0.00%"},{"1":"1.2","2":"0.00%","3":"100.00%","4":"0.00%"},{"1":"1.3","2":"0.00%","3":"100.00%","4":"0.00%"},{"1":"1.4","2":"0.00%","3":"87.50%","4":"12.50%"},{"1":"1.5","2":"0.00%","3":"83.33%","4":"16.67%"},{"1":"1.6","2":"0.00%","3":"75.00%","4":"25.00%"},{"1":"1.7","2":"0.00%","3":"50.00%","4":"50.00%"},{"1":"1.8","2":"0.00%","3":"8.33%","4":"91.67%"},{"1":"1.9","2":"0.00%","3":"0.00%","4":"100.00%"},{"1":"2.0","2":"0.00%","3":"0.00%","4":"100.00%"},{"1":"2.1","2":"0.00%","3":"0.00%","4":"100.00%"},{"1":"2.2","2":"0.00%","3":"0.00%","4":"100.00%"},{"1":"2.3","2":"0.00%","3":"0.00%","4":"100.00%"},{"1":"2.4","2":"0.00%","3":"0.00%","4":"100.00%"},{"1":"2.5","2":"0.00%","3":"0.00%","4":"100.00%"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
 </section>
 </div>
 

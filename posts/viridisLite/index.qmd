@@ -34,7 +34,7 @@ devtools::install_github("sjmgarnier/viridisLite")
 
 ## Palettes
 
-`viridisLite` offers six color palettes to choose from, via the corresponding convenience functions, useful when the scale must be passed as a function name. Each of those functions returns a character vector of color hex codes.
+`viridisLite` offers 8 color palettes to choose from, via the corresponding convenience functions, useful when the scale must be passed as a function name. Each of those functions returns a character vector of color hex codes.
 
 ![Fig. 1: viridisLite color palettes](viridis-scales.png){fig-align="center"}
 
@@ -74,7 +74,7 @@ pal <- viridisLite::mako(25)
 pal
 ```
 
-As you can see the output is quite cryptic, and visually we can't tell what colors were picked exactly. With `scales::show_col()` function we can plot 'pal' as a color matrix.
+With `scales::show_col()` function we can plot 'pal' as a color matrix.
 
 ```{r}
 scales::show_col(pal)
