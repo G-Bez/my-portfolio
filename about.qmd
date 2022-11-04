@@ -10,6 +10,9 @@ about:
     - icon: github
       text: Github
       href: https://github.com/G-Bez
+format: 
+  html: 
+    fontsize: 0.9em
 ---
 
 ::: {style="text-align: justify"}

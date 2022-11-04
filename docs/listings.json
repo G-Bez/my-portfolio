@@ -2,6 +2,8 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/gis_raster/index.html",
+      "/posts/gis_vector/index.html",
       "/posts/janitor/index.html",
       "/posts/kaggle/index.html",
       "/posts/viridisLite/index.html",

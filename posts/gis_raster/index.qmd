@@ -1,0 +1,13 @@
+---
+title: "GIS with R - Raster data"
+date: "2022-11-06"
+categories: [R, GIS]
+image: gis_thumbnail.jpg
+format:
+  html:
+    code-tools: true
+    fontsize: 0.9em
+editor: visual
+---
+
+test

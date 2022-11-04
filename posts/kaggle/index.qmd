@@ -8,8 +8,6 @@ execute:
 format:
   html:
     df-print: paged
-    embed-resources: true
-    standalone: true
     fontsize: 0.9em
 editor: visual
 ---
@@ -21,9 +19,9 @@ Kaggle offers plenty of datasets to practice with. Here I show you how to direct
 
 ## Step 1: Create a Kaggle API key
 
-As first step we need to create a kaggle API key. [Sign in](https://www.kaggle.com/account/login?phase=startSignInTab&returnUrl=%2Fgbez94%2Faccount%3FisEditing%3DFalse%26verifyPhone%3DFalse) into your Kaggle account (if you already have one), or create a new account. Then go to account settings, find API section and click on 'Create new API token':
+As first step we need to create a kaggle API key. [Sign in](https://www.kaggle.com/account/login?phase=startSignInTab&returnUrl=%2Fgbez94%2Faccount%3FisEditing%3DFalse%26verifyPhone%3DFalse) into your Kaggle account (if you already have one), or create a new account. Then go to account settings, find API section and click on 'Create new API token' (see @fig-1 )
 
-![Fig.1: Create New API token](API_token.PNG)
+![Fig.1: Create New API token](API_token.PNG){#fig-1}
 
 When clicking on that button, a file called 'kaggle.json' is downloaded. It's a very simple .json file with your username and API key. You can use those credentials to connect to Kaggle via R.
 

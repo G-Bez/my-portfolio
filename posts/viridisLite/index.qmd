@@ -5,8 +5,6 @@ categories: [R, Visualization, Accessibility]
 image: viridis_thumbnail.png
 format:
   html:
-    embed-resources: true
-    standalone: true
     fontsize: 0.9em
 editor: visual
 ---
@@ -34,9 +32,9 @@ devtools::install_github("sjmgarnier/viridisLite")
 
 ## Palettes
 
-`viridisLite` offers 8 color palettes to choose from, via the corresponding convenience functions, useful when the scale must be passed as a function name. Each of those functions returns a character vector of color hex codes.
+`viridisLite` offers 8 color palettes to choose from (see @fig-pal), via the corresponding convenience functions, useful when the scale must be passed as a function name. Each of those functions returns a character vector of color hex codes.
 
-![Fig. 1: viridisLite color palettes](viridis-scales.png){fig-align="center"}
+![viridisLite color palettes](viridis-scales.png){#fig-pal fig-align="center"}
 
 Below you can see the general syntax of `viridiLite` convenience functions:
 
@@ -77,6 +75,8 @@ pal
 With `scales::show_col()` function we can plot 'pal' as a color matrix.
 
 ```{r}
+#| out-width: 100%
+#| out-height: 250%
 scales::show_col(pal)
 ```
 

@@ -5,8 +5,6 @@ categories: [R, Case study]
 image: cyclistic_thumbnail.jpeg
 format:
   html:
-    embed-resources: true
-    standalone: true
     code-tools: true
     fontsize: 0.9em
 editor: visual

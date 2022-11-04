@@ -16,9 +16,10 @@ website:
 format:
   html:
     theme:
-      light: flatly
       dark: darkly
+      light: flatly
     css: styles.css
+    fontsize: 0.9em
 
 editor: visual
 

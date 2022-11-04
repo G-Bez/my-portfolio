@@ -25,5 +25,11 @@
   },
   "posts/janitor/index.qmd": {
     "index.html": "cb9d7ff6"
+  },
+  "posts/gis_vector/index.qmd": {
+    "index.html": "34376d9e"
+  },
+  "posts/gis_raster/index.qmd": {
+    "index.html": "4512d8ff"
   }
 }

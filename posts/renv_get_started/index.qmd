@@ -5,8 +5,6 @@ categories: [R, Dependency management]
 image: renv_thumbnail.png
 format:
   html:
-    embed-resources: true
-    standalone: true
     fontsize: 0.9em
 editor: visual
 ---
@@ -37,13 +35,13 @@ install.packages("renv", repos = "https://rstudio.r-universe.dev")
 
 ## Example project
 
-To show how `renv` actually works, we create a new RStudio project with `File > New Project ... > New directory`
+To show how `renv` actually works, we create a new RStudio project with `File > New Project ... > New directory` (see @fig-newproj)
 
-![Fig.1: Create new project](newproject.PNG){fig-align="center"}
+![Create new project](newproject.PNG){#fig-newproj fig-align="center"}
 
-As you can see, after installing `renv`, a dedicated tickbox is added to new projects windows. Clicking on it will automatically initialize `renv` when creating the project. Here we leave it unchecked, to show how to manually initialize the dependency management. We call the new project 'renv-test-project'. Below you can see its main directory.
+As you can see, after installing `renv`, a dedicated tickbox is added to new projects windows. Clicking on it will automatically initialize `renv` when creating the project. Here we leave it unchecked, to show how to manually initialize the dependency management. We call the new project 'renv-test-project'. Below you can see its main directory (@fig-dir).
 
-![Fig 2: New project main dir](main_dir1.PNG){fig-align="center"}
+![New project main dir](main_dir1.PNG){#fig-dir fig-align="center"}
 
 Since we initialized a blank project, we only have the project main file 'renv-test-project.Rproj', and user data inside the '.Rproj.user' folder.
 
@@ -57,13 +55,13 @@ renv::init()
 
 `renv::init()` scans the project and looks for dependencies in your code, then creates a private package library, and saves its state in a text file called 'renv.lock' (the file contains records of packages versions, external sources, if known, repositories, and a hash assigned to each package). It also writes out the infrastructure necessary to automatically load and use the private library for new R sessions launched from the project directory.
 
-![Fig. 3: Main dir after renv initialization](main_dir2.PNG){fig-align="center"}
+![Main dir after renv initialization](main_dir2.PNG){#fig-dir2 fig-align="center"}
 
-As you can see, some files and a folder were added to the project main directory. 'renv' folder includes the private library, and part of the infrastructure we mentioned earlier. 'renv.lock' file is the most important part of `renv` dependency management; it can be used to restore a previous state of the project, or to reinitialize the private library from scratch (useful when sharing the project).
+As you can see, some files and a folder were added to the project main directory (see @fig-dir2). 'renv' folder includes the private library, and part of the infrastructure we mentioned earlier. 'renv.lock' file is the most important part of `renv` dependency management; it can be used to restore a previous state of the project, or to reinitialize the private library from scratch (useful when sharing the project).
 
-You can see the current project private library in `renv/library/R-x.x/x86_64-w64mingw32` folder. Since our project is currently blank, only `renv` package itself was added to our library.
+You can see the current project private library in `renv/library/R-x.x/x86_64-w64mingw32` folder (@fig-lib). Since our project is currently blank, only `renv` package itself was added to our library.
 
-![Fig. 4: Initial private library](priv_lib1.PNG){fig-align="center"}
+![Initial private library](priv_lib1.PNG){#fig-lib fig-align="center"}
 
 ## Update the private library
 
@@ -81,9 +79,9 @@ Let's say for example we need `tibble` package for our analysis. First, we insta
 install.packages("tibble")
 ```
 
-`tibble` and all of its dependencies are added to our private library.
+`tibble` and all of its dependencies are added to our private library (@fig-lib2).
 
-![Fig. 5: Private library after installing tibble](priv_lib2.PNG){fig-align="center"}
+![Private library after installing tibble](priv_lib2.PNG){#fig-lib2 fig-align="center"}
 
 Then we write a simple script that uses `tibble` package. For example, the following script assigns `mtcars` R prebuilt dataset to a tibble object.
 
@@ -92,9 +90,9 @@ library(tibble)
 tbl_mtcars <- as_tibble(mtcars)
 ```
 
-We save this script in our project main folder, but you can also place it in a dedicated subfolder, as you like.
+We save this script in our project main folder (@fig-script), but you can also place it in a dedicated subfolder, as you like.
 
-![Fig. 6: New script file](main_dir3.PNG){fig-align="center"}
+![New script file](main_dir3.PNG){#fig-script fig-align="center"}
 
 Now, we run `renv::snapshot()` to add `tibble` package and its dependencies to our lockfile.
 
@@ -112,9 +110,9 @@ To restore a previous project state from the lockfile, you just need to run:
 renv::restore()
 ```
 
-`renv::init()` can also restore a previous state. If a lockfile already exists, running `renv::inits` prompts some choices:
+`renv::init()` can also restore a previous state. If a lockfile already exists, running `renv::inits` prompts some choices (see @fig-init).
 
-![Fig. 7: init() with existing lockfile](init.PNG){fig-align="center"}
+![init() with existing lockfile](init.PNG){#fig-init fig-align="center"}
 
 Choice 1 is equivalent to `renv::restore()` . Choice 2 re-initializes the private library from scratch.
 :::
