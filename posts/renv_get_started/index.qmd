@@ -6,6 +6,7 @@ image: renv_thumbnail.png
 format:
   html:
     fontsize: 0.9em
+    code-tools: true
 editor: visual
 ---
 
