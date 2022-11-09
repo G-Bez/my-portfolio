@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="dcterms.date" content="2022-11-04">
+<meta name="dcterms.date" content="2022-11-06">
 
 <title>Portfolio - GIS with R - Vector data</title>
 <style>
@@ -186,7 +186,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div>
       <div class="quarto-title-meta-heading">Published</div>
       <div class="quarto-title-meta-contents">
-        <p class="date">November 4, 2022</p>
+        <p class="date">November 6, 2022</p>
       </div>
     </div>
     
@@ -214,10 +214,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </div>
 <p>Tipically GIS represent spatial data in two different formats (or combinations of both):</p>
 <ul>
-<li><strong>Vector data</strong>: represent spatial features with points, lines, polygons and other discrete geometries.</li>
-<li><strong>Raster data</strong>: represent spatial features with continuous grids of pixels.</li>
+<li><strong>Vector data</strong>: represent spatial features with points, lines, polygons and other geometries. These have discrete, well-defined borders, meaning that vector datasets usually have a high level of precision. More in detail, the geographic vector data model is based on points located within a coordinate reference system (CRS). Points can represent self-standing features (for example the location of a bus stop) or they can be linked together to form more complex geometries such as lines and polygons</li>
+<li><strong>Raster data</strong>: represent spatial features with continuous grids of pixels. Raster datasets are the basis of background images used in web-mapping and have been a vital source of geographic data since the origins of aerial photography and satellite-based remote sensing devices. See <a href="https://g-bez.github.io/my-portfolio/posts/gis_raster/">GIS with R - Raster data</a> for examples about raster data in R.</li>
 </ul>
-<p>For all intents and purposes, R can be used as a GIS. Following I provide some examples on how to deal with vector data in R. See <a href="https://g-bez.github.io/my-portfolio/posts/gis_raster/">GIS with R - Raster data</a> for examples about raster data.</p>
+<p>For all intents and purposes, R can be used as a GIS. Following I provide some examples on how to deal with vector data in R.</p>
 <section id="packages" class="level2">
 <h2 class="anchored" data-anchor-id="packages">Packages</h2>
 <p>We start by loading the needed packages.</p>
@@ -265,7 +265,7 @@ $precision
 
 $bbox
 xmin ymin xmax ymax 
-  55   57   73   75 
+  57   56   75   70 
 
 $crs
 Coordinate Reference System: NA
@@ -274,7 +274,7 @@ $n_empty
 [1] 0</code></pre>
 </div>
 </div>
-<p>As you can see, sfc objects store additional attributes, like the bounding box (smallest rectangle that would encompass all elements in the data), decimal precision of coordinates, and CRS (coordinate Reference System) which is blank for now. Each reference system is defined by a corresponding EPSG code; see <a href="https://epsg.org/home.html">EPSG website</a> for more details. To add a CRS attribute to our sfc object, add a <code>crs</code> parameter to <code>sf::st_sfc()</code> function. For example, let’s say that we built the data based on longitude and latitude coordinates using a very commonly used geographic coordinate system called <a href="https://support.virtual-surveyor.com/en/support/solutions/articles/1000261351-what-is-wgs84-">WGS84</a>, which has an EPSG code of 4326.</p>
+<p>As you can see, sfc objects store additional attributes, like the bounding box (smallest rectangle that would encompass all elements in the data), decimal precision of coordinates, and CRS which is blank for now. Each reference system is defined by a corresponding <code>EPSG</code> code; see <a href="https://epsg.org/home.html">EPSG website</a>, <a href="https://spatialreference.org/ref/epsg/">Spatial Reference website</a> and GIS with R - CRSs in R for more details. To add a CRS attribute to our sfc object, add a <code>crs</code> parameter to <code>sf::st_sfc()</code> function. For example, let’s say that we built the data based on longitude and latitude coordinates using a very commonly used geographic coordinate system called <a href="https://support.virtual-surveyor.com/en/support/solutions/articles/1000261351-what-is-wgs84-">WGS84</a>, which has an EPSG code of 4326.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>pts_sfc <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_sfc</span>(ls, <span class="at">crs =</span> <span class="dv">4326</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">attributes</span>(pts_sfc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -291,7 +291,7 @@ $precision
 
 $bbox
 xmin ymin xmax ymax 
-  55   57   73   75 
+  57   56   75   70 
 
 $crs
 Coordinate Reference System:
@@ -331,7 +331,7 @@ $n_empty
 
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":["brand"],"name":[1],"type":["chr"],"align":["left"]}],"data":[{"1":"KFC"},{"1":"America Graffiti"},{"1":"America Graffiti"},{"1":"KFC"},{"1":"KFC"},{"1":"KFC"},{"1":"KFC"},{"1":"KFC"},{"1":"Burger King"},{"1":"Pizza Hut"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["brand"],"name":[1],"type":["chr"],"align":["left"]}],"data":[{"1":"Burger King"},{"1":"America Graffiti"},{"1":"McDonald's"},{"1":"McDonald's"},{"1":"Burger King"},{"1":"McDonald's"},{"1":"Burger King"},{"1":"KFC"},{"1":"Burger King"},{"1":"Pizza Hut"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -344,7 +344,7 @@ $n_empty
 
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["brand"],"name":[1],"type":["chr"],"align":["left"]},{"label":["geometry"],"name":[2],"type":["sf_POINT"],"align":["right"]}],"data":[{"1":"KFC","2":"<sf_POINT>","_rn_":"1"},{"1":"America Graffiti","2":"<sf_POINT>","_rn_":"2"},{"1":"America Graffiti","2":"<sf_POINT>","_rn_":"3"},{"1":"KFC","2":"<sf_POINT>","_rn_":"4"},{"1":"KFC","2":"<sf_POINT>","_rn_":"5"},{"1":"KFC","2":"<sf_POINT>","_rn_":"6"},{"1":"KFC","2":"<sf_POINT>","_rn_":"7"},{"1":"KFC","2":"<sf_POINT>","_rn_":"8"},{"1":"Burger King","2":"<sf_POINT>","_rn_":"9"},{"1":"Pizza Hut","2":"<sf_POINT>","_rn_":"10"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["brand"],"name":[1],"type":["chr"],"align":["left"]},{"label":["geometry"],"name":[2],"type":["sf_POINT"],"align":["right"]}],"data":[{"1":"Burger King","2":"<sf_POINT>","_rn_":"1"},{"1":"America Graffiti","2":"<sf_POINT>","_rn_":"2"},{"1":"McDonald's","2":"<sf_POINT>","_rn_":"3"},{"1":"McDonald's","2":"<sf_POINT>","_rn_":"4"},{"1":"Burger King","2":"<sf_POINT>","_rn_":"5"},{"1":"McDonald's","2":"<sf_POINT>","_rn_":"6"},{"1":"Burger King","2":"<sf_POINT>","_rn_":"7"},{"1":"KFC","2":"<sf_POINT>","_rn_":"8"},{"1":"Burger King","2":"<sf_POINT>","_rn_":"9"},{"1":"Pizza Hut","2":"<sf_POINT>","_rn_":"10"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -789,7 +789,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
 <div class="sourceCode" id="cb25" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "GIS with R - Vector data"</span></span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2022-11-04"</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2022-11-06"</span></span>
 <span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span><span class="co"> [R, GIS]</span></span>
 <span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="an">image:</span><span class="co"> gis_thumbnail.jpg</span></span>
 <span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
@@ -807,10 +807,10 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a>Tipically GIS represent spatial data in two different formats (or combinations of both):</span>
 <span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Vector data**: represent spatial features with points, lines, polygons and other discrete geometries.</span>
-<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Raster data**: represent spatial features with continuous grids of pixels.</span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Vector data**: represent spatial features with points, lines, polygons and other geometries. These have discrete, well-defined borders, meaning that vector datasets usually have a high level of precision. More in detail, the geographic vector data model is based on points located within a coordinate reference system (CRS). Points can represent self-standing features (for example the location of a bus stop) or they can be linked together to form more complex geometries such as lines and polygons</span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Raster data**: represent spatial features with continuous grids of pixels. Raster datasets are the basis of background images used in web-mapping and have been a vital source of geographic data since the origins of aerial photography and satellite-based remote sensing devices. See <span class="co">[</span><span class="ot">GIS with R - Raster data</span><span class="co">](https://g-bez.github.io/my-portfolio/posts/gis_raster/)</span> for examples about raster data in R.</span>
 <span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>For all intents and purposes, R can be used as a GIS. Following I provide some examples on how to deal with vector data in R. See <span class="co">[</span><span class="ot">GIS with R - Raster data</span><span class="co">](https://g-bez.github.io/my-portfolio/posts/gis_raster/)</span> for examples about raster data.</span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a>For all intents and purposes, R can be used as a GIS. Following I provide some examples on how to deal with vector data in R.</span>
 <span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a><span class="fu">## Packages</span></span>
 <span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a></span>
@@ -851,7 +851,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb25-68"><a href="#cb25-68" aria-hidden="true" tabindex="-1"></a><span class="fu">attributes</span>(pts_sfc)</span>
 <span id="cb25-69"><a href="#cb25-69" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb25-70"><a href="#cb25-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-71"><a href="#cb25-71" aria-hidden="true" tabindex="-1"></a>As you can see, sfc objects store additional attributes, like the bounding box (smallest rectangle that would encompass all elements in the data), decimal precision of coordinates, and CRS (coordinate Reference System) which is blank for now. Each reference system is defined by a corresponding EPSG code; see <span class="co">[</span><span class="ot">EPSG website</span><span class="co">](https://epsg.org/home.html)</span> for more details. To add a CRS attribute to our sfc object, add a <span class="in">`crs`</span> parameter to <span class="in">`sf::st_sfc()`</span> function. For example, let's say that we built the data based on longitude and latitude coordinates using a very commonly used geographic coordinate system called <span class="co">[</span><span class="ot">WGS84</span><span class="co">](https://support.virtual-surveyor.com/en/support/solutions/articles/1000261351-what-is-wgs84-)</span>, which has an EPSG code of 4326.</span>
+<span id="cb25-71"><a href="#cb25-71" aria-hidden="true" tabindex="-1"></a>As you can see, sfc objects store additional attributes, like the bounding box (smallest rectangle that would encompass all elements in the data), decimal precision of coordinates, and CRS which is blank for now. Each reference system is defined by a corresponding <span class="in">`EPSG`</span> code; see <span class="co">[</span><span class="ot">EPSG website</span><span class="co">](https://epsg.org/home.html)</span>, <span class="co">[</span><span class="ot">Spatial Reference website</span><span class="co">](https://spatialreference.org/ref/epsg/)</span> and GIS with R - CRSs in R for more details. To add a CRS attribute to our sfc object, add a <span class="in">`crs`</span> parameter to <span class="in">`sf::st_sfc()`</span> function. For example, let's say that we built the data based on longitude and latitude coordinates using a very commonly used geographic coordinate system called <span class="co">[</span><span class="ot">WGS84</span><span class="co">](https://support.virtual-surveyor.com/en/support/solutions/articles/1000261351-what-is-wgs84-)</span>, which has an EPSG code of 4326.</span>
 <span id="cb25-72"><a href="#cb25-72" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-75"><a href="#cb25-75" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb25-76"><a href="#cb25-76" aria-hidden="true" tabindex="-1"></a>pts_sfc <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_sfc</span>(ls, <span class="at">crs =</span> <span class="dv">4326</span>)</span>

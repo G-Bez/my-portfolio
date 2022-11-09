@@ -31,5 +31,8 @@
   },
   "posts/gis_raster/index.qmd": {
     "index.html": "4512d8ff"
+  },
+  "posts/gis_crs/index.qmd": {
+    "index.html": "3a5c2646"
   }
 }

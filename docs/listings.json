@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/gis_crs/index.html",
       "/posts/gis_raster/index.html",
       "/posts/gis_vector/index.html",
       "/posts/janitor/index.html",

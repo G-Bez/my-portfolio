@@ -1,6 +1,6 @@
 ---
 title: "GIS with R - Vector data"
-date: "2022-11-04"
+date: "2022-11-06"
 categories: [R, GIS]
 image: gis_thumbnail.jpg
 format:
@@ -18,10 +18,10 @@ GIS is an acronym that is typically used to refer to a geographic information sy
 
 Tipically GIS represent spatial data in two different formats (or combinations of both):
 
--   **Vector data**: represent spatial features with points, lines, polygons and other discrete geometries.
--   **Raster data**: represent spatial features with continuous grids of pixels.
+-   **Vector data**: represent spatial features with points, lines, polygons and other geometries. These have discrete, well-defined borders, meaning that vector datasets usually have a high level of precision. More in detail, the geographic vector data model is based on points located within a coordinate reference system (CRS). Points can represent self-standing features (for example the location of a bus stop) or they can be linked together to form more complex geometries such as lines and polygons
+-   **Raster data**: represent spatial features with continuous grids of pixels. Raster datasets are the basis of background images used in web-mapping and have been a vital source of geographic data since the origins of aerial photography and satellite-based remote sensing devices. See [GIS with R - Raster data](https://g-bez.github.io/my-portfolio/posts/gis_raster/) for examples about raster data in R.
 
-For all intents and purposes, R can be used as a GIS. Following I provide some examples on how to deal with vector data in R. See [GIS with R - Raster data](https://g-bez.github.io/my-portfolio/posts/gis_raster/) for examples about raster data.
+For all intents and purposes, R can be used as a GIS. Following I provide some examples on how to deal with vector data in R.
 
 ## Packages
 
@@ -62,7 +62,7 @@ pts_sfc <- sf::st_sfc(ls)
 attributes(pts_sfc)
 ```
 
-As you can see, sfc objects store additional attributes, like the bounding box (smallest rectangle that would encompass all elements in the data), decimal precision of coordinates, and CRS (coordinate Reference System) which is blank for now. Each reference system is defined by a corresponding EPSG code; see [EPSG website](https://epsg.org/home.html) for more details. To add a CRS attribute to our sfc object, add a `crs` parameter to `sf::st_sfc()` function. For example, let's say that we built the data based on longitude and latitude coordinates using a very commonly used geographic coordinate system called [WGS84](https://support.virtual-surveyor.com/en/support/solutions/articles/1000261351-what-is-wgs84-), which has an EPSG code of 4326.
+As you can see, sfc objects store additional attributes, like the bounding box (smallest rectangle that would encompass all elements in the data), decimal precision of coordinates, and CRS which is blank for now. Each reference system is defined by a corresponding `EPSG` code; see [EPSG website](https://epsg.org/home.html), [Spatial Reference website](https://spatialreference.org/ref/epsg/) and GIS with R - CRSs in R for more details. To add a CRS attribute to our sfc object, add a `crs` parameter to `sf::st_sfc()` function. For example, let's say that we built the data based on longitude and latitude coordinates using a very commonly used geographic coordinate system called [WGS84](https://support.virtual-surveyor.com/en/support/solutions/articles/1000261351-what-is-wgs84-), which has an EPSG code of 4326.
 
 ```{r}
 pts_sfc <- sf::st_sfc(ls, crs = 4326)

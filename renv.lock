@@ -630,24 +630,6 @@
         "withr"
       ]
     },
-    "ggspatial": {
-      "Package": "ggspatial",
-      "Version": "1.1.6",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "e9c8859b6fcc17724b93d87134ca36e0",
-      "Requirements": [
-        "abind",
-        "ggplot2",
-        "glue",
-        "rlang",
-        "rosm",
-        "scales",
-        "sf",
-        "tibble",
-        "tidyr"
-      ]
-    },
     "gh": {
       "Package": "gh",
       "Version": "1.3.1",
@@ -1178,19 +1160,6 @@
       "Hash": "a555924add98c99d2f411e37e7d25e9f",
       "Requirements": []
     },
-    "prettymapr": {
-      "Package": "prettymapr",
-      "Version": "0.2.4",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "2c6a2aec97aec439daecd68d67653868",
-      "Requirements": [
-        "digest",
-        "httr",
-        "plyr",
-        "rjson"
-      ]
-    },
     "prettyunits": {
       "Package": "prettyunits",
       "Version": "1.1.1",
@@ -1295,6 +1264,18 @@
       "Hash": "5e3c5dc0b071b21fa128676560dbe94d",
       "Requirements": []
     },
+    "raster": {
+      "Package": "raster",
+      "Version": "3.6-3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "d550f9d6dbb4dce7cbd146b09d663343",
+      "Requirements": [
+        "Rcpp",
+        "sp",
+        "terra"
+      ]
+    },
     "rcmdcheck": {
       "Package": "rcmdcheck",
       "Version": "1.4.0",
@@ -1395,24 +1376,6 @@
       "Hash": "c918476150dd483a23f1d1cab6d17e76",
       "Requirements": [
         "DEoptimR"
-      ]
-    },
-    "rosm": {
-      "Package": "rosm",
-      "Version": "0.2.6",
-      "Source": "Repository",
-      "Repository": "CRAN",
-      "Hash": "28c1e811f574441769c93e5367726c8e",
-      "Requirements": [
-        "abind",
-        "curl",
-        "jpeg",
-        "plyr",
-        "png",
-        "prettymapr",
-        "rgdal",
-        "rjson",
-        "sp"
       ]
     },
     "roxygen2": {
@@ -1657,6 +1620,16 @@
       "Hash": "90b28393209827327de889f49935140a",
       "Requirements": [
         "cpp11"
+      ]
+    },
+    "terra": {
+      "Package": "terra",
+      "Version": "1.6-17",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "3e264754dde87261bc7ccdb30d29d3b4",
+      "Requirements": [
+        "Rcpp"
       ]
     },
     "testthat": {
