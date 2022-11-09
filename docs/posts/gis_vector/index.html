@@ -265,7 +265,7 @@ $precision
 
 $bbox
 xmin ymin xmax ymax 
-  57   56   75   70 
+  59   56   74   74 
 
 $crs
 Coordinate Reference System: NA
@@ -274,7 +274,7 @@ $n_empty
 [1] 0</code></pre>
 </div>
 </div>
-<p>As you can see, sfc objects store additional attributes, like the bounding box (smallest rectangle that would encompass all elements in the data), decimal precision of coordinates, and CRS which is blank for now. Each reference system is defined by a corresponding <code>EPSG</code> code; see <a href="https://epsg.org/home.html">EPSG website</a>, <a href="https://spatialreference.org/ref/epsg/">Spatial Reference website</a> and GIS with R - CRSs in R for more details. To add a CRS attribute to our sfc object, add a <code>crs</code> parameter to <code>sf::st_sfc()</code> function. For example, let’s say that we built the data based on longitude and latitude coordinates using a very commonly used geographic coordinate system called <a href="https://support.virtual-surveyor.com/en/support/solutions/articles/1000261351-what-is-wgs84-">WGS84</a>, which has an EPSG code of 4326.</p>
+<p>As you can see, sfc objects store additional attributes, like the bounding box (smallest rectangle that would encompass all elements in the data), decimal precision of coordinates, and CRS which is blank for now. Each reference system is defined by a corresponding <code>EPSG</code> code; see <a href="https://epsg.org/home.html">EPSG website</a>, <a href="https://spatialreference.org/ref/epsg/">Spatial Reference website</a> and <a href="https://g-bez.github.io/my-portfolio/posts/gis_crs/">GIS with R - CRSs in R</a> post for more details. To add a CRS attribute to our sfc object, add a <code>crs</code> parameter to <code>sf::st_sfc()</code> function. For example, let’s say that we built the data based on longitude and latitude coordinates using a very commonly used geographic coordinate system called <a href="https://support.virtual-surveyor.com/en/support/solutions/articles/1000261351-what-is-wgs84-">WGS84</a>, which has an EPSG code of 4326.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>pts_sfc <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_sfc</span>(ls, <span class="at">crs =</span> <span class="dv">4326</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">attributes</span>(pts_sfc)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -291,7 +291,7 @@ $precision
 
 $bbox
 xmin ymin xmax ymax 
-  57   56   75   70 
+  59   56   74   74 
 
 $crs
 Coordinate Reference System:
@@ -331,7 +331,7 @@ $n_empty
 
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":["brand"],"name":[1],"type":["chr"],"align":["left"]}],"data":[{"1":"Burger King"},{"1":"America Graffiti"},{"1":"McDonald's"},{"1":"McDonald's"},{"1":"Burger King"},{"1":"McDonald's"},{"1":"Burger King"},{"1":"KFC"},{"1":"Burger King"},{"1":"Pizza Hut"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":["brand"],"name":[1],"type":["chr"],"align":["left"]}],"data":[{"1":"McDonald's"},{"1":"KFC"},{"1":"Burger King"},{"1":"Pizza Hut"},{"1":"McDonald's"},{"1":"Pizza Hut"},{"1":"America Graffiti"},{"1":"Pizza Hut"},{"1":"Burger King"},{"1":"McDonald's"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -344,7 +344,7 @@ $n_empty
 
 <div data-pagedtable="false">
   <script data-pagedtable-source="" type="application/json">
-{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["brand"],"name":[1],"type":["chr"],"align":["left"]},{"label":["geometry"],"name":[2],"type":["sf_POINT"],"align":["right"]}],"data":[{"1":"Burger King","2":"<sf_POINT>","_rn_":"1"},{"1":"America Graffiti","2":"<sf_POINT>","_rn_":"2"},{"1":"McDonald's","2":"<sf_POINT>","_rn_":"3"},{"1":"McDonald's","2":"<sf_POINT>","_rn_":"4"},{"1":"Burger King","2":"<sf_POINT>","_rn_":"5"},{"1":"McDonald's","2":"<sf_POINT>","_rn_":"6"},{"1":"Burger King","2":"<sf_POINT>","_rn_":"7"},{"1":"KFC","2":"<sf_POINT>","_rn_":"8"},{"1":"Burger King","2":"<sf_POINT>","_rn_":"9"},{"1":"Pizza Hut","2":"<sf_POINT>","_rn_":"10"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["brand"],"name":[1],"type":["chr"],"align":["left"]},{"label":["geometry"],"name":[2],"type":["sf_POINT"],"align":["right"]}],"data":[{"1":"McDonald's","2":"<sf_POINT>","_rn_":"1"},{"1":"KFC","2":"<sf_POINT>","_rn_":"2"},{"1":"Burger King","2":"<sf_POINT>","_rn_":"3"},{"1":"Pizza Hut","2":"<sf_POINT>","_rn_":"4"},{"1":"McDonald's","2":"<sf_POINT>","_rn_":"5"},{"1":"Pizza Hut","2":"<sf_POINT>","_rn_":"6"},{"1":"America Graffiti","2":"<sf_POINT>","_rn_":"7"},{"1":"Pizza Hut","2":"<sf_POINT>","_rn_":"8"},{"1":"Burger King","2":"<sf_POINT>","_rn_":"9"},{"1":"McDonald's","2":"<sf_POINT>","_rn_":"10"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
   </script>
 </div>
 </div>
@@ -851,7 +851,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb25-68"><a href="#cb25-68" aria-hidden="true" tabindex="-1"></a><span class="fu">attributes</span>(pts_sfc)</span>
 <span id="cb25-69"><a href="#cb25-69" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb25-70"><a href="#cb25-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb25-71"><a href="#cb25-71" aria-hidden="true" tabindex="-1"></a>As you can see, sfc objects store additional attributes, like the bounding box (smallest rectangle that would encompass all elements in the data), decimal precision of coordinates, and CRS which is blank for now. Each reference system is defined by a corresponding <span class="in">`EPSG`</span> code; see <span class="co">[</span><span class="ot">EPSG website</span><span class="co">](https://epsg.org/home.html)</span>, <span class="co">[</span><span class="ot">Spatial Reference website</span><span class="co">](https://spatialreference.org/ref/epsg/)</span> and GIS with R - CRSs in R for more details. To add a CRS attribute to our sfc object, add a <span class="in">`crs`</span> parameter to <span class="in">`sf::st_sfc()`</span> function. For example, let's say that we built the data based on longitude and latitude coordinates using a very commonly used geographic coordinate system called <span class="co">[</span><span class="ot">WGS84</span><span class="co">](https://support.virtual-surveyor.com/en/support/solutions/articles/1000261351-what-is-wgs84-)</span>, which has an EPSG code of 4326.</span>
+<span id="cb25-71"><a href="#cb25-71" aria-hidden="true" tabindex="-1"></a>As you can see, sfc objects store additional attributes, like the bounding box (smallest rectangle that would encompass all elements in the data), decimal precision of coordinates, and CRS which is blank for now. Each reference system is defined by a corresponding <span class="in">`EPSG`</span> code; see <span class="co">[</span><span class="ot">EPSG website</span><span class="co">](https://epsg.org/home.html)</span>, <span class="co">[</span><span class="ot">Spatial Reference website</span><span class="co">](https://spatialreference.org/ref/epsg/)</span> and <span class="co">[</span><span class="ot">GIS with R - CRSs in R</span><span class="co">](https://g-bez.github.io/my-portfolio/posts/gis_crs/)</span> post for more details. To add a CRS attribute to our sfc object, add a <span class="in">`crs`</span> parameter to <span class="in">`sf::st_sfc()`</span> function. For example, let's say that we built the data based on longitude and latitude coordinates using a very commonly used geographic coordinate system called <span class="co">[</span><span class="ot">WGS84</span><span class="co">](https://support.virtual-surveyor.com/en/support/solutions/articles/1000261351-what-is-wgs84-)</span>, which has an EPSG code of 4326.</span>
 <span id="cb25-72"><a href="#cb25-72" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb25-75"><a href="#cb25-75" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb25-76"><a href="#cb25-76" aria-hidden="true" tabindex="-1"></a>pts_sfc <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_sfc</span>(ls, <span class="at">crs =</span> <span class="dv">4326</span>)</span>
