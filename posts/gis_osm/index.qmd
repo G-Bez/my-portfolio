@@ -1,5 +1,5 @@
 ---
-title: "GIS with R - Download OpenStreetMaps data with osmdata package"
+title: "GIS with R - Download OpenStreetMap data with osmdata package"
 date: "2022-11-13"
 categories: [R, GIS]
 image: gis_thumbnail.jpg
