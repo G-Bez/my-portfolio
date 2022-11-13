@@ -171,7 +171,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <header id="title-block-header" class="quarto-title-block default page-columns page-full">
   <div class="quarto-title-banner page-columns page-full">
     <div class="quarto-title column-body">
-      <div class="quarto-title-block"><div><h1 class="title">GIS with R - Download OpenStreetMaps data with osmdata package</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+      <div class="quarto-title-block"><div><h1 class="title">GIS with R - Download OpenStreetMap data with osmdata package</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
                                 <div class="quarto-categories">
                 <div class="quarto-category">R</div>
                 <div class="quarto-category">GIS</div>
@@ -241,7 +241,7 @@ x -73.98306 -28.628965
 y -33.86891   5.269581</code></pre>
 </div>
 </div>
-<p>Note that I set the <code>featuretype</code> parameter to ‘Country’. This ensures the correct bounding boxes for the actual China and Brazil countries (and not entities with similar/same name) are retrieved. The default value of <code>featuretype</code> is, in fact, “settlement”, that combines results from all intermediate levels below “country” and and above “streets”. See <code>?osmdata::getbb()</code> for more details, and ’<a href="https://nominatim.org/release-docs/develop/api/Search/">Search &gt; Parameters’ section</a> from Nominatim API documentation for a list of available <code>featuretype</code> values. For example, let’s try without adding <code>featuretype</code> parameter :</p>
+<p>Note that I set the <code>featuretype</code> parameter to ‘Country’. This ensures the correct bounding boxes for the actual Italy and Brazil countries (and not entities with similar/same name) are retrieved. The default value of <code>featuretype</code> is, in fact, “settlement”, that combines results from all intermediate levels below “country” and and above “streets”. See <code>?osmdata::getbb()</code> for more details, and ’<a href="https://nominatim.org/release-docs/develop/api/Search/">Search &gt; Parameters’ section</a> from Nominatim API documentation for a list of available <code>featuretype</code> values. For example, let’s try without adding <code>featuretype</code> parameter :</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>italy_no_ft <span class="ot">&lt;-</span> osmdata<span class="sc">::</span><span class="fu">getbb</span>(<span class="st">"Italy"</span>, <span class="at">format_out =</span> <span class="st">"data.frame"</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>italy_no_ft</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -271,7 +271,7 @@ Note:
 </section>
 <section id="overpass-queries" class="level2">
 <h2 class="anchored" data-anchor-id="overpass-queries">Overpass queries</h2>
-<p><code>overpass</code> is a C++ library that serves OpenStreetMap data over the web. All <code>overpass</code> queries with <code>osmdata</code> package begin with the function <code>osmdata::opq()</code> . The function requires a bounding box as input (see <code>?osmdata::opq()</code> for more details.</p>
+<p><code>overpass</code> is a C++ library that serves OpenStreetMap data over the web. All <code>overpass</code> queries with <code>osmdata</code> package begin with the function <code>osmdata::opq()</code> . The function requires a bounding box as input (see <code>?osmdata::opq()</code> for more details).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>italy <span class="ot">&lt;-</span> osmdata<span class="sc">::</span><span class="fu">opq</span>(<span class="at">bbox =</span> italy_bb)</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>italy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -295,7 +295,7 @@ attr(,"nodes_only")
 </div>
 </div>
 <p>Increase <code>timeout</code> and/or <code>memsize</code> parameters values if you get timeout and/or memory errors.</p>
-<p>We can also filter the base, more general, query by adding OSM <strong>features</strong>, which are specified in terms of key-value pairs. We do this with <code>osmdata::add_osm_feature()</code> function.</p>
+<p>We can also filter the base, more general, query by adding <strong>OSM</strong> <strong>features</strong>, which are specified in terms of key-value pairs. We do this with <code>osmdata::add_osm_feature()</code> function.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>italy <span class="ot">&lt;-</span> osmdata<span class="sc">::</span><span class="fu">opq</span>(<span class="at">bbox =</span> italy_bb, <span class="at">timeout =</span> <span class="dv">50000</span>) <span class="sc">|&gt;</span> </span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_osm_feature</span>(<span class="at">key =</span> <span class="st">"admin_level"</span>, <span class="at">value =</span> <span class="dv">4</span>)</span>
@@ -821,7 +821,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb31-56"><a href="#cb31-56" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(<span class="at">italy =</span> italy_bb, <span class="at">brazil =</span> brazil_bb)</span>
 <span id="cb31-57"><a href="#cb31-57" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb31-58"><a href="#cb31-58" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-59"><a href="#cb31-59" aria-hidden="true" tabindex="-1"></a>Note that I set the <span class="in">`featuretype`</span> parameter to 'Country'. This ensures the correct bounding boxes for the actual China and Brazil countries (and not entities with similar/same name) are retrieved. The default value of <span class="in">`featuretype`</span> is, in fact, "settlement", that combines results from all intermediate levels below "country" and and above "streets". See <span class="in">`?osmdata::getbb()`</span> for more details, and '<span class="co">[</span><span class="ot">Search \&gt; Parameters' section</span><span class="co">](https://nominatim.org/release-docs/develop/api/Search/)</span> from Nominatim API documentation for a list of available <span class="in">`featuretype`</span> values. For example, let's try without adding <span class="in">`featuretype`</span> parameter :</span>
+<span id="cb31-59"><a href="#cb31-59" aria-hidden="true" tabindex="-1"></a>Note that I set the <span class="in">`featuretype`</span> parameter to 'Country'. This ensures the correct bounding boxes for the actual Italy and Brazil countries (and not entities with similar/same name) are retrieved. The default value of <span class="in">`featuretype`</span> is, in fact, "settlement", that combines results from all intermediate levels below "country" and and above "streets". See <span class="in">`?osmdata::getbb()`</span> for more details, and '<span class="co">[</span><span class="ot">Search \&gt; Parameters' section</span><span class="co">](https://nominatim.org/release-docs/develop/api/Search/)</span> from Nominatim API documentation for a list of available <span class="in">`featuretype`</span> values. For example, let's try without adding <span class="in">`featuretype`</span> parameter :</span>
 <span id="cb31-60"><a href="#cb31-60" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-63"><a href="#cb31-63" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb31-64"><a href="#cb31-64" aria-hidden="true" tabindex="-1"></a>italy_no_ft <span class="ot">&lt;-</span> osmdata<span class="sc">::</span><span class="fu">getbb</span>(<span class="st">"Italy"</span>, <span class="at">format_out =</span> <span class="st">"data.frame"</span>)</span>
@@ -838,7 +838,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb31-75"><a href="#cb31-75" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-76"><a href="#cb31-76" aria-hidden="true" tabindex="-1"></a><span class="fu">## Overpass queries</span></span>
 <span id="cb31-77"><a href="#cb31-77" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-78"><a href="#cb31-78" aria-hidden="true" tabindex="-1"></a><span class="in">`overpass`</span> is a C++ library that serves OpenStreetMap data over the web. All <span class="in">`overpass`</span> queries with <span class="in">`osmdata`</span> package begin with the function <span class="in">`osmdata::opq()`</span> . The function requires a bounding box as input (see <span class="in">`?osmdata::opq()`</span> for more details.</span>
+<span id="cb31-78"><a href="#cb31-78" aria-hidden="true" tabindex="-1"></a><span class="in">`overpass`</span> is a C++ library that serves OpenStreetMap data over the web. All <span class="in">`overpass`</span> queries with <span class="in">`osmdata`</span> package begin with the function <span class="in">`osmdata::opq()`</span> . The function requires a bounding box as input (see <span class="in">`?osmdata::opq()`</span> for more details).</span>
 <span id="cb31-79"><a href="#cb31-79" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-82"><a href="#cb31-82" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb31-83"><a href="#cb31-83" aria-hidden="true" tabindex="-1"></a>italy <span class="ot">&lt;-</span> osmdata<span class="sc">::</span><span class="fu">opq</span>(<span class="at">bbox =</span> italy_bb)</span>
@@ -847,7 +847,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb31-86"><a href="#cb31-86" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-87"><a href="#cb31-87" aria-hidden="true" tabindex="-1"></a>Increase <span class="in">`timeout`</span> and/or <span class="in">`memsize`</span> parameters values if you get timeout and/or memory errors.</span>
 <span id="cb31-88"><a href="#cb31-88" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-89"><a href="#cb31-89" aria-hidden="true" tabindex="-1"></a>We can also filter the base, more general, query by adding OSM **features**, which are specified in terms of key-value pairs. We do this with <span class="in">`osmdata::add_osm_feature()`</span> function.</span>
+<span id="cb31-89"><a href="#cb31-89" aria-hidden="true" tabindex="-1"></a>We can also filter the base, more general, query by adding **OSM** **features**, which are specified in terms of key-value pairs. We do this with <span class="in">`osmdata::add_osm_feature()`</span> function.</span>
 <span id="cb31-90"><a href="#cb31-90" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-93"><a href="#cb31-93" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb31-94"><a href="#cb31-94" aria-hidden="true" tabindex="-1"></a>italy <span class="ot">&lt;-</span> osmdata<span class="sc">::</span><span class="fu">opq</span>(<span class="at">bbox =</span> italy_bb, <span class="at">timeout =</span> <span class="dv">50000</span>) <span class="sc">|&gt;</span> </span>

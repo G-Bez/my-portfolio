@@ -48,7 +48,7 @@ brazil_bb <- osmdata::getbb("Brazil", featuretype = "Country")
 list(italy = italy_bb, brazil = brazil_bb)
 ```
 
-Note that I set the `featuretype` parameter to 'Country'. This ensures the correct bounding boxes for the actual China and Brazil countries (and not entities with similar/same name) are retrieved. The default value of `featuretype` is, in fact, "settlement", that combines results from all intermediate levels below "country" and and above "streets". See `?osmdata::getbb()` for more details, and '[Search \> Parameters' section](https://nominatim.org/release-docs/develop/api/Search/) from Nominatim API documentation for a list of available `featuretype` values. For example, let's try without adding `featuretype` parameter :
+Note that I set the `featuretype` parameter to 'Country'. This ensures the correct bounding boxes for the actual Italy and Brazil countries (and not entities with similar/same name) are retrieved. The default value of `featuretype` is, in fact, "settlement", that combines results from all intermediate levels below "country" and and above "streets". See `?osmdata::getbb()` for more details, and '[Search \> Parameters' section](https://nominatim.org/release-docs/develop/api/Search/) from Nominatim API documentation for a list of available `featuretype` values. For example, let's try without adding `featuretype` parameter :
 
 ```{r}
 italy_no_ft <- osmdata::getbb("Italy", format_out = "data.frame")
@@ -65,7 +65,7 @@ As you can see, there are many non-country entities that match the name 'Italy',
 
 ## Overpass queries
 
-`overpass` is a C++ library that serves OpenStreetMap data over the web. All `overpass` queries with `osmdata` package begin with the function `osmdata::opq()` . The function requires a bounding box as input (see `?osmdata::opq()` for more details.
+`overpass` is a C++ library that serves OpenStreetMap data over the web. All `overpass` queries with `osmdata` package begin with the function `osmdata::opq()` . The function requires a bounding box as input (see `?osmdata::opq()` for more details).
 
 ```{r}
 italy <- osmdata::opq(bbox = italy_bb)
@@ -74,7 +74,7 @@ italy
 
 Increase `timeout` and/or `memsize` parameters values if you get timeout and/or memory errors.
 
-We can also filter the base, more general, query by adding OSM **features**, which are specified in terms of key-value pairs. We do this with `osmdata::add_osm_feature()` function.
+We can also filter the base, more general, query by adding **OSM** **features**, which are specified in terms of key-value pairs. We do this with `osmdata::add_osm_feature()` function.
 
 ```{r}
 italy <- osmdata::opq(bbox = italy_bb, timeout = 50000) |> 
