@@ -1,1 +1,1 @@
-{"entries":[{"order":{"number":1,"section":[0,2,0,0,0,0,0]},"key":"fig-pal","caption":"viridisLite color palettes"}],"headings":["viridislite-package","palettes","packages","show-generated-color-palettes","plot-examples"]}
+{"entries":[{"order":{"section":[0,2,0,0,0,0,0],"number":1},"caption":"viridisLite color palettes","key":"fig-pal"}],"headings":["viridislite-package","palettes","packages","show-generated-color-palettes","plot-examples"]}

@@ -61,6 +61,14 @@
         "Matrix"
       ]
     },
+    "PROJ": {
+      "Package": "PROJ",
+      "Version": "0.4.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "fa50a399b8c887285a1a02c748a4bfe8",
+      "Requirements": []
+    },
     "R6": {
       "Package": "R6",
       "Version": "2.5.1",
@@ -357,6 +365,14 @@
         "openssl",
         "sys"
       ]
+    },
+    "crsmeta": {
+      "Package": "crsmeta",
+      "Version": "0.3.0",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "76ad515a0acb138c0e93f017c7aefd11",
+      "Requirements": []
     },
     "curl": {
       "Package": "curl",
@@ -730,6 +746,24 @@
         "openssl"
       ]
     },
+    "httr2": {
+      "Package": "httr2",
+      "Version": "0.2.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "5c09fe33064978ede54de42309c8b532",
+      "Requirements": [
+        "R6",
+        "cli",
+        "curl",
+        "glue",
+        "magrittr",
+        "openssl",
+        "rappdirs",
+        "rlang",
+        "withr"
+      ]
+    },
     "ini": {
       "Package": "ini",
       "Version": "0.3.1",
@@ -1019,6 +1053,25 @@
         "askpass"
       ]
     },
+    "osmdata": {
+      "Package": "osmdata",
+      "Version": "0.1.10",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "d9f2f310f45a2e061976546fb864a8bc",
+      "Requirements": [
+        "Rcpp",
+        "curl",
+        "httr2",
+        "lubridate",
+        "magrittr",
+        "reproj",
+        "rvest",
+        "sp",
+        "tibble",
+        "xml2"
+      ]
+    },
     "patchwork": {
       "Package": "patchwork",
       "Version": "1.1.2",
@@ -1190,6 +1243,14 @@
         "stringr"
       ]
     },
+    "proj4": {
+      "Package": "proj4",
+      "Version": "1.0-11",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "1dc246e456885b1c652dfaafe97e93f6",
+      "Requirements": []
+    },
     "promises": {
       "Package": "promises",
       "Version": "1.2.0.1",
@@ -1323,6 +1384,18 @@
       "Hash": "c9e8442ab69bc21c9697ecf856c1e6c7",
       "Requirements": []
     },
+    "reproj": {
+      "Package": "reproj",
+      "Version": "0.4.3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "35bffc8308f82594dcf28e374488d0cb",
+      "Requirements": [
+        "PROJ",
+        "crsmeta",
+        "proj4"
+      ]
+    },
     "rgdal": {
       "Package": "rgdal",
       "Version": "1.5-32",
@@ -1449,6 +1522,25 @@
         "xml2"
       ]
     },
+    "rvest": {
+      "Package": "rvest",
+      "Version": "1.0.3",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "a4a5ac819a467808c60e36e92ddf195e",
+      "Requirements": [
+        "cli",
+        "glue",
+        "httr",
+        "lifecycle",
+        "magrittr",
+        "rlang",
+        "selectr",
+        "tibble",
+        "withr",
+        "xml2"
+      ]
+    },
     "s2": {
       "Package": "s2",
       "Version": "1.1.0",
@@ -1489,6 +1581,17 @@
         "munsell",
         "rlang",
         "viridisLite"
+      ]
+    },
+    "selectr": {
+      "Package": "selectr",
+      "Version": "0.4-2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "3838071b66e0c566d55cc26bd6e27bf4",
+      "Requirements": [
+        "R6",
+        "stringr"
       ]
     },
     "sessioninfo": {

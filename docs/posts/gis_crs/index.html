@@ -236,14 +236,6 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><strong>Planar</strong>: a planar projection projects data onto a flat surface touching the globe at a point or along a line of tangency. It is typically used in mapping polar regions.</li>
 </ul>
 </section>
-<section id="packages" class="level2">
-<h2 class="anchored" data-anchor-id="packages">Packages</h2>
-<p>Below, we load the packages we’ll need later on.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rgdal)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
 <section id="how-to-describe-crss" class="level2">
 <h2 class="anchored" data-anchor-id="how-to-describe-crss">How to describe CRSs</h2>
 <p>Three main ways to describe CRSs, are <code>EPSG</code> codes, <code>PROJ4-strings</code> and <code>WKT</code> formats.</p>
@@ -279,6 +271,14 @@ Important:
 <p>For geographic CRSs, the answer is often WGS84, not only for web mapping, but also because GPS datasets and thousands of raster and vector datasets are provided in this CRS by default. WGS84 is the most common CRS in the world, so it is worth knowing its EPSG code: 4326.</p>
 <p>What about when a projected CRS is required? In some cases, it is not something that we are free to decide: “often the choice of projection is made by a public mapping agency” (Bivand et al., 2013). This means that when working with local data sources, it is likely preferable to work with the CRS in which the data was provided, to ensure compatibility, even if the official CRS is not the most accurate.</p>
 <p>In cases where an appropriate CRS is not immediately clear, the choice of CRS should depend on the properties that are most important to preserve in the subsequent maps and analysis.</p>
+</section>
+<section id="packages" class="level2">
+<h2 class="anchored" data-anchor-id="packages">Packages</h2>
+<p>Below, we load the packages we’ll need later on.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rgdal)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
 </section>
 <section id="crss-in-r" class="level2">
 <h2 class="anchored" data-anchor-id="crss-in-r">CRSs in R</h2>
@@ -764,44 +764,44 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Cylindrical**: a cylindrical projection maps the surface onto a cylinder. This projection could also be created by touching the Earth's surface along a single line of tangency or two lines of tangency. Cylindrical projections are used most often when mapping the entire world.</span>
 <span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Planar**: a planar projection projects data onto a flat surface touching the globe at a point or along a line of tangency. It is typically used in mapping polar regions.</span>
 <span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a><span class="fu">## Packages</span></span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a><span class="fu">## How to describe CRSs</span></span>
 <span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a>Below, we load the packages we'll need later on.</span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a>Three main ways to describe CRSs, are <span class="in">`EPSG`</span> codes, <span class="in">`PROJ4-strings`</span> and <span class="in">`WKT`</span> formats.</span>
 <span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-52"><a href="#cb11-52" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb11-53"><a href="#cb11-53" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
-<span id="cb11-54"><a href="#cb11-54" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rgdal)</span>
-<span id="cb11-55"><a href="#cb11-55" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
-<span id="cb11-56"><a href="#cb11-56" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
-<span id="cb11-57"><a href="#cb11-57" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-58"><a href="#cb11-58" aria-hidden="true" tabindex="-1"></a><span class="fu">## How to describe CRSs</span></span>
-<span id="cb11-59"><a href="#cb11-59" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-60"><a href="#cb11-60" aria-hidden="true" tabindex="-1"></a>Three main ways to describe CRSs, are <span class="in">`EPSG`</span> codes, <span class="in">`PROJ4-strings`</span> and <span class="in">`WKT`</span> formats.</span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**EPSG codes**: <span class="in">`EPSG`</span> codes are short numeric codes (4 to 6 digits) representing the parameters of a CRS. Each code refers to only one, well-defined, CRS.</span>
+<span id="cb11-51"><a href="#cb11-51" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**PROJ4-string**: <span class="in">`proj4strings`</span> are a compact way to identify a CRS, and are the primary output from many of the R spatial data packages, like <span class="in">`raster`</span> and <span class="in">`rgdal`</span> . They allow more flexibility when it comes to specifying different parameters such as the projection type, the datum and the ellipsoid. This also makes the proj4string approach more complicated than EPSG. Each <span class="in">`proj4string`</span> is made up of many individual components:</span>
+<span id="cb11-52"><a href="#cb11-52" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>+proj: the projection.</span>
+<span id="cb11-53"><a href="#cb11-53" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>+zone: projection zone.</span>
+<span id="cb11-54"><a href="#cb11-54" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>+datum: the datum.</span>
+<span id="cb11-55"><a href="#cb11-55" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>+units: unit of measurement.</span>
+<span id="cb11-56"><a href="#cb11-56" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>+ellps: ellipsoid definition.</span>
+<span id="cb11-57"><a href="#cb11-57" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**WKT format**: it's a compact machine and human-readable representation of geometric objects. It defines elements of coordinate reference system (<span class="in">`CRS`</span>) definitions using a combination of brackets <span class="in">`[]`</span> and elements separated by commas (<span class="in">`,`</span>). The elements of <span class="in">`WKT`</span> notation are</span>
+<span id="cb11-58"><a href="#cb11-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-59"><a href="#cb11-59" aria-hidden="true" tabindex="-1"></a>::: callout-important</span>
+<span id="cb11-60"><a href="#cb11-60" aria-hidden="true" tabindex="-1"></a><span class="fu">## Important:</span></span>
 <span id="cb11-61"><a href="#cb11-61" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-62"><a href="#cb11-62" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**EPSG codes**: <span class="in">`EPSG`</span> codes are short numeric codes (4 to 6 digits) representing the parameters of a CRS. Each code refers to only one, well-defined, CRS.</span>
-<span id="cb11-63"><a href="#cb11-63" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**PROJ4-string**: <span class="in">`proj4strings`</span> are a compact way to identify a CRS, and are the primary output from many of the R spatial data packages, like <span class="in">`raster`</span> and <span class="in">`rgdal`</span> . They allow more flexibility when it comes to specifying different parameters such as the projection type, the datum and the ellipsoid. This also makes the proj4string approach more complicated than EPSG. Each <span class="in">`proj4string`</span> is made up of many individual components:</span>
-<span id="cb11-64"><a href="#cb11-64" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>+proj: the projection.</span>
-<span id="cb11-65"><a href="#cb11-65" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>+zone: projection zone.</span>
-<span id="cb11-66"><a href="#cb11-66" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>+datum: the datum.</span>
-<span id="cb11-67"><a href="#cb11-67" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>+units: unit of measurement.</span>
-<span id="cb11-68"><a href="#cb11-68" aria-hidden="true" tabindex="-1"></a><span class="ss">    -   </span>+ellps: ellipsoid definition.</span>
-<span id="cb11-69"><a href="#cb11-69" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**WKT format**: it's a compact machine and human-readable representation of geometric objects. It defines elements of coordinate reference system (<span class="in">`CRS`</span>) definitions using a combination of brackets <span class="in">`[]`</span> and elements separated by commas (<span class="in">`,`</span>). The elements of <span class="in">`WKT`</span> notation are</span>
+<span id="cb11-62"><a href="#cb11-62" aria-hidden="true" tabindex="-1"></a>The use of <span class="in">`PROJ4-strings`</span> is discouraged, since they no longer offer sufficient description of CRSs. See <span class="ot">&lt;https://r-spatial.org/r/2020/03/17/wkt.html&gt;</span> for more details.</span>
+<span id="cb11-63"><a href="#cb11-63" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb11-64"><a href="#cb11-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-65"><a href="#cb11-65" aria-hidden="true" tabindex="-1"></a><span class="fu">## Which CRS to use?</span></span>
+<span id="cb11-66"><a href="#cb11-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-67"><a href="#cb11-67" aria-hidden="true" tabindex="-1"></a>The question of which CRS is tricky, and there is rarely a 'right' answer: "There exist no all-purpose projections, all involve distortion when far from the center of the specified frame" (Bivand et al., 2013).</span>
+<span id="cb11-68"><a href="#cb11-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-69"><a href="#cb11-69" aria-hidden="true" tabindex="-1"></a>For geographic CRSs, the answer is often WGS84, not only for web mapping, but also because GPS datasets and thousands of raster and vector datasets are provided in this CRS by default. WGS84 is the most common CRS in the world, so it is worth knowing its EPSG code: 4326.</span>
 <span id="cb11-70"><a href="#cb11-70" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-71"><a href="#cb11-71" aria-hidden="true" tabindex="-1"></a>::: callout-important</span>
-<span id="cb11-72"><a href="#cb11-72" aria-hidden="true" tabindex="-1"></a><span class="fu">## Important:</span></span>
-<span id="cb11-73"><a href="#cb11-73" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-74"><a href="#cb11-74" aria-hidden="true" tabindex="-1"></a>The use of <span class="in">`PROJ4-strings`</span> is discouraged, since they no longer offer sufficient description of CRSs. See <span class="ot">&lt;https://r-spatial.org/r/2020/03/17/wkt.html&gt;</span> for more details.</span>
-<span id="cb11-75"><a href="#cb11-75" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb11-71"><a href="#cb11-71" aria-hidden="true" tabindex="-1"></a>What about when a projected CRS is required? In some cases, it is not something that we are free to decide: "often the choice of projection is made by a public mapping agency" (Bivand et al., 2013). This means that when working with local data sources, it is likely preferable to work with the CRS in which the data was provided, to ensure compatibility, even if the official CRS is not the most accurate.</span>
+<span id="cb11-72"><a href="#cb11-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-73"><a href="#cb11-73" aria-hidden="true" tabindex="-1"></a>In cases where an appropriate CRS is not immediately clear, the choice of CRS should depend on the properties that are most important to preserve in the subsequent maps and analysis.</span>
+<span id="cb11-74"><a href="#cb11-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-75"><a href="#cb11-75" aria-hidden="true" tabindex="-1"></a><span class="fu">## Packages</span></span>
 <span id="cb11-76"><a href="#cb11-76" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-77"><a href="#cb11-77" aria-hidden="true" tabindex="-1"></a><span class="fu">## Which CRS to use?</span></span>
+<span id="cb11-77"><a href="#cb11-77" aria-hidden="true" tabindex="-1"></a>Below, we load the packages we'll need later on.</span>
 <span id="cb11-78"><a href="#cb11-78" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-79"><a href="#cb11-79" aria-hidden="true" tabindex="-1"></a>The question of which CRS is tricky, and there is rarely a 'right' answer: "There exist no all-purpose projections, all involve distortion when far from the center of the specified frame" (Bivand et al., 2013).</span>
-<span id="cb11-80"><a href="#cb11-80" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-81"><a href="#cb11-81" aria-hidden="true" tabindex="-1"></a>For geographic CRSs, the answer is often WGS84, not only for web mapping, but also because GPS datasets and thousands of raster and vector datasets are provided in this CRS by default. WGS84 is the most common CRS in the world, so it is worth knowing its EPSG code: 4326.</span>
-<span id="cb11-82"><a href="#cb11-82" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-83"><a href="#cb11-83" aria-hidden="true" tabindex="-1"></a>What about when a projected CRS is required? In some cases, it is not something that we are free to decide: "often the choice of projection is made by a public mapping agency" (Bivand et al., 2013). This means that when working with local data sources, it is likely preferable to work with the CRS in which the data was provided, to ensure compatibility, even if the official CRS is not the most accurate.</span>
-<span id="cb11-84"><a href="#cb11-84" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-85"><a href="#cb11-85" aria-hidden="true" tabindex="-1"></a>In cases where an appropriate CRS is not immediately clear, the choice of CRS should depend on the properties that are most important to preserve in the subsequent maps and analysis.</span>
+<span id="cb11-81"><a href="#cb11-81" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb11-82"><a href="#cb11-82" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb11-83"><a href="#cb11-83" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rgdal)</span>
+<span id="cb11-84"><a href="#cb11-84" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sf)</span>
+<span id="cb11-85"><a href="#cb11-85" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb11-86"><a href="#cb11-86" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-87"><a href="#cb11-87" aria-hidden="true" tabindex="-1"></a><span class="fu">## CRSs in R</span></span>
 <span id="cb11-88"><a href="#cb11-88" aria-hidden="true" tabindex="-1"></a></span>

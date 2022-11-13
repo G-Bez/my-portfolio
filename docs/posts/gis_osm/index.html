@@ -1,0 +1,967 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.247">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2022-11-13">
+
+<title>Portfolio - GIS with R - Download OpenStreetMaps data with osmdata package</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" class="quarto-color-scheme" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-dark.min.css" rel="stylesheet" class="quarto-color-scheme quarto-color-alternate" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+<link href="../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+
+<link rel="stylesheet" href="../../styles.css">
+</head>
+
+<body class="nav-fixed fullcontent">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark ">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container">
+    <a class="navbar-brand" href="../../index.html">
+    <span class="navbar-title">Portfolio</span>
+    </a>
+  </div>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+  <span class="navbar-toggler-icon"></span>
+</button>
+          <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav navbar-nav-scroll me-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="../../about.html">
+ <span class="menu-text">About me</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item compact">
+    <a class="nav-link" href="https://github.com/G-Bez"><i class="bi bi-github" role="img">
+</i> 
+ <span class="menu-text"></span></a>
+  </li>  
+</ul>
+              <div class="quarto-toggle-container">
+                  <a href="" class="quarto-color-scheme-toggle nav-link" onclick="window.quartoToggleColorScheme(); return false;" title="Toggle dark mode"><i class="bi"></i></a>
+              </div>
+              <div id="quarto-search" class="" title="Search"></div>
+          </div> <!-- /navcollapse -->
+      </div> <!-- /container-fluid -->
+    </nav>
+</header>
+<!-- content -->
+<header id="title-block-header" class="quarto-title-block default page-columns page-full">
+  <div class="quarto-title-banner page-columns page-full">
+    <div class="quarto-title column-body">
+      <div class="quarto-title-block"><div><h1 class="title">GIS with R - Download OpenStreetMaps data with osmdata package</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+                                <div class="quarto-categories">
+                <div class="quarto-category">R</div>
+                <div class="quarto-category">GIS</div>
+              </div>
+                  </div>
+  </div>
+    
+  
+  <div class="quarto-title-meta">
+
+      
+      <div>
+      <div class="quarto-title-meta-heading">Published</div>
+      <div class="quarto-title-meta-contents">
+        <p class="date">November 13, 2022</p>
+      </div>
+    </div>
+    
+      
+    </div>
+    
+  
+  </header><div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    
+<!-- main -->
+<main class="content quarto-banner-title-block" id="quarto-document-content">
+
+
+
+
+<div style="text-align: justify">
+<p>The <code>osmdata</code> package can be used to download OpenStreetMap data. <a href="https://www.openstreetmap.org/#map=8/43.333/13.052">OpenStreetMap</a> is a database of crowdsourced geographic information that includes things like road networks, water features, points of interest and more. Whatever a person on the internet can map and has mapped on OSM is available for download for free. For a more detailed introduction with more exploration of the package functionalities, see the <a href="https://cran.r-project.org/web/packages/osmdata/vignettes/osmdata.html#22_Extracting_OSM_data_from_a_query">vignette</a>.</p>
+<section id="installing-osmdata" class="level2">
+<h2 class="anchored" data-anchor-id="installing-osmdata">Installing osmdata</h2>
+<p>You can install the most recent official version of <code>osmdata</code> from CRAN with:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"osmdata"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Or the developer version from GitHub:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"ropensci/osmdata"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We start by loading the needed packages. In the following sections I’ll provide many examples on how to use <code>osmdata</code> to query spatial data from OSM database.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(osmdata)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="get-bounding-boxes" class="level2">
+<h2 class="anchored" data-anchor-id="get-bounding-boxes">Get bounding boxes</h2>
+<p><code>osmdata::getbb()</code> function uses the free <a href="https://wiki.openstreetmap.org/wiki/Nominatim">Nominatim API</a> provided by OpenStreetMap to find the bounding box (bb) associated with place names. For example:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>italy_bb <span class="ot">&lt;-</span> osmdata<span class="sc">::</span><span class="fu">getbb</span>(<span class="st">"Italy"</span>, <span class="at">featuretype =</span> <span class="st">"Country"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>brazil_bb <span class="ot">&lt;-</span> osmdata<span class="sc">::</span><span class="fu">getbb</span>(<span class="st">"Brazil"</span>, <span class="at">featuretype =</span> <span class="st">"Country"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(<span class="at">italy =</span> italy_bb, <span class="at">brazil =</span> brazil_bb)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$italy
+        min      max
+x  6.627266 18.78447
+y 35.288962 47.09215
+
+$brazil
+        min        max
+x -73.98306 -28.628965
+y -33.86891   5.269581</code></pre>
+</div>
+</div>
+<p>Note that I set the <code>featuretype</code> parameter to ‘Country’. This ensures the correct bounding boxes for the actual China and Brazil countries (and not entities with similar/same name) are retrieved. The default value of <code>featuretype</code> is, in fact, “settlement”, that combines results from all intermediate levels below “country” and and above “streets”. See <code>?osmdata::getbb()</code> for more details, and ’<a href="https://nominatim.org/release-docs/develop/api/Search/">Search &gt; Parameters’ section</a> from Nominatim API documentation for a list of available <code>featuretype</code> values. For example, let’s try without adding <code>featuretype</code> parameter :</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>italy_no_ft <span class="ot">&lt;-</span> osmdata<span class="sc">::</span><span class="fu">getbb</span>(<span class="st">"Italy"</span>, <span class="at">format_out =</span> <span class="st">"data.frame"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>italy_no_ft</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["place_id"],"name":[1],"type":["int"],"align":["right"]},{"label":["licence"],"name":[2],"type":["chr"],"align":["left"]},{"label":["osm_type"],"name":[3],"type":["chr"],"align":["left"]},{"label":["osm_id"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["boundingbox"],"name":[5],"type":["list"],"align":["right"]},{"label":["lat"],"name":[6],"type":["chr"],"align":["left"]},{"label":["lon"],"name":[7],"type":["chr"],"align":["left"]},{"label":["display_name"],"name":[8],"type":["chr"],"align":["left"]},{"label":["class"],"name":[9],"type":["chr"],"align":["left"]},{"label":["type"],"name":[10],"type":["chr"],"align":["left"]},{"label":["importance"],"name":[11],"type":["dbl"],"align":["right"]},{"label":["icon"],"name":[12],"type":["chr"],"align":["left"]}],"data":[{"1":"164242","2":"Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright","3":"node","4":"151356990","5":"<chr [4]>","6":"32.1840381","7":"-96.8847194","8":"Italy, Ellis County, Texas, 76651, United States","9":"place","10":"village","11":"0.385000","12":"https://nominatim.openstreetmap.org/ui/mapicons/poi_place_village.p.20.png","_rn_":"1"},{"1":"25022356","2":"Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright","3":"node","4":"2669166953","5":"<chr [4]>","6":"-25.148238","7":"46.7608897","8":"Italy, Sarisambo, District de Tôlanaro, Anosy, Province de Toliara, Madagasikara / Madagascar","9":"place","10":"village","11":"0.385000","12":"https://nominatim.openstreetmap.org/ui/mapicons/poi_place_village.p.20.png","_rn_":"2"},{"1":"298520738","2":"Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright","3":"relation","4":"9137280","5":"<chr [4]>","6":"42.611735","7":"-77.2919246","8":"Town of Italy, Yates County, New York, United States","9":"boundary","10":"administrative","11":"0.361845","12":"https://nominatim.openstreetmap.org/ui/mapicons/poi_boundary_administrative.p.20.png","_rn_":"3"},{"1":"278948","2":"Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright","3":"node","4":"158645542","5":"<chr [4]>","6":"33.4485003","7":"-79.5408964","8":"Italy, Georgetown County, South Carolina, 29510, United States","9":"place","10":"hamlet","11":"0.360000","12":"https://nominatim.openstreetmap.org/ui/mapicons/poi_place_village.p.20.png","_rn_":"4"},{"1":"347403635","2":"Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright","3":"node","4":"10126773807","5":"<chr [4]>","6":"48.2676708","7":"7.7220585","8":"Italien, Rust, Verwaltungsgemeinschaft Ettenheim, Ortenaukreis, Baden-Württemberg, 77977, Deutschland","9":"place","10":"neighbourhood","11":"0.250000","12":"NA","_rn_":"5"},{"1":"298507181","2":"Data © OpenStreetMap contributors, ODbL 1.0. https://osm.org/copyright","3":"relation","4":"9641747","5":"<chr [4]>","6":"25.222178149999998","7":"55.165370357834554","8":"<U+0625><U+064A><U+0637><U+0627><U+0644><U+064A><U+0627>, <U+062F><U+0628><U+064A>, <U+0627><U+0644><U+0625><U+0645><U+0627><U+0631><U+0627><U+062A> <U+0627><U+0644><U+0639><U+0631><U+0628><U+064A><U+0629> <U+0627><U+0644><U+0645><U+062A><U+062D><U+062F><U+0629>","9":"place","10":"islet","11":"0.250000","12":"NA","_rn_":"6"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>As you can see, there are many non-country entities that match the name ‘Italy’, like ‘Italy, Ellis County, Texas, 76651, United States’, or ‘Italy, Georgetown County, South Carolina, 29510, United States’. So, running <code>osmdata::getbb("Italy")</code> without <code>featuretype = "Country"</code> would return the wrong output.</p>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>format_out</code> parameter lets the user choose the output format. Default format is ‘matrix’. See <code>?osmdata::getbb()</code> for a list of available formats.</p>
+</div>
+</div>
+</section>
+<section id="overpass-queries" class="level2">
+<h2 class="anchored" data-anchor-id="overpass-queries">Overpass queries</h2>
+<p><code>overpass</code> is a C++ library that serves OpenStreetMap data over the web. All <code>overpass</code> queries with <code>osmdata</code> package begin with the function <code>osmdata::opq()</code> . The function requires a bounding box as input (see <code>?osmdata::opq()</code> for more details.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>italy <span class="ot">&lt;-</span> osmdata<span class="sc">::</span><span class="fu">opq</span>(<span class="at">bbox =</span> italy_bb)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>italy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$bbox
+[1] "35.2889616,6.6272658,47.0921462,18.7844746"
+
+$prefix
+[1] "[out:xml][timeout:25];\n(\n"
+
+$suffix
+[1] ");\n(._;&gt;;);\nout body;"
+
+$features
+NULL
+
+attr(,"class")
+[1] "list"           "overpass_query"
+attr(,"nodes_only")
+[1] FALSE</code></pre>
+</div>
+</div>
+<p>Increase <code>timeout</code> and/or <code>memsize</code> parameters values if you get timeout and/or memory errors.</p>
+<p>We can also filter the base, more general, query by adding OSM <strong>features</strong>, which are specified in terms of key-value pairs. We do this with <code>osmdata::add_osm_feature()</code> function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>italy <span class="ot">&lt;-</span> osmdata<span class="sc">::</span><span class="fu">opq</span>(<span class="at">bbox =</span> italy_bb, <span class="at">timeout =</span> <span class="dv">50000</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_osm_feature</span>(<span class="at">key =</span> <span class="st">"admin_level"</span>, <span class="at">value =</span> <span class="dv">4</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>italy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$bbox
+[1] "35.2889616,6.6272658,47.0921462,18.7844746"
+
+$prefix
+[1] "[out:xml][timeout:50000];\n(\n"
+
+$suffix
+[1] ");\n(._;&gt;;);\nout body;"
+
+$features
+[1] " [\"admin_level\"=\"4\"]"
+
+attr(,"class")
+[1] "list"           "overpass_query"
+attr(,"nodes_only")
+[1] FALSE</code></pre>
+</div>
+</div>
+<p><strong><code>admin_level</code></strong> key describes the administrative level of a feature within a government hierarchy. It is primarily used for the borders of territorial political entities (e.g.&nbsp;country, state, municipality) together with <code>boundary = administrative</code>. Due to cultural and political differences, admin levels of different countries only correspond approximately to each other. Here, <code>value = 4</code> stands for boundaries of Italian regions.</p>
+<p>For a list of all the available key-value pairs, see <a href="https://wiki.openstreetmap.org/wiki/Map_features#Boundary">Map features page</a> on openstreetmap website. You can also run <code>osmdata::available_features()</code> and <code>osmdata::available_tags()</code> functions. The first one returns a vector including all the available keys. The second one returns a vector including all the available values for a specific key.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>keys <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">key =</span> osmdata<span class="sc">::</span><span class="fu">available_features</span>())</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>vals <span class="ot">&lt;-</span> osmdata<span class="sc">::</span><span class="fu">available_tags</span>(<span class="st">"boundary"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell" data-rows.print="5">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>keys</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["key"],"name":[1],"type":["chr"],"align":["left"]}],"data":[{"1":"4wd_only"},{"1":"abandoned"},{"1":"abutters"},{"1":"access"},{"1":"addr"},{"1":"addr:city"},{"1":"addr:conscriptionnumber"},{"1":"addr:country"},{"1":"addr:county"},{"1":"addr:district"},{"1":"addr:flats"},{"1":"addr:full"},{"1":"addr:hamlet"},{"1":"addr:housename"},{"1":"addr:housenumber"},{"1":"addr:inclusion"},{"1":"addr:interpolation"},{"1":"addr:place"},{"1":"addr:postbox"},{"1":"addr:postcode"},{"1":"addr:province"},{"1":"addr:state"},{"1":"addr:street"},{"1":"addr:subdistrict"},{"1":"addr:suburb"},{"1":"addr:unit"},{"1":"admin_level"},{"1":"aeroway"},{"1":"agricultural"},{"1":"alt_name"},{"1":"amenity"},{"1":"area"},{"1":"atv"},{"1":"backward"},{"1":"barrier"},{"1":"basin"},{"1":"bdouble"},{"1":"bicycle"},{"1":"bicycle_road"},{"1":"biergarten"},{"1":"boat"},{"1":"border_type"},{"1":"boundary"},{"1":"brand"},{"1":"bridge"},{"1":"building"},{"1":"building:colour"},{"1":"building:fireproof"},{"1":"building:flats"},{"1":"building:levels"},{"1":"building:material"},{"1":"building:min_level"},{"1":"building:part"},{"1":"building:soft_storey"},{"1":"bus_bay"},{"1":"busway"},{"1":"capacity"},{"1":"castle_type"},{"1":"change"},{"1":"charge"},{"1":"clothes"},{"1":"construction"},{"1":"construction#Railways"},{"1":"covered"},{"1":"craft"},{"1":"crossing"},{"1":"crossing:island"},{"1":"cuisine"},{"1":"cutting"},{"1":"cycleway"},{"1":"denomination"},{"1":"destination"},{"1":"diet"},{"1":"direction"},{"1":"dispensing"},{"1":"disused"},{"1":"drinking_water"},{"1":"drive_in"},{"1":"drive_through"},{"1":"ele"},{"1":"electric_bicycle"},{"1":"electrified"},{"1":"embankment"},{"1":"embedded_rails"},{"1":"emergency"},{"1":"end_date"},{"1":"entrance"},{"1":"est_width"},{"1":"fee"},{"1":"female"},{"1":"fire_object:type"},{"1":"fire_operator"},{"1":"fire_rank"},{"1":"foot"},{"1":"footway"},{"1":"ford"},{"1":"forestry"},{"1":"forward"},{"1":"frequency"},{"1":"fuel"},{"1":"gauge"},{"1":"golf_cart"},{"1":"goods"},{"1":"hazard"},{"1":"hazmat"},{"1":"healthcare"},{"1":"healthcare:counselling"},{"1":"healthcare:speciality"},{"1":"height"},{"1":"hgv"},{"1":"highway"},{"1":"historic"},{"1":"horse"},{"1":"hot_water"},{"1":"ice_road"},{"1":"incline"},{"1":"industrial"},{"1":"inline_skates"},{"1":"inscription"},{"1":"int_name"},{"1":"internet_access"},{"1":"junction"},{"1":"kerb"},{"1":"landuse"},{"1":"lanes"},{"1":"lanes:bus"},{"1":"lanes:psv"},{"1":"layer"},{"1":"leaf_cycle"},{"1":"leaf_type"},{"1":"leisure"},{"1":"lhv"},{"1":"lit"},{"1":"loc_name"},{"1":"location"},{"1":"male"},{"1":"man_made"},{"1":"max_age"},{"1":"max_level"},{"1":"maxheight"},{"1":"maxlength"},{"1":"maxspeed"},{"1":"maxstay"},{"1":"maxweight"},{"1":"maxwidth"},{"1":"military"},{"1":"min_age"},{"1":"min_level"},{"1":"minspeed"},{"1":"mofa"},{"1":"moped"},{"1":"motor_vehicle"},{"1":"motorboat"},{"1":"motorcar"},{"1":"motorcycle"},{"1":"motorroad"},{"1":"mountain_pass"},{"1":"mtb:description"},{"1":"mtb:scale"},{"1":"name"},{"1":"name:left"},{"1":"name:right"},{"1":"name_1"},{"1":"name_2"},{"1":"narrow"},{"1":"nat_name"},{"1":"natural"},{"1":"noexit"},{"1":"non_existent_levels"},{"1":"nudism"},{"1":"office"},{"1":"official_name"},{"1":"old_name"},{"1":"oneway"},{"1":"opening_hours"},{"1":"opening_hours:drive_through"},{"1":"operator"},{"1":"organic"},{"1":"oven"},{"1":"overtaking"},{"1":"parking:condition"},{"1":"parking:lane"},{"1":"passing_places"},{"1":"place"},{"1":"power"},{"1":"power_supply"},{"1":"priority"},{"1":"priority_road"},{"1":"produce"},{"1":"proposed"},{"1":"protected_area"},{"1":"psv"},{"1":"public_transport"},{"1":"railway"},{"1":"railway:preserved"},{"1":"railway:track_ref"},{"1":"recycling_type"},{"1":"ref"},{"1":"reg_name"},{"1":"religion"},{"1":"rental"},{"1":"residential"},{"1":"roadtrain"},{"1":"route"},{"1":"sac_scale"},{"1":"sauna"},{"1":"service"},{"1":"service_times"},{"1":"shelter_type"},{"1":"shop"},{"1":"short_name"},{"1":"shower"},{"1":"sidewalk"},{"1":"site"},{"1":"ski"},{"1":"smoothness"},{"1":"social_facility"},{"1":"sorting_name"},{"1":"speed_pedelec"},{"1":"start_date"},{"1":"step_count"},{"1":"substation"},{"1":"surface"},{"1":"tactile_paving"},{"1":"tank"},{"1":"tidal"},{"1":"toilets"},{"1":"toilets:wheelchair"},{"1":"toll"},{"1":"topless"},{"1":"tourism"},{"1":"tracks"},{"1":"tracktype"},{"1":"traffic_calming"},{"1":"traffic_sign"},{"1":"trail_visibility"},{"1":"trailblazed"},{"1":"trailblazed:visibility"},{"1":"tunnel"},{"1":"turn"},{"1":"type"},{"1":"unisex"},{"1":"usage"},{"1":"vehicle"},{"1":"vending"},{"1":"voltage"},{"1":"water"},{"1":"wheelchair"},{"1":"wholesale"},{"1":"width"},{"1":"winter_road"},{"1":"wood"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[5],"max":[5]},"pages":{}}}
+  </script>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>vals</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "aboriginal_lands"      "administrative"        "border_zone"          
+ [4] "disputed"              "forest"                "forest_compartment"   
+ [7] "hazard"                "maritime"              "marker"               
+[10] "national_park"         "place"                 "political"            
+[13] "postal_code"           "protected_area"        "special_economic_zone"</code></pre>
+</div>
+</div>
+</section>
+<section id="extracting-osm-data-from-an-overpass-query" class="level2">
+<h2 class="anchored" data-anchor-id="extracting-osm-data-from-an-overpass-query">Extracting OSM data from an overpass query</h2>
+<p>After defining a query, we download the actual data by adding a <code>osmdata::osmdata_sf()</code> or <code>osmdata::osmdata_sp()</code> call, to return the data in <code>sf</code> or <code>sp</code> format. In the following example we download the boundary of the provinces of Marche region, in Italy.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>prov <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Ancona"</span>, <span class="st">"Ascoli Piceno"</span>, <span class="st">"Fermo"</span>, <span class="st">"Macerata"</span>, <span class="st">"Pesaro e Urbino"</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>marche <span class="ot">&lt;-</span> osmdata<span class="sc">::</span><span class="fu">opq</span>(<span class="at">bbox =</span> <span class="fu">getbb</span>(<span class="st">"Marche, Italy"</span>, <span class="at">featuretype =</span> <span class="st">"state"</span>), <span class="at">timeout =</span> <span class="dv">50000</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_osm_feature</span>(<span class="at">key =</span> <span class="st">"admin_level"</span>, <span class="at">value =</span> <span class="dv">6</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_osm_feature</span>(<span class="at">key =</span> <span class="st">"name"</span>, <span class="at">value =</span> prov) <span class="sc">|&gt;</span> </span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">osmdata_sf</span>()</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>marche</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Object of class 'osmdata' with:
+                 $bbox : 42.6871561,12.1854536,43.9715999,13.9163435
+        $overpass_call : The call submitted to the overpass API
+                 $meta : metadata including timestamp and version numbers
+           $osm_points : 'sf' Simple Features Collection with 25472 points
+            $osm_lines : 'sf' Simple Features Collection with 303 linestrings
+         $osm_polygons : 'sf' Simple Features Collection with 2 polygons
+       $osm_multilines : NULL
+    $osm_multipolygons : 'sf' Simple Features Collection with 5 multipolygons</code></pre>
+</div>
+</div>
+<p><code>admin_level=6</code> stands for provinces, and with <code>name=prov</code> we filter only the actual Marche provinces, since the rectangular bounding box defined with <code>bbox</code> argument also encompasses parts of other italian regions. As you can see, we got an <code>osmdata</code> object with many different features as output, including 5 multipolygons. Those are the polygons representing the provinces. First let’s see if those multipolygons have a defined CRS attribute (see <a href="https://g-bez.github.io/my-portfolio/posts/gis_crs/">GIS with R - Coordinate Reference Systems in R</a> post for more details about coordinate reference systems).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>sf<span class="sc">::</span><span class="fu">st_crs</span>(marche<span class="sc">$</span>osm_multipolygons)<span class="sc">$</span>input</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "EPSG:4326"</code></pre>
+</div>
+</div>
+<p>The CRS is set to WGS84. Let’s change it to a more appropriate value. Marche region falls into UTM zone 33N, so let’s find the corresponding <code>EPSG</code> code with the following chunk.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>crs <span class="ot">&lt;-</span> rgdal<span class="sc">::</span><span class="fu">make_EPSG</span>()</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>marche_crs <span class="ot">&lt;-</span> crs[crs<span class="sc">$</span>note <span class="sc">==</span> <span class="st">"WGS 72 / UTM zone 33N"</span>, <span class="st">"code"</span>]</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>marche_crs</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 32233</code></pre>
+</div>
+</div>
+<p>Then we run <code>sf::st_transform()</code> function to transform our data into the new CRS.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>marche<span class="sc">$</span>osm_multipolygons <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_transform</span>(marche<span class="sc">$</span>osm_multipolygons, <span class="at">crs =</span> marche_crs)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>sf<span class="sc">::</span><span class="fu">st_crs</span>(marche<span class="sc">$</span>osm_multipolygons)<span class="sc">$</span>input</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "EPSG:32233"</code></pre>
+</div>
+</div>
+<p>Finally I provide a quick <code>ggplot2</code> plot of Marche provinces.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> ggplot2<span class="sc">::</span><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> marche<span class="sc">$</span>osm_multipolygons, </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>          <span class="fu">aes</span>(<span class="at">geometry =</span> geometry, <span class="at">fill =</span> name), </span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">colour =</span> <span class="st">"black"</span>, <span class="at">alpha =</span> .<span class="dv">23</span>) <span class="sc">+</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid =</span> <span class="fu">element_blank</span>(), </span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="st">"bottom"</span>, </span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.title =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.key.size =</span> <span class="fu">unit</span>(<span class="dv">3</span>, <span class="st">"mm"</span>)) <span class="sc">+</span></span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Marche provinces"</span>, <span class="at">xlab =</span> <span class="st">"lon"</span>, <span class="at">ylab =</span> <span class="st">"lat"</span>)</span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a>p</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-14-1.png" style="width:100.0%;height:250.0%"></p>
+</div>
+</div>
+<p>Now let’s say we want to refine our <code>osmdata</code> query, and also download and visualize data about the primary and secondary highways in Marche region, on top of the map we just drawn. First we start by executing a new separate query.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>bb_poly <span class="ot">&lt;-</span> osmdata<span class="sc">::</span><span class="fu">getbb</span>(<span class="st">"Marche, Italy"</span>, <span class="at">featuretype =</span> <span class="st">"state"</span>, <span class="at">format_out =</span> <span class="st">"polygon"</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>highways <span class="ot">&lt;-</span> osmdata<span class="sc">::</span><span class="fu">opq</span>(<span class="at">bbox =</span> <span class="fu">getbb</span>(<span class="st">"Marche, Italy"</span>, <span class="at">featuretype =</span> <span class="st">"state"</span>), <span class="at">timeout =</span> <span class="dv">50000</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_osm_feature</span>(<span class="at">key =</span> <span class="st">"highway"</span>, <span class="at">value =</span> <span class="fu">c</span>(<span class="st">"primary"</span>, <span class="st">"secondary"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">osmdata_sf</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">trim_osmdata</span>(bb_poly) <span class="sc">|&gt;</span> </span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique_osmdata</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>bb_poly has more than one polygon; the first will be selected.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>highways</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Object of class 'osmdata' with:
+                 $bbox : 42.6871561,12.1854536,43.9715999,13.9163435
+        $overpass_call : The call submitted to the overpass API
+                 $meta : metadata including timestamp and version numbers
+           $osm_points : 'sf' Simple Features Collection with 1033 points
+            $osm_lines : 'sf' Simple Features Collection with 11111 linestrings
+         $osm_polygons : 'sf' Simple Features Collection with 440 polygons
+       $osm_multilines : NULL
+    $osm_multipolygons : NULL</code></pre>
+</div>
+</div>
+<div class="callout-note callout callout-style-default callout-captioned">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-caption-container flex-fill">
+Note:
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In this case, filtering the result by the names of Marche highways is not a good solution, since there are thousands of roads. So we do a polygon filtering by defining a polygon bounding box with <code>format_out = "polygon"</code> and then trimming the query result with <code>osmdata::trim_osmdata()</code> function. I also cleaned the output from possible duplicates with <code>osmdata::unique_osmdata()</code> function.</p>
+</div>
+</div>
+<p>Here the features of interest are the lines (‘osm_lines’). Again, we convert the data into the appropriate CRS.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>highways<span class="sc">$</span>osm_lines <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_transform</span>(highways<span class="sc">$</span>osm_lines, <span class="at">crs =</span> marche_crs)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>sf<span class="sc">::</span><span class="fu">st_crs</span>(highways<span class="sc">$</span>osm_lines)<span class="sc">$</span>input</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "EPSG:32233"</code></pre>
+</div>
+</div>
+<p>In the end, we add the highways layer to the previous plot.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>p_highways <span class="ot">&lt;-</span> p <span class="sc">+</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> highways<span class="sc">$</span>osm_lines, </span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>          <span class="fu">aes</span>(<span class="at">geometry =</span> geometry, <span class="at">colour =</span> name), </span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">show.legend =</span> F)</span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>p_highways</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-17-1.png" style="width:100.0%;height:250.0%"></p>
+</div>
+</div>
+</section>
+</div>
+
+
+<!-- -->
+
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const disableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'prefetch';
+    }
+  }
+  const enableStylesheet = (stylesheets) => {
+    for (let i=0; i < stylesheets.length; i++) {
+      const stylesheet = stylesheets[i];
+      stylesheet.rel = 'stylesheet';
+    }
+  }
+  const manageTransitions = (selector, allowTransitions) => {
+    const els = window.document.querySelectorAll(selector);
+    for (let i=0; i < els.length; i++) {
+      const el = els[i];
+      if (allowTransitions) {
+        el.classList.remove('notransition');
+      } else {
+        el.classList.add('notransition');
+      }
+    }
+  }
+  const toggleColorMode = (alternate) => {
+    // Switch the stylesheets
+    const alternateStylesheets = window.document.querySelectorAll('link.quarto-color-scheme.quarto-color-alternate');
+    manageTransitions('#quarto-margin-sidebar .nav-link', false);
+    if (alternate) {
+      enableStylesheet(alternateStylesheets);
+      for (const sheetNode of alternateStylesheets) {
+        if (sheetNode.id === "quarto-bootstrap") {
+          toggleBodyColorMode(sheetNode);
+        }
+      }
+    } else {
+      disableStylesheet(alternateStylesheets);
+      toggleBodyColorPrimary();
+    }
+    manageTransitions('#quarto-margin-sidebar .nav-link', true);
+    // Switch the toggles
+    const toggles = window.document.querySelectorAll('.quarto-color-scheme-toggle');
+    for (let i=0; i < toggles.length; i++) {
+      const toggle = toggles[i];
+      if (toggle) {
+        if (alternate) {
+          toggle.classList.add("alternate");     
+        } else {
+          toggle.classList.remove("alternate");
+        }
+      }
+    }
+    // Hack to workaround the fact that safari doesn't
+    // properly recolor the scrollbar when toggling (#1455)
+    if (navigator.userAgent.indexOf('Safari') > 0 && navigator.userAgent.indexOf('Chrome') == -1) {
+      manageTransitions("body", false);
+      window.scrollTo(0, 1);
+      setTimeout(() => {
+        window.scrollTo(0, 0);
+        manageTransitions("body", true);
+      }, 40);  
+    }
+  }
+  const isFileUrl = () => { 
+    return window.location.protocol === 'file:';
+  }
+  const hasAlternateSentinel = () => {  
+    let styleSentinel = getColorSchemeSentinel();
+    if (styleSentinel !== null) {
+      return styleSentinel === "alternate";
+    } else {
+      return false;
+    }
+  }
+  const setStyleSentinel = (alternate) => {
+    const value = alternate ? "alternate" : "default";
+    if (!isFileUrl()) {
+      window.localStorage.setItem("quarto-color-scheme", value);
+    } else {
+      localAlternateSentinel = value;
+    }
+  }
+  const getColorSchemeSentinel = () => {
+    if (!isFileUrl()) {
+      const storageValue = window.localStorage.getItem("quarto-color-scheme");
+      return storageValue != null ? storageValue : localAlternateSentinel;
+    } else {
+      return localAlternateSentinel;
+    }
+  }
+  let localAlternateSentinel = 'alternate';
+  // Dark / light mode switch
+  window.quartoToggleColorScheme = () => {
+    // Read the current dark / light value 
+    let toAlternate = !hasAlternateSentinel();
+    toggleColorMode(toAlternate);
+    setStyleSentinel(toAlternate);
+  };
+  // Ensure there is a toggle, if there isn't float one in the top right
+  if (window.document.querySelector('.quarto-color-scheme-toggle') === null) {
+    const a = window.document.createElement('a');
+    a.classList.add('top-right');
+    a.classList.add('quarto-color-scheme-toggle');
+    a.href = "";
+    a.onclick = function() { try { window.quartoToggleColorScheme(); } catch {} return false; };
+    const i = window.document.createElement("i");
+    i.classList.add('bi');
+    a.appendChild(i);
+    window.document.body.appendChild(a);
+  }
+  // Switch to dark mode if need be
+  if (hasAlternateSentinel()) {
+    toggleColorMode(true);
+  } else {
+    toggleColorMode(false);
+  }
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb31" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "GIS with R - Download OpenStreetMaps data with osmdata package"</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2022-11-13"</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span><span class="co"> [R, GIS]</span></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="an">image:</span><span class="co"> gis_thumbnail.jpg</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a><span class="co">    df-print: paged</span></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a><span class="co">    fontsize: 0.9em</span></span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a><span class="an">editor:</span><span class="co"> visual</span></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>::: {style="text-align: justify"}</span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>The <span class="in">`osmdata`</span> package can be used to download OpenStreetMap data. <span class="co">[</span><span class="ot">OpenStreetMap</span><span class="co">](https://www.openstreetmap.org/#map=8/43.333/13.052)</span> is a database of crowdsourced geographic information that includes things like road networks, water features, points of interest and more. Whatever a person on the internet can map and has mapped on OSM is available for download for free. For a more detailed introduction with more exploration of the package functionalities, see the <span class="co">[</span><span class="ot">vignette</span><span class="co">](https://cran.r-project.org/web/packages/osmdata/vignettes/osmdata.html#22_Extracting_OSM_data_from_a_query)</span>.</span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a><span class="fu">## Installing osmdata</span></span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>You can install the most recent official version of <span class="in">`osmdata`</span> from CRAN with:</span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"osmdata"</span>)</span>
+<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-28"><a href="#cb31-28" aria-hidden="true" tabindex="-1"></a>Or the developer version from GitHub:</span>
+<span id="cb31-29"><a href="#cb31-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-32"><a href="#cb31-32" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb31-33"><a href="#cb31-33" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb31-34"><a href="#cb31-34" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"ropensci/osmdata"</span>)</span>
+<span id="cb31-35"><a href="#cb31-35" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb31-36"><a href="#cb31-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-37"><a href="#cb31-37" aria-hidden="true" tabindex="-1"></a>We start by loading the needed packages. In the following sections I'll provide many examples on how to use <span class="in">`osmdata`</span> to query spatial data from OSM database.</span>
+<span id="cb31-38"><a href="#cb31-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-41"><a href="#cb31-41" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb31-42"><a href="#cb31-42" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb31-43"><a href="#cb31-43" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(osmdata)</span>
+<span id="cb31-44"><a href="#cb31-44" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb31-45"><a href="#cb31-45" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb31-46"><a href="#cb31-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-47"><a href="#cb31-47" aria-hidden="true" tabindex="-1"></a><span class="fu">## Get bounding boxes</span></span>
+<span id="cb31-48"><a href="#cb31-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-49"><a href="#cb31-49" aria-hidden="true" tabindex="-1"></a><span class="in">`osmdata::getbb()`</span> function uses the free <span class="co">[</span><span class="ot">Nominatim API</span><span class="co">](https://wiki.openstreetmap.org/wiki/Nominatim)</span> provided by OpenStreetMap to find the bounding box (bb) associated with place names. For example:</span>
+<span id="cb31-50"><a href="#cb31-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-53"><a href="#cb31-53" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb31-54"><a href="#cb31-54" aria-hidden="true" tabindex="-1"></a>italy_bb <span class="ot">&lt;-</span> osmdata<span class="sc">::</span><span class="fu">getbb</span>(<span class="st">"Italy"</span>, <span class="at">featuretype =</span> <span class="st">"Country"</span>)</span>
+<span id="cb31-55"><a href="#cb31-55" aria-hidden="true" tabindex="-1"></a>brazil_bb <span class="ot">&lt;-</span> osmdata<span class="sc">::</span><span class="fu">getbb</span>(<span class="st">"Brazil"</span>, <span class="at">featuretype =</span> <span class="st">"Country"</span>)</span>
+<span id="cb31-56"><a href="#cb31-56" aria-hidden="true" tabindex="-1"></a><span class="fu">list</span>(<span class="at">italy =</span> italy_bb, <span class="at">brazil =</span> brazil_bb)</span>
+<span id="cb31-57"><a href="#cb31-57" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb31-58"><a href="#cb31-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-59"><a href="#cb31-59" aria-hidden="true" tabindex="-1"></a>Note that I set the <span class="in">`featuretype`</span> parameter to 'Country'. This ensures the correct bounding boxes for the actual China and Brazil countries (and not entities with similar/same name) are retrieved. The default value of <span class="in">`featuretype`</span> is, in fact, "settlement", that combines results from all intermediate levels below "country" and and above "streets". See <span class="in">`?osmdata::getbb()`</span> for more details, and '<span class="co">[</span><span class="ot">Search \&gt; Parameters' section</span><span class="co">](https://nominatim.org/release-docs/develop/api/Search/)</span> from Nominatim API documentation for a list of available <span class="in">`featuretype`</span> values. For example, let's try without adding <span class="in">`featuretype`</span> parameter :</span>
+<span id="cb31-60"><a href="#cb31-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-63"><a href="#cb31-63" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb31-64"><a href="#cb31-64" aria-hidden="true" tabindex="-1"></a>italy_no_ft <span class="ot">&lt;-</span> osmdata<span class="sc">::</span><span class="fu">getbb</span>(<span class="st">"Italy"</span>, <span class="at">format_out =</span> <span class="st">"data.frame"</span>)</span>
+<span id="cb31-65"><a href="#cb31-65" aria-hidden="true" tabindex="-1"></a>italy_no_ft</span>
+<span id="cb31-66"><a href="#cb31-66" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb31-67"><a href="#cb31-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-68"><a href="#cb31-68" aria-hidden="true" tabindex="-1"></a>As you can see, there are many non-country entities that match the name 'Italy', like 'Italy, Ellis County, Texas, 76651, United States', or 'Italy, Georgetown County, South Carolina, 29510, United States'. So, running <span class="in">`osmdata::getbb("Italy")`</span> without <span class="in">`featuretype = "Country"`</span> would return the wrong output.</span>
+<span id="cb31-69"><a href="#cb31-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-70"><a href="#cb31-70" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb31-71"><a href="#cb31-71" aria-hidden="true" tabindex="-1"></a><span class="fu">## Note:</span></span>
+<span id="cb31-72"><a href="#cb31-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-73"><a href="#cb31-73" aria-hidden="true" tabindex="-1"></a><span class="in">`format_out`</span> parameter lets the user choose the output format. Default format is 'matrix'. See <span class="in">`?osmdata::getbb()`</span> for a list of available formats.</span>
+<span id="cb31-74"><a href="#cb31-74" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb31-75"><a href="#cb31-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-76"><a href="#cb31-76" aria-hidden="true" tabindex="-1"></a><span class="fu">## Overpass queries</span></span>
+<span id="cb31-77"><a href="#cb31-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-78"><a href="#cb31-78" aria-hidden="true" tabindex="-1"></a><span class="in">`overpass`</span> is a C++ library that serves OpenStreetMap data over the web. All <span class="in">`overpass`</span> queries with <span class="in">`osmdata`</span> package begin with the function <span class="in">`osmdata::opq()`</span> . The function requires a bounding box as input (see <span class="in">`?osmdata::opq()`</span> for more details.</span>
+<span id="cb31-79"><a href="#cb31-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-82"><a href="#cb31-82" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb31-83"><a href="#cb31-83" aria-hidden="true" tabindex="-1"></a>italy <span class="ot">&lt;-</span> osmdata<span class="sc">::</span><span class="fu">opq</span>(<span class="at">bbox =</span> italy_bb)</span>
+<span id="cb31-84"><a href="#cb31-84" aria-hidden="true" tabindex="-1"></a>italy</span>
+<span id="cb31-85"><a href="#cb31-85" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb31-86"><a href="#cb31-86" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-87"><a href="#cb31-87" aria-hidden="true" tabindex="-1"></a>Increase <span class="in">`timeout`</span> and/or <span class="in">`memsize`</span> parameters values if you get timeout and/or memory errors.</span>
+<span id="cb31-88"><a href="#cb31-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-89"><a href="#cb31-89" aria-hidden="true" tabindex="-1"></a>We can also filter the base, more general, query by adding OSM **features**, which are specified in terms of key-value pairs. We do this with <span class="in">`osmdata::add_osm_feature()`</span> function.</span>
+<span id="cb31-90"><a href="#cb31-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-93"><a href="#cb31-93" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb31-94"><a href="#cb31-94" aria-hidden="true" tabindex="-1"></a>italy <span class="ot">&lt;-</span> osmdata<span class="sc">::</span><span class="fu">opq</span>(<span class="at">bbox =</span> italy_bb, <span class="at">timeout =</span> <span class="dv">50000</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb31-95"><a href="#cb31-95" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_osm_feature</span>(<span class="at">key =</span> <span class="st">"admin_level"</span>, <span class="at">value =</span> <span class="dv">4</span>)</span>
+<span id="cb31-96"><a href="#cb31-96" aria-hidden="true" tabindex="-1"></a>italy</span>
+<span id="cb31-97"><a href="#cb31-97" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb31-98"><a href="#cb31-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-99"><a href="#cb31-99" aria-hidden="true" tabindex="-1"></a>**`admin_level`** key describes the administrative level of a feature within a government hierarchy. It is primarily used for the borders of territorial political entities (e.g. country, state, municipality) together with <span class="in">`boundary = administrative`</span>. Due to cultural and political differences, admin levels of different countries only correspond approximately to each other. Here, <span class="in">`value = 4`</span> stands for boundaries of Italian regions.</span>
+<span id="cb31-100"><a href="#cb31-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-101"><a href="#cb31-101" aria-hidden="true" tabindex="-1"></a>For a list of all the available key-value pairs, see <span class="co">[</span><span class="ot">Map features page</span><span class="co">](https://wiki.openstreetmap.org/wiki/Map_features#Boundary)</span> on openstreetmap website. You can also run <span class="in">`osmdata::available_features()`</span> and <span class="in">`osmdata::available_tags()`</span> functions. The first one returns a vector including all the available keys. The second one returns a vector including all the available values for a specific key.</span>
+<span id="cb31-102"><a href="#cb31-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-105"><a href="#cb31-105" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb31-106"><a href="#cb31-106" aria-hidden="true" tabindex="-1"></a>keys <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">key =</span> osmdata<span class="sc">::</span><span class="fu">available_features</span>())</span>
+<span id="cb31-107"><a href="#cb31-107" aria-hidden="true" tabindex="-1"></a>vals <span class="ot">&lt;-</span> osmdata<span class="sc">::</span><span class="fu">available_tags</span>(<span class="st">"boundary"</span>)</span>
+<span id="cb31-108"><a href="#cb31-108" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb31-109"><a href="#cb31-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-110"><a href="#cb31-110" aria-hidden="true" tabindex="-1"></a><span class="in">```{r rows.print=5}</span></span>
+<span id="cb31-111"><a href="#cb31-111" aria-hidden="true" tabindex="-1"></a>keys</span>
+<span id="cb31-112"><a href="#cb31-112" aria-hidden="true" tabindex="-1"></a>vals</span>
+<span id="cb31-113"><a href="#cb31-113" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb31-114"><a href="#cb31-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-115"><a href="#cb31-115" aria-hidden="true" tabindex="-1"></a><span class="fu">## Extracting OSM data from an overpass query</span></span>
+<span id="cb31-116"><a href="#cb31-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-117"><a href="#cb31-117" aria-hidden="true" tabindex="-1"></a>After defining a query, we download the actual data by adding a <span class="in">`osmdata::osmdata_sf()`</span> or <span class="in">`osmdata::osmdata_sp()`</span> call, to return the data in <span class="in">`sf`</span> or <span class="in">`sp`</span> format. In the following example we download the boundary of the provinces of Marche region, in Italy.</span>
+<span id="cb31-118"><a href="#cb31-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-121"><a href="#cb31-121" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb31-122"><a href="#cb31-122" aria-hidden="true" tabindex="-1"></a>prov <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Ancona"</span>, <span class="st">"Ascoli Piceno"</span>, <span class="st">"Fermo"</span>, <span class="st">"Macerata"</span>, <span class="st">"Pesaro e Urbino"</span>)</span>
+<span id="cb31-123"><a href="#cb31-123" aria-hidden="true" tabindex="-1"></a>marche <span class="ot">&lt;-</span> osmdata<span class="sc">::</span><span class="fu">opq</span>(<span class="at">bbox =</span> <span class="fu">getbb</span>(<span class="st">"Marche, Italy"</span>, <span class="at">featuretype =</span> <span class="st">"state"</span>), <span class="at">timeout =</span> <span class="dv">50000</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb31-124"><a href="#cb31-124" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_osm_feature</span>(<span class="at">key =</span> <span class="st">"admin_level"</span>, <span class="at">value =</span> <span class="dv">6</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb31-125"><a href="#cb31-125" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_osm_feature</span>(<span class="at">key =</span> <span class="st">"name"</span>, <span class="at">value =</span> prov) <span class="sc">|&gt;</span> </span>
+<span id="cb31-126"><a href="#cb31-126" aria-hidden="true" tabindex="-1"></a>  <span class="fu">osmdata_sf</span>()</span>
+<span id="cb31-127"><a href="#cb31-127" aria-hidden="true" tabindex="-1"></a>marche</span>
+<span id="cb31-128"><a href="#cb31-128" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb31-129"><a href="#cb31-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-130"><a href="#cb31-130" aria-hidden="true" tabindex="-1"></a><span class="in">`admin_level=6`</span> stands for provinces, and with <span class="in">`name=prov`</span> we filter only the actual Marche provinces, since the rectangular bounding box defined with <span class="in">`bbox`</span> argument also encompasses parts of other italian regions. As you can see, we got an <span class="in">`osmdata`</span> object with many different features as output, including 5 multipolygons. Those are the polygons representing the provinces. First let's see if those multipolygons have a defined CRS attribute (see <span class="co">[</span><span class="ot">GIS with R - Coordinate Reference Systems in R</span><span class="co">](https://g-bez.github.io/my-portfolio/posts/gis_crs/)</span> post for more details about coordinate reference systems).</span>
+<span id="cb31-131"><a href="#cb31-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-134"><a href="#cb31-134" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb31-135"><a href="#cb31-135" aria-hidden="true" tabindex="-1"></a>sf<span class="sc">::</span><span class="fu">st_crs</span>(marche<span class="sc">$</span>osm_multipolygons)<span class="sc">$</span>input</span>
+<span id="cb31-136"><a href="#cb31-136" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb31-137"><a href="#cb31-137" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-138"><a href="#cb31-138" aria-hidden="true" tabindex="-1"></a>The CRS is set to WGS84. Let's change it to a more appropriate value. Marche region falls into UTM zone 33N, so let's find the corresponding <span class="in">`EPSG`</span> code with the following chunk.</span>
+<span id="cb31-139"><a href="#cb31-139" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-142"><a href="#cb31-142" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb31-143"><a href="#cb31-143" aria-hidden="true" tabindex="-1"></a>crs <span class="ot">&lt;-</span> rgdal<span class="sc">::</span><span class="fu">make_EPSG</span>()</span>
+<span id="cb31-144"><a href="#cb31-144" aria-hidden="true" tabindex="-1"></a>marche_crs <span class="ot">&lt;-</span> crs[crs<span class="sc">$</span>note <span class="sc">==</span> <span class="st">"WGS 72 / UTM zone 33N"</span>, <span class="st">"code"</span>]</span>
+<span id="cb31-145"><a href="#cb31-145" aria-hidden="true" tabindex="-1"></a>marche_crs</span>
+<span id="cb31-146"><a href="#cb31-146" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb31-147"><a href="#cb31-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-148"><a href="#cb31-148" aria-hidden="true" tabindex="-1"></a>Then we run <span class="in">`sf::st_transform()`</span> function to transform our data into the new CRS.</span>
+<span id="cb31-149"><a href="#cb31-149" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-152"><a href="#cb31-152" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb31-153"><a href="#cb31-153" aria-hidden="true" tabindex="-1"></a>marche<span class="sc">$</span>osm_multipolygons <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_transform</span>(marche<span class="sc">$</span>osm_multipolygons, <span class="at">crs =</span> marche_crs)</span>
+<span id="cb31-154"><a href="#cb31-154" aria-hidden="true" tabindex="-1"></a>sf<span class="sc">::</span><span class="fu">st_crs</span>(marche<span class="sc">$</span>osm_multipolygons)<span class="sc">$</span>input</span>
+<span id="cb31-155"><a href="#cb31-155" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb31-156"><a href="#cb31-156" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-157"><a href="#cb31-157" aria-hidden="true" tabindex="-1"></a>Finally I provide a quick <span class="in">`ggplot2`</span> plot of Marche provinces.</span>
+<span id="cb31-158"><a href="#cb31-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-161"><a href="#cb31-161" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb31-162"><a href="#cb31-162" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: 100%</span></span>
+<span id="cb31-163"><a href="#cb31-163" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-height: 250%</span></span>
+<span id="cb31-164"><a href="#cb31-164" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> ggplot2<span class="sc">::</span><span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb31-165"><a href="#cb31-165" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> marche<span class="sc">$</span>osm_multipolygons, </span>
+<span id="cb31-166"><a href="#cb31-166" aria-hidden="true" tabindex="-1"></a>          <span class="fu">aes</span>(<span class="at">geometry =</span> geometry, <span class="at">fill =</span> name), </span>
+<span id="cb31-167"><a href="#cb31-167" aria-hidden="true" tabindex="-1"></a>          <span class="at">colour =</span> <span class="st">"black"</span>, <span class="at">alpha =</span> .<span class="dv">23</span>) <span class="sc">+</span></span>
+<span id="cb31-168"><a href="#cb31-168" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">panel.grid =</span> <span class="fu">element_blank</span>(), </span>
+<span id="cb31-169"><a href="#cb31-169" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.position =</span> <span class="st">"bottom"</span>, </span>
+<span id="cb31-170"><a href="#cb31-170" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.title =</span> <span class="fu">element_blank</span>(),</span>
+<span id="cb31-171"><a href="#cb31-171" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">8</span>),</span>
+<span id="cb31-172"><a href="#cb31-172" aria-hidden="true" tabindex="-1"></a>        <span class="at">legend.key.size =</span> <span class="fu">unit</span>(<span class="dv">3</span>, <span class="st">"mm"</span>)) <span class="sc">+</span></span>
+<span id="cb31-173"><a href="#cb31-173" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">title =</span> <span class="st">"Marche provinces"</span>, <span class="at">xlab =</span> <span class="st">"lon"</span>, <span class="at">ylab =</span> <span class="st">"lat"</span>)</span>
+<span id="cb31-174"><a href="#cb31-174" aria-hidden="true" tabindex="-1"></a>p</span>
+<span id="cb31-175"><a href="#cb31-175" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb31-176"><a href="#cb31-176" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-177"><a href="#cb31-177" aria-hidden="true" tabindex="-1"></a>Now let's say we want to refine our <span class="in">`osmdata`</span> query, and also download and visualize data about the primary and secondary highways in Marche region, on top of the map we just drawn. First we start by executing a new separate query.</span>
+<span id="cb31-178"><a href="#cb31-178" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-181"><a href="#cb31-181" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb31-182"><a href="#cb31-182" aria-hidden="true" tabindex="-1"></a>bb_poly <span class="ot">&lt;-</span> osmdata<span class="sc">::</span><span class="fu">getbb</span>(<span class="st">"Marche, Italy"</span>, <span class="at">featuretype =</span> <span class="st">"state"</span>, <span class="at">format_out =</span> <span class="st">"polygon"</span>)</span>
+<span id="cb31-183"><a href="#cb31-183" aria-hidden="true" tabindex="-1"></a>highways <span class="ot">&lt;-</span> osmdata<span class="sc">::</span><span class="fu">opq</span>(<span class="at">bbox =</span> <span class="fu">getbb</span>(<span class="st">"Marche, Italy"</span>, <span class="at">featuretype =</span> <span class="st">"state"</span>), <span class="at">timeout =</span> <span class="dv">50000</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb31-184"><a href="#cb31-184" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_osm_feature</span>(<span class="at">key =</span> <span class="st">"highway"</span>, <span class="at">value =</span> <span class="fu">c</span>(<span class="st">"primary"</span>, <span class="st">"secondary"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb31-185"><a href="#cb31-185" aria-hidden="true" tabindex="-1"></a>  <span class="fu">osmdata_sf</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb31-186"><a href="#cb31-186" aria-hidden="true" tabindex="-1"></a>  <span class="fu">trim_osmdata</span>(bb_poly) <span class="sc">|&gt;</span> </span>
+<span id="cb31-187"><a href="#cb31-187" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unique_osmdata</span>()</span>
+<span id="cb31-188"><a href="#cb31-188" aria-hidden="true" tabindex="-1"></a>highways</span>
+<span id="cb31-189"><a href="#cb31-189" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb31-190"><a href="#cb31-190" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-191"><a href="#cb31-191" aria-hidden="true" tabindex="-1"></a>::: callout-note</span>
+<span id="cb31-192"><a href="#cb31-192" aria-hidden="true" tabindex="-1"></a><span class="fu">## Note:</span></span>
+<span id="cb31-193"><a href="#cb31-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-194"><a href="#cb31-194" aria-hidden="true" tabindex="-1"></a>In this case, filtering the result by the names of Marche highways is not a good solution, since there are thousands of roads. So we do a polygon filtering by defining a polygon bounding box with <span class="in">`format_out = "polygon"`</span> and then trimming the query result with <span class="in">`osmdata::trim_osmdata()`</span> function. I also cleaned the output from possible duplicates with <span class="in">`osmdata::unique_osmdata()`</span> function.</span>
+<span id="cb31-195"><a href="#cb31-195" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb31-196"><a href="#cb31-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-197"><a href="#cb31-197" aria-hidden="true" tabindex="-1"></a>Here the features of interest are the lines ('osm_lines'). Again, we convert the data into the appropriate CRS.</span>
+<span id="cb31-198"><a href="#cb31-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-201"><a href="#cb31-201" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb31-202"><a href="#cb31-202" aria-hidden="true" tabindex="-1"></a>highways<span class="sc">$</span>osm_lines <span class="ot">&lt;-</span> sf<span class="sc">::</span><span class="fu">st_transform</span>(highways<span class="sc">$</span>osm_lines, <span class="at">crs =</span> marche_crs)</span>
+<span id="cb31-203"><a href="#cb31-203" aria-hidden="true" tabindex="-1"></a>sf<span class="sc">::</span><span class="fu">st_crs</span>(highways<span class="sc">$</span>osm_lines)<span class="sc">$</span>input</span>
+<span id="cb31-204"><a href="#cb31-204" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb31-205"><a href="#cb31-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-206"><a href="#cb31-206" aria-hidden="true" tabindex="-1"></a>In the end, we add the highways layer to the previous plot.</span>
+<span id="cb31-207"><a href="#cb31-207" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-210"><a href="#cb31-210" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb31-211"><a href="#cb31-211" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: 100%</span></span>
+<span id="cb31-212"><a href="#cb31-212" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-height: 250%</span></span>
+<span id="cb31-213"><a href="#cb31-213" aria-hidden="true" tabindex="-1"></a>p_highways <span class="ot">&lt;-</span> p <span class="sc">+</span></span>
+<span id="cb31-214"><a href="#cb31-214" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_sf</span>(<span class="at">data =</span> highways<span class="sc">$</span>osm_lines, </span>
+<span id="cb31-215"><a href="#cb31-215" aria-hidden="true" tabindex="-1"></a>          <span class="fu">aes</span>(<span class="at">geometry =</span> geometry, <span class="at">colour =</span> name), </span>
+<span id="cb31-216"><a href="#cb31-216" aria-hidden="true" tabindex="-1"></a>          <span class="at">show.legend =</span> F)</span>
+<span id="cb31-217"><a href="#cb31-217" aria-hidden="true" tabindex="-1"></a>p_highways</span>
+<span id="cb31-218"><a href="#cb31-218" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb31-219"><a href="#cb31-219" aria-hidden="true" tabindex="-1"></a>:::</span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+</body></html>

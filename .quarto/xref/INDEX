@@ -34,5 +34,8 @@
   },
   "posts/gis_crs/index.qmd": {
     "index.html": "3a5c2646"
+  },
+  "posts/gis_osm/index.qmd": {
+    "index.html": "fcfa5b52"
   }
 }
