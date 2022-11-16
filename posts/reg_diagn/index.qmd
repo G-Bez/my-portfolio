@@ -55,6 +55,7 @@ We start by loading the needed packages.
 ```{r}
 #| warning: false
 library(lindia)
+library(car)
 library(ggplot2)
 library(patchwork)
 library(olsrr)
