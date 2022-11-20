@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/gganimate/index.html",
       "/posts/reg_diagn/index.html",
       "/posts/gis_osm/index.html",
       "/posts/gis_crs/index.html",
