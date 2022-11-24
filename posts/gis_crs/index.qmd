@@ -56,12 +56,6 @@ Three main ways to describe CRSs, are `EPSG` codes, `PROJ4-strings` and `WKT` fo
     -   +ellps: ellipsoid definition.
 -   **WKT format**: it's a compact machine and human-readable representation of geometric objects. It defines elements of coordinate reference system (`CRS`) definitions using a combination of brackets `[]` and elements separated by commas (`,`). The elements of `WKT` notation are
 
-::: callout-important
-## Important:
-
-The use of `PROJ4-strings` is discouraged, since they no longer offer sufficient description of CRSs. See <https://r-spatial.org/r/2020/03/17/wkt.html> for more details.
-:::
-
 ## Which CRS to use?
 
 The question of which CRS is tricky, and there is rarely a 'right' answer: "There exist no all-purpose projections, all involve distortion when far from the center of the specified frame" (Bivand et al., 2013).

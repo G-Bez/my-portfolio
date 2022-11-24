@@ -24,74 +24,66 @@ We start by loading the needed packages
 
 ```{r}
 #| warning: false
-library(raster)
+library(terra)
 library(ggplot2)
 ```
 
-::: callout-note
-## Note:
-
-`raster` package uses the upper left corner, not the lower left one, as origin of the pixels matrix.
-:::
+`terra` package is a more modern replacement for [`raster`](https://www.rdocumentation.org/packages/raster/versions/3.6-3) package. It is simpler and faster (see [a comparison of terra and raster packages](https://www.r-bloggers.com/2021/05/a-comparison-of-terra-and-raster-packages/). However, `raster` is not yet deprecated since there still might be compatibility issues between `terra` and other packages, so it might still be worth it to check its documentation.
 
 ## Creating a raster layer
 
-You can use `raster::raster()` function to create a raster layer. There are different ways to create a layer. Here I provide two examples example. See [`raster()` function documentation](https://www.rdocumentation.org/packages/raster/versions/3.6-3/topics/raster) for more details.
+You can use `terra::rast()` function to create a raster layer. See [rast() function documentation](https://www.rdocumentation.org/packages/terra/versions/1.2-10/topics/rast) for more details.
 
 ```{r}
-rast <- raster(crs = 4326, resolution = 0.05, xmn = 30, xmx = 32, ymn = 44, ymx = 46.5)
-rast
+rt <- terra::rast(crs = "+proj=longlat +datum=WGS84 +no_defs", xmin = 30, 
+                  xmax = 32, ymin = 44, ymax = 46.5, resolution = 0.05)
+rt
 ```
 
-We just created a `RasterLayer` object, aka a rectangular grid cell with each cell being 0.05x0.05 degrees in size on WGS84 CRS. Below a description of the function parameters:
+We just created a `SpatRaster` object, aka a rectangular grid cell with each cell being 0.05x0.05 degrees in size on WGS84 CRS. Below a description of the function parameters:
 
 -   **resolution**: spatial resolution; how large the pixels are.
--   **xmn, xmx**: extent from east to west of the matrix, in meters.
--   **ymn, ymx**: extent from north to south of the matrix, in meters.
--   **crs**: coordinate reference system.
+-   **xmin, xmax**: extent from east to west of the matrix, in meters.
+-   **ymin, ymax**: extent from north to south of the matrix, in meters.
+-   **crs**: coordinate reference system, in `PROJ-4` notation. See [GIS with R - Coordinate Reference Systems in R](https://g-bez.github.io/my-portfolio/posts/gis_crs/)
 
 We can also set the resolution indirectly with `nrows` and `ncols` parameters being the number of rows and columns, respectively. These two parameters are ignored if `resolution` parameter is used.
 
 ```{r}
-rast <- raster(crs = 4326, nrows = 50, ncols = 40, xmn = 30, xmx = 32, ymn = 44, ymx = 46.5)
-rast
+rt <- terra::rast(crs = "+proj=longlat +datum=WGS84 +no_defs", nrows = 50,
+                    ncols = 40, xmin = 30, xmax = 32, ymin = 44, ymax = 46.5)
+rt
 ```
 
 ## Assign values to raster cells
 
-The `RasterLayer` object we just created is still blank. We can inspect the grid values with `terra::values()` function (`terra` package is a dependency of `raster` package).
+The `RasterLayer` object we just created is still blank. We can inspect the grid values with `terra::values()` function.
 
 ```{r}
-terra::values(rast) |> is.na() |> all()
+terra::values(rt) |> is.na() |> all()
 ```
 
 We can retrieve the number of cells with `terra::ncell()` function.
 
 ```{r}
-terra::ncell(rast)
+terra::ncell(rt)
 ```
 
 Finally, we can assign values with `terra::values()` function. Below we assign random values sampled from a normal distribution.
 
 ```{r}
-terra::values(rast) <- ncell(rast) |> rnorm(mean = 5, sd = 3)
-rast@data@values[1:100] ## equivalent to terra::values(rast)[1:100]
+terra::values(rt) <- terra::ncell(rt) |> rnorm(mean = 5, sd = 3)
+terra::values(rt)[1:100]
 ```
 
 As you can see, the grid cells were properly filled.
-
-::: callout-note
-## Note:
-
-Use `@` operator, not `$` , to access `RasterLayer` objects elements.
-:::
 
 ## Plot a raster layer
 
 To plot our `RasterLayer` we can use `ggplot2::geom_rast()` function. But first we need to assign its values to a data.frame.
 
 ```{r}
-df_rast <- as.data.frame(rast, xy = T)
+df_rast <- as.data.frame(rt, xy = T)
 df_rast
 ```
 
@@ -100,7 +92,7 @@ We use `xy` parameter to extract also the XY coordinates of each cell.
 ```{r}
 #| out-width: 100%
 #| out-height: 250%
-p <- ggplot(df_rast, aes(x, y, fill = layer)) +
+p <- ggplot(df_rast, aes(x, y, fill = lyr.1)) +
   geom_raster() +
   labs(x = "lon", y = "lat", title = "Normal distr. RasterLayer")
 p

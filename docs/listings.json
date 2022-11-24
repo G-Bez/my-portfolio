@@ -2,6 +2,7 @@
   {
     "listing": "/index.html",
     "items": [
+      "/posts/avgtemp/index.html",
       "/posts/gganimate/index.html",
       "/posts/reg_diagn/index.html",
       "/posts/gis_osm/index.html",
