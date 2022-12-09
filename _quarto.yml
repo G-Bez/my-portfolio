@@ -4,6 +4,14 @@ project:
 
 website:
   title: "Portfolio"
+  cookie-consent: 
+    type: express
+    style: simple
+    palette: dark
+  google-analytics:
+    tracking-id: "G-TVL122T9T3"
+    anonymize-ip: true
+  
   navbar:
     pinned: true
     right:
@@ -22,4 +30,3 @@ format:
     fontsize: 0.9em
 
 editor: visual
-
