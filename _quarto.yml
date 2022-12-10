@@ -6,13 +6,13 @@ website:
   title: "Portfolio"
   site-url: https://g-bez.github.io/my-portfolio/
   
-  cookie-consent: 
-    type: express
-    style: headline
-    palette: dark
-  google-analytics:
-    tracking-id: "G-TVL122T9T3"
-    anonymize-ip: true
+  # cookie-consent: 
+  #   type: express
+  #   style: headline
+  #   palette: dark
+  # google-analytics:
+  #   tracking-id: "G-TVL122T9T3"
+  #   anonymize-ip: true
   
   navbar:
     pinned: true
