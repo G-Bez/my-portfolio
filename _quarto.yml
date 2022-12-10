@@ -4,6 +4,7 @@ project:
 
 website:
   title: "Portfolio"
+  site-url: "https://g-bez.github.io/my-portfolio/"
   cookie-consent: 
     type: express
     style: simple
