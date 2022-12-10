@@ -573,8 +573,8 @@ Chisquare = 0.4687214, Df = 1, p = 0.49358</code></pre>
 </div>
 </div>
 </div>
-<p>These data points seem to have a somewhat odd behaviour. For example ‘Porrentruy’ has a relatively low ‘Fertility’ for such high ‘Infant.Mortality’ value, high ‘Catholic’ value and low ‘Agriculture’ value. ‘Sierre’ has a very high fertility even with a very low ‘Education’ rate. And so on for ‘Rive Gauche’ too.</p>
-<p>Let’s try to re-build the model without these 3 observation.</p>
+<p>‘Porrentruy’ has a relatively low ‘Fertility’ for such high ‘Infant.Mortality’. The other two data points seem coherent with our previous model.</p>
+<p>Generally speaking, arbitrarily removing data points is not good practice. Anyway, let’s try to re-build the model without these 3 observations, in order to see how influencial they are.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>model2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Fertility <span class="sc">~</span> Agriculture <span class="sc">+</span> Education <span class="sc">+</span> Catholic <span class="sc">+</span> Infant.Mortality, <span class="at">data =</span> swiss[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">6</span>,<span class="dv">37</span>,<span class="dv">47</span>),])</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -603,7 +603,7 @@ Multiple R-squared:  0.7683,    Adjusted R-squared:  0.7445
 F-statistic: 32.32 on 4 and 39 DF,  p-value: 6.619e-12</code></pre>
 </div>
 </div>
-<p>The 3 data points were actually very influencial. The new model is significantly more accurate, with higher <em>R<sup>2</sup></em> and lower p-values (especially the ‘Agriculture’ and ‘Infant.Mortality’ ones got way lower). Now the linear model seems a way better fit, and we can effectively consider the 3 data points as outliers.</p>
+<p>The 3 data points were actually very influencial. This new model is significantly more accurate, with higher <em>R<sup>2</sup></em> and lower p-values (especially the ‘Agriculture’ and ‘Infant.Mortality’ ones got way lower).</p>
 </section>
 </div>
 
@@ -1229,16 +1229,16 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <span id="cb30-360"><a href="#cb30-360" aria-hidden="true" tabindex="-1"></a>swiss[<span class="fu">c</span>(<span class="dv">6</span>,<span class="dv">37</span>,<span class="dv">47</span>),<span class="sc">-</span><span class="dv">3</span>]</span>
 <span id="cb30-361"><a href="#cb30-361" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb30-362"><a href="#cb30-362" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-363"><a href="#cb30-363" aria-hidden="true" tabindex="-1"></a>These data points seem to have a somewhat odd behaviour. For example 'Porrentruy' has a relatively low 'Fertility' for such high 'Infant.Mortality' value, high 'Catholic' value and low 'Agriculture' value. 'Sierre' has a very high fertility even with a very low 'Education' rate. And so on for 'Rive Gauche' too.</span>
+<span id="cb30-363"><a href="#cb30-363" aria-hidden="true" tabindex="-1"></a>'Porrentruy' has a relatively low 'Fertility' for such high 'Infant.Mortality'. The other two data points seem coherent with our previous model.</span>
 <span id="cb30-364"><a href="#cb30-364" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-365"><a href="#cb30-365" aria-hidden="true" tabindex="-1"></a>Let's try to re-build the model without these 3 observation.</span>
+<span id="cb30-365"><a href="#cb30-365" aria-hidden="true" tabindex="-1"></a>Generally speaking, arbitrarily removing data points is not good practice. Anyway, let's try to re-build the model without these 3 observations, in order to see how influencial they are.</span>
 <span id="cb30-366"><a href="#cb30-366" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb30-369"><a href="#cb30-369" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
 <span id="cb30-370"><a href="#cb30-370" aria-hidden="true" tabindex="-1"></a>model2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Fertility <span class="sc">~</span> Agriculture <span class="sc">+</span> Education <span class="sc">+</span> Catholic <span class="sc">+</span> Infant.Mortality, <span class="at">data =</span> swiss[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">6</span>,<span class="dv">37</span>,<span class="dv">47</span>),])</span>
 <span id="cb30-371"><a href="#cb30-371" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model2)</span>
 <span id="cb30-372"><a href="#cb30-372" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 <span id="cb30-373"><a href="#cb30-373" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-374"><a href="#cb30-374" aria-hidden="true" tabindex="-1"></a>The 3 data points were actually very influencial. The new model is significantly more accurate, with higher *R^2^* and lower p-values (especially the 'Agriculture' and 'Infant.Mortality' ones got way lower). Now the linear model seems a way better fit, and we can effectively consider the 3 data points as outliers.</span>
+<span id="cb30-374"><a href="#cb30-374" aria-hidden="true" tabindex="-1"></a>The 3 data points were actually very influencial. This new model is significantly more accurate, with higher *R^2^* and lower p-values (especially the 'Agriculture' and 'Infant.Mortality' ones got way lower).</span>
 <span id="cb30-375"><a href="#cb30-375" aria-hidden="true" tabindex="-1"></a>:::</span>
 </code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>

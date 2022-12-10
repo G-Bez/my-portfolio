@@ -316,14 +316,14 @@ Both plots show highly influential data points, that when removed from the model
 swiss[c(6,37,47),-3]
 ```
 
-These data points seem to have a somewhat odd behaviour. For example 'Porrentruy' has a relatively low 'Fertility' for such high 'Infant.Mortality' value, high 'Catholic' value and low 'Agriculture' value. 'Sierre' has a very high fertility even with a very low 'Education' rate. And so on for 'Rive Gauche' too.
+'Porrentruy' has a relatively low 'Fertility' for such high 'Infant.Mortality'. The other two data points seem coherent with our previous model.
 
-Let's try to re-build the model without these 3 observation.
+Generally speaking, arbitrarily removing data points is not good practice. Anyway, let's try to re-build the model without these 3 observations, in order to see how influencial they are.
 
 ```{r}
 model2 <- lm(Fertility ~ Agriculture + Education + Catholic + Infant.Mortality, data = swiss[-c(6,37,47),])
 summary(model2)
 ```
 
-The 3 data points were actually very influencial. The new model is significantly more accurate, with higher *R^2^* and lower p-values (especially the 'Agriculture' and 'Infant.Mortality' ones got way lower). Now the linear model seems a way better fit, and we can effectively consider the 3 data points as outliers.
+The 3 data points were actually very influencial. This new model is significantly more accurate, with higher *R^2^* and lower p-values (especially the 'Agriculture' and 'Infant.Mortality' ones got way lower).
 :::

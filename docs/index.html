@@ -176,6 +176,31 @@ cookieconsent.run({
 
 
 <div class="quarto-listing quarto-listing-container-grid" id="listing-listing">
+<div class="listing-actions-group">
+   <div class="input-group input-group-sm quarto-listing-sort">
+     <span class="input-group-text"><i class="bi bi-sort-down"></i></span>
+     <select id="listing-listing-sort" class="form-select" aria-label="Order By" onchange="window['quarto-listings']['listing-listing'].sort(this.options[this.selectedIndex].value, { order: this.options[this.selectedIndex].getAttribute('data-direction')})">
+       <option value="" disabled="" selected="" hidden="">Order By</option>
+       <option value="index" data-direction="asc">Default</option>
+         <option value="listing-title" data-direction="asc">
+          Title
+        </option>
+         <option value="listing-date-sort" data-direction="asc">
+          Date - Oldest
+        </option>
+         <option value="listing-date-sort" data-direction="desc">
+          Date - Newest
+        </option>
+         <option value="listing-author" data-direction="asc">
+          Author
+        </option>
+     </select>
+  </div>
+    <div class="input-group input-group-sm quarto-listing-filter">
+      <span class="input-group-text"><i class="bi bi-search"></i></span>
+      <input type="text" class="search form-control" placeholder="Filter">
+    </div>
+</div>
 <div class="list grid quarto-listing-cols-3">
 <div class="g-col-1" data-index="0" data-categories="R,GIS,Visualization,Case study" data-listing-date-sort="1669071600000" data-listing-file-modified-sort="1669297231890" data-listing-reading-time-sort="5.13">
 <a href="./posts/avgtemp/index.html" class="quarto-grid-link">
@@ -249,7 +274,7 @@ Nov 19, 2022
 </div>
 </a>
 </div>
-<div class="g-col-1" data-index="2" data-categories="R,Regression" data-listing-date-sort="1668639600000" data-listing-file-modified-sort="1668854865005" data-listing-reading-time-sort="13.245">
+<div class="g-col-1" data-index="2" data-categories="R,Regression" data-listing-date-sort="1668639600000" data-listing-file-modified-sort="1670672758879" data-listing-reading-time-sort="13.095">
 <a href="./posts/reg_diagn/index.html" class="quarto-grid-link">
 <div class="quarto-grid-item card h-100 card-left">
 <p class="card-img-top">
