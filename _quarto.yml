@@ -23,6 +23,8 @@ website:
 
 format:
   html:
+    code-copy: true
+    code-overflow: wrap
     theme:
       dark: darkly
       light: flatly
