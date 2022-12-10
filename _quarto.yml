@@ -4,7 +4,7 @@ project:
 
 website:
   title: "Portfolio"
-  site-url: "https://g-bez.github.io/my-portfolio/"
+  site-url: https://g-bez.github.io/my-portfolio/
   cookie-consent: 
     type: express
     style: simple
@@ -18,6 +18,8 @@ website:
     right:
       - icon: github
         href: https://github.com/G-Bez
+      - icon: rss
+        href: index.xml
     left: 
       - text: About me
         href: about.qmd
