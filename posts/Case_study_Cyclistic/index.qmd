@@ -7,6 +7,10 @@ format:
   html:
     code-tools: true
     fontsize: 0.9em
+comments: 
+    utterances: 
+      repo:  G-Bez/my-portfolio 
+      theme: photon-dark
 editor: visual
 ---
 

@@ -7,12 +7,14 @@ format:
   html:
     fontsize: 0.9em
     code-tools: true
+comments: 
+    utterances: 
+      repo:  G-Bez/my-portfolio 
+      theme: photon-dark
 editor: visual
 ---
 
 ::: {style="text-align: justify"}
-Accessibility is a core concept of data visualization. The users of your reports, visualizations and presentations might suffer from vision impairment, and struggle at interpreting your visual outputs. Therefore, using colorblind-friendly color palettes is of utmost importance when making visualizations. Luckily, there's plenty of options to make colorblind palettes in R. `viridisLite` package is one of them.
-
 ## viridisLite package
 
 [`viridisLite`](https://sjmgarnier.github.io/viridisLite/) is a lightweight version of `viridis` package. Both are meant to provide a series of color maps designed to improve graph readability for readers with common forms of vision impairment. Base `viridis` provides additional functionalities, while `viridsLite` is meant to be as lightweight and dependency-free as possible, for maximum compatibility with all the R ecosystems.
@@ -64,7 +66,7 @@ library(scales)
 library(patchwork)
 ```
 
-## Show generated color palettes
+## Show color palettes
 
 Since the output of `viridisLite` functions consists of a vector of hex codes, it's quite hard to tell precisely which colors were actually picked. `scales` package provides a convenient and very easy way to visualize user generated palettes. See the following example.
 

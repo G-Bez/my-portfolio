@@ -5,13 +5,14 @@ project:
 website:
   title: "Portfolio"
   site-url: https://g-bez.github.io/my-portfolio/
-  cookie-consent: 
-    type: express
-    style: simple
-    palette: dark
-  google-analytics:
-    tracking-id: "G-TVL122T9T3"
-    anonymize-ip: true
+  
+  # cookie-consent: 
+  #   type: express
+  #   style: headline
+  #   palette: dark
+  # google-analytics:
+  #   tracking-id: "G-XXXXXXXX"
+  #   anonymize-ip: true
   
   navbar:
     pinned: true
@@ -28,10 +29,11 @@ format:
   html:
     code-copy: true
     code-overflow: wrap
-    theme:
-      dark: darkly
-      light: flatly
+    theme: darkly
     css: styles.css
     fontsize: 0.9em
+    toc: true
+    toc-location: left
+    toc-title: "On this page"
 
 editor: visual

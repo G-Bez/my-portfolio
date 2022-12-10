@@ -8,6 +8,10 @@ format:
     code-tools: true
     fontsize: 0.9em
     df-print: paged
+comments: 
+    utterances: 
+      repo:  G-Bez/my-portfolio 
+      theme: photon-dark
 editor: visual
 ---
 

@@ -2144,7 +2144,6 @@ Geodetic CRS:  WGS 84</code></pre>
 
 
 <div style="text-align: justify">
-<p>Accessibility is a core concept of data visualization. The users of your reports, visualizations and presentations might suffer from vision impairment, and struggle at interpreting your visual outputs. Therefore, using colorblind-friendly color palettes is of utmost importance when making visualizations. Luckily, there’s plenty of options to make colorblind palettes in R. <code>viridisLite</code> package is one of them.</p>
 <section id="viridislite-package" class="level2">
 <h2 class="anchored" data-anchor-id="viridislite-package">viridisLite package</h2>
 <p><a href="https://sjmgarnier.github.io/viridisLite/"><code>viridisLite</code></a> is a lightweight version of <code>viridis</code> package. Both are meant to provide a series of color maps designed to improve graph readability for readers with common forms of vision impairment. Base <code>viridis</code> provides additional functionalities, while <code>viridsLite</code> is meant to be as lightweight and dependency-free as possible, for maximum compatibility with all the R ecosystems.</p>
@@ -2188,8 +2187,8 @@ Geodetic CRS:  WGS 84</code></pre>
 <span id="cb4-4"><span class="fu" style="color: #4758AB;">library</span>(patchwork)</span></code></pre></div>
 </div>
 </section>
-<section id="show-generated-color-palettes" class="level2">
-<h2 class="anchored" data-anchor-id="show-generated-color-palettes">Show generated color palettes</h2>
+<section id="show-color-palettes" class="level2">
+<h2 class="anchored" data-anchor-id="show-color-palettes">Show color palettes</h2>
 <p>Since the output of <code>viridisLite</code> functions consists of a vector of hex codes, it’s quite hard to tell precisely which colors were actually picked. <code>scales</code> package provides a convenient and very easy way to visualize user generated palettes. See the following example.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1">pal <span class="ot" style="color: #003B4F;">&lt;-</span> viridisLite<span class="sc" style="color: #5E5E5E;">::</span><span class="fu" style="color: #4758AB;">mako</span>(<span class="dv" style="color: #AD0000;">25</span>)</span>
