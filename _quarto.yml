@@ -4,23 +4,23 @@ project:
 
 website:
   title: "Portfolio"
-  #site-url: xxxxxxx
+  site-url: https://g-bez.github.io/my-portfolio/
   
-  # cookie-consent: 
-  #   type: express
-  #   style: headline
-  #   palette: dark
-  # google-analytics:
-  #   tracking-id: "G-XXXXXXXX"
-  #   anonymize-ip: true
+  cookie-consent: 
+    type: express
+    style: headline
+    palette: dark
+  google-analytics:
+    tracking-id: "G-TVL122T9T3"
+    anonymize-ip: true
   
   navbar:
     pinned: true
-    # right:
-      # - icon: github
-      #   href: https://github.com/my_profile
-      # - icon: rss
-      #   href: index.xml
+    right:
+      - icon: github
+        href: https://github.com/G-Bez
+      - icon: rss
+        href: index.xml
     left: 
       - text: About me
         href: about.qmd
@@ -32,8 +32,5 @@ format:
     theme: darkly
     css: styles.css
     fontsize: 0.9em
-    toc: true
-    toc-location: left
-    toc-title: "On this page"
 
 editor: visual

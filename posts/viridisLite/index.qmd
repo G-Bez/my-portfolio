@@ -5,9 +5,6 @@ categories: [R, Visualization, Accessibility]
 image: viridis_thumbnail.png
 format:
   html:
-    toc: true
-    toc-location: left
-    toc-title: "On this page"
     fontsize: 0.9em
     code-tools: true
 comments: 
