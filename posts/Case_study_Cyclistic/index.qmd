@@ -11,6 +11,7 @@ comments:
     utterances: 
       repo:  G-Bez/my-portfolio 
       theme: photon-dark
+title-block-banner: false
 editor: visual
 ---
 

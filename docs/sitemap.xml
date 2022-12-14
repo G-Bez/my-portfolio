@@ -2,58 +2,62 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://g-bez.github.io/my-portfolio/about.html</loc>
-    <lastmod>2022-12-14T09:48:45.628Z</lastmod>
+    <lastmod>2022-12-14T12:47:37.883Z</lastmod>
+  </url>
+  <url>
+    <loc>https://g-bez.github.io/my-portfolio/archive.html</loc>
+    <lastmod>2022-12-14T12:47:42.131Z</lastmod>
   </url>
   <url>
     <loc>https://g-bez.github.io/my-portfolio/index.html</loc>
-    <lastmod>2022-12-14T10:15:26.371Z</lastmod>
+    <lastmod>2022-12-14T12:47:46.089Z</lastmod>
   </url>
   <url>
     <loc>https://g-bez.github.io/my-portfolio/posts/avgtemp/index.html</loc>
-    <lastmod>2022-12-14T10:15:38.368Z</lastmod>
+    <lastmod>2022-12-14T12:47:48.337Z</lastmod>
   </url>
   <url>
     <loc>https://g-bez.github.io/my-portfolio/posts/Case_study_Cyclistic/index.html</loc>
-    <lastmod>2022-12-14T09:48:52.748Z</lastmod>
+    <lastmod>2022-12-14T12:47:51.826Z</lastmod>
   </url>
   <url>
     <loc>https://g-bez.github.io/my-portfolio/posts/gganimate/index.html</loc>
-    <lastmod>2022-12-14T09:48:55.374Z</lastmod>
+    <lastmod>2022-12-14T12:47:54.684Z</lastmod>
   </url>
   <url>
     <loc>https://g-bez.github.io/my-portfolio/posts/gis_crs/index.html</loc>
-    <lastmod>2022-12-14T09:48:58.191Z</lastmod>
+    <lastmod>2022-12-14T12:47:57.844Z</lastmod>
   </url>
   <url>
     <loc>https://g-bez.github.io/my-portfolio/posts/gis_osm/index.html</loc>
-    <lastmod>2022-12-14T09:49:00.200Z</lastmod>
+    <lastmod>2022-12-14T12:48:00.129Z</lastmod>
   </url>
   <url>
     <loc>https://g-bez.github.io/my-portfolio/posts/gis_raster/index.html</loc>
-    <lastmod>2022-12-14T09:49:01.945Z</lastmod>
+    <lastmod>2022-12-14T12:48:02.090Z</lastmod>
   </url>
   <url>
     <loc>https://g-bez.github.io/my-portfolio/posts/gis_vector/index.html</loc>
-    <lastmod>2022-12-14T09:49:03.980Z</lastmod>
+    <lastmod>2022-12-14T12:48:04.197Z</lastmod>
   </url>
   <url>
     <loc>https://g-bez.github.io/my-portfolio/posts/janitor/index.html</loc>
-    <lastmod>2022-12-14T09:49:06.365Z</lastmod>
+    <lastmod>2022-12-14T12:48:06.336Z</lastmod>
   </url>
   <url>
     <loc>https://g-bez.github.io/my-portfolio/posts/kaggle/index.html</loc>
-    <lastmod>2022-12-14T09:49:07.724Z</lastmod>
+    <lastmod>2022-12-14T12:48:07.894Z</lastmod>
   </url>
   <url>
     <loc>https://g-bez.github.io/my-portfolio/posts/reg_diagn/index.html</loc>
-    <lastmod>2022-12-14T09:49:10.730Z</lastmod>
+    <lastmod>2022-12-14T12:48:10.916Z</lastmod>
   </url>
   <url>
     <loc>https://g-bez.github.io/my-portfolio/posts/renv_get_started/index.html</loc>
-    <lastmod>2022-12-14T09:49:12.256Z</lastmod>
+    <lastmod>2022-12-14T12:48:12.730Z</lastmod>
   </url>
   <url>
     <loc>https://g-bez.github.io/my-portfolio/posts/viridisLite/index.html</loc>
-    <lastmod>2022-12-14T10:03:03.784Z</lastmod>
+    <lastmod>2022-12-14T12:48:14.394Z</lastmod>
   </url>
 </urlset>

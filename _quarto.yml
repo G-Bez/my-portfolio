@@ -10,13 +10,15 @@ website:
     type: express
     style: headline
     palette: dark
-  google-analytics:
-    tracking-id: "G-W0YC9G1MJG"
-    anonymize-ip: true
+  # google-analytics:
+  #   tracking-id: "G-W0YC9G1MJG"
+  #   anonymize-ip: true
   
   navbar:
     pinned: true
     right:
+      - text: Archive
+        href: archive.qmd
       - icon: github
         href: https://github.com/G-Bez
       - icon: rss
@@ -27,9 +29,13 @@ website:
 
 format:
   html:
+    include-in-header: head_tag.js
+    include-before-body: body_tag.js
     code-copy: true
     code-overflow: wrap
-    theme: darkly
+    theme: 
+      dark: darkly
+      light: flatly
     css: styles.css
     fontsize: 0.9em
 

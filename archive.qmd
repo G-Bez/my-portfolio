@@ -1,14 +1,16 @@
 ---
+title: "Archive"
 listing:
   contents: posts/**/*.qmd
-  fields: [image, date, title, reading-time, categories]
+  fields: [date, title, reading-time, categories]
   sort:
     - "date desc"
     - "title"
-  type: grid
+  type: default
   categories: true
   sort-ui: true
   filter-ui: true
   feed: true
 page-layout: full
+title-block-banner: false
 ---
