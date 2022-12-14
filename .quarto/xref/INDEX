@@ -46,5 +46,8 @@
   },
   "posts/avgtemp/index.qmd": {
     "index.html": "c8328fd3"
+  },
+  "posts/avgtemp/index.rmarkdown": {
+    "index.html": "08071dc3"
   }
 }
