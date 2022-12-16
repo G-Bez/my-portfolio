@@ -3,9 +3,12 @@ project:
   output-dir: docs
 
 website:
-  title: "Portfolio"
+  title: "Blog"
   site-url: https://g-bez.github.io/my-portfolio/
-  open-graph: true
+  open-graph:
+    image: opengraph_thumbnail.png
+    title: "My blog about Data Analysis"
+    description: "Short posts about data analysis, related tools and methods."
   
   cookie-consent:
     type: express
