@@ -29,8 +29,8 @@ We start by loading the needed packages
 library(data.table) # fast data manipulation for big datasets
 library(reshape2)
 library(terra)
-library(xts)      # packages for date
-library(tsbox)    # manipulation
+library(xts)      # packages for time 
+library(tsbox)    # series objects
 library(ggplot2)
 library(gganimate)
 library(RColorBrewer)

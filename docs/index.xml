@@ -30,8 +30,8 @@
 <div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;">library</span>(data.table) <span class="co" style="color: #5E5E5E;"># fast data manipulation for big datasets</span></span>
 <span id="cb1-2"><span class="fu" style="color: #4758AB;">library</span>(reshape2)</span>
 <span id="cb1-3"><span class="fu" style="color: #4758AB;">library</span>(terra)</span>
-<span id="cb1-4"><span class="fu" style="color: #4758AB;">library</span>(xts)      <span class="co" style="color: #5E5E5E;"># packages for date</span></span>
-<span id="cb1-5"><span class="fu" style="color: #4758AB;">library</span>(tsbox)    <span class="co" style="color: #5E5E5E;"># manipulation</span></span>
+<span id="cb1-4"><span class="fu" style="color: #4758AB;">library</span>(xts)      <span class="co" style="color: #5E5E5E;"># packages for time </span></span>
+<span id="cb1-5"><span class="fu" style="color: #4758AB;">library</span>(tsbox)    <span class="co" style="color: #5E5E5E;"># series objects</span></span>
 <span id="cb1-6"><span class="fu" style="color: #4758AB;">library</span>(ggplot2)</span>
 <span id="cb1-7"><span class="fu" style="color: #4758AB;">library</span>(gganimate)</span>
 <span id="cb1-8"><span class="fu" style="color: #4758AB;">library</span>(RColorBrewer)</span></code></pre></div>
@@ -54,7 +54,7 @@ dimensions  : 201, 464, 4199  (nrow, ncol, nlyr)
 resolution  : 0.25, 0.25  (x, y)
 extent      : -40.5, 75.5, 25.25, 75.5  (xmin, xmax, ymin, ymax)
 coord. ref. : lon/lat WGS 84 
-source      : file1a7c48b336e.nc 
+source      : file208860d57545.nc 
 varname     : tg (mean temperature) 
 names       :    tg_1,    tg_2,    tg_3,    tg_4,    tg_5,    tg_6, ... 
 unit        : Celsius, Celsius, Celsius, Celsius, Celsius, Celsius, ... 
