@@ -1,0 +1,162 @@
+---
+title: "GIS with R - Coordinate Reference Systems in R"
+date: "2022-11-09"
+categories: [R, GIS]
+image: gis_thumbnail.jpg
+format:
+  html:
+    code-tools: true
+    fontsize: 0.9em
+    df-print: paged
+    include-in-header: navbar.html
+    css: theme.css
+    toc: true
+comments: 
+    utterances: 
+      repo:  G-Bez/my-portfolio 
+      theme: photon-dark
+title-block-banner: false
+editor: visual
+---
+
+```{css, echo = FALSE}
+.justify {
+  text-align: justify !important
+}
+```
+
+# Geographic coordinate systems
+
+::: justify
+Geographic coordinate systems identify any location on the Earth's surface using two values: longitude and latitude. Longitude is location in the East-West direction in angular distance from the Prime Meridian plane. Latitude is angular distance North or South of the equatorial plane. Distances in geographic CRSs are therefore not measured in meters.
+
+The surface of the Earth in geographic coordinate systems is represented by a spherical or ellipsoidal surface.
+
+-   **Spherical models**: they assume that the Earth is a perfect sphere of a given radius. Spherical models have the advantage of simplicity but are rarely used because they are inaccurate: the Earth is not a sphere.
+-   **Ellipsoidal models:** they are defined by two parameters: the equatorial radius and the polar radius. These are suitable because the Earth is compressed: the equatorial radius is around 11.5 km longer than the polar radius.
+
+Ellipsoids are part of a wider component of CRSs: the **datum**. This contains information on what ellipsoid to use and the precise relationship between the Cartesian coordinates and location on the Earth's surface. These additional details are stored in the respective arguments of `PROJ4-string` and `WKT` notations (see following sections for more details). There are two types of datum:
+
+-   **Local datum**: in a local datum such as NAD83 the ellipsoidal surface is shifted to align with the surface at a particular location.
+-   **Geocentric datum**: in a geocentric datum, such as WGS84, the center is the Earth's center of gravity and the accuracy of projections is not optimized for a specific location.
+:::
+
+# Projected coordinate reference systems
+
+::: justify
+Projected CRSs are based on Cartesian coordinates on an implicitly flat surface. They have an origin, X and Y axes, and a linear unit of measurement such as meters. All projected CRSs are based on a geographic CRS, described in the previous section, and rely on map projections to convert the three-dimensional surface of the Earth into Easting and Northing (X and Y) values in a projected CRS.
+
+This transition cannot be done without adding some distortion. Therefore, some properties of the Earth's surface are distorted in this process, such as area, direction, distance, and shape. A projected coordinate system can preserve only one or two of those properties. Projections are often named based on a property they preserve:
+
+-   **Equal-area**: preserves area.
+-   **Azimuthal**: preserves direction.
+-   **Equidistant**: preserves distance.
+-   **Conformal**: preserves local shape.
+
+There are three main groups of projection types:
+
+-   **Conic**: in a conic projection, the Earth's surface is projected onto a cone along a single line of tangency or two lines of tangency. Distortions are minimized along the tangency lines and rise with the distance from those lines. Therefore, it is the best suited for maps of mid-latitude areas.
+-   **Cylindrical**: a cylindrical projection maps the surface onto a cylinder. This projection could also be created by touching the Earth's surface along a single line of tangency or two lines of tangency. Cylindrical projections are used most often when mapping the entire world.
+-   **Planar**: a planar projection projects data onto a flat surface touching the globe at a point or along a line of tangency. It is typically used in mapping polar regions.
+:::
+
+# How to describe CRSs
+
+::: justify
+Three main ways to describe CRSs, are `EPSG` codes, `PROJ4-strings` and `WKT` formats.
+
+-   **EPSG codes**: `EPSG` codes are short numeric codes (4 to 6 digits) representing the parameters of a CRS. Each code refers to only one, well-defined, CRS.
+-   **PROJ4-string**: `proj4strings` are a compact way to identify a CRS, and are the primary output from many of the R spatial data packages, like `raster` and `rgdal` . They allow more flexibility when it comes to specifying different parameters such as the projection type, the datum and the ellipsoid. This also makes the proj4string approach more complicated than EPSG. Each `proj4string` is made up of many individual components:
+    -   +proj: the projection.
+    -   +zone: projection zone.
+    -   +datum: the datum.
+    -   +units: unit of measurement.
+    -   +ellps: ellipsoid definition.
+-   **WKT format**: it's a compact machine and human-readable representation of geometric objects. It defines elements of coordinate reference system (`CRS`) definitions using a combination of brackets `[]` and elements separated by commas (`,`).
+:::
+
+# Which CRS to use?
+
+::: justify
+The question of which CRS is tricky, and there is rarely a 'right' answer: "There exist no all-purpose projections, all involve distortion when far from the center of the specified frame" (Bivand et al., 2013).
+
+For geographic CRSs, the answer is often WGS84, not only for web mapping, but also because GPS datasets and thousands of raster and vector datasets are provided in this CRS by default. WGS84 is the most common CRS in the world, so it is worth knowing its EPSG code: 4326.
+
+What about when a projected CRS is required? In some cases, it is not something that we are free to decide: "often the choice of projection is made by a public mapping agency" (Bivand et al., 2013). This means that when working with local data sources, it is likely preferable to work with the CRS in which the data was provided, to ensure compatibility, even if the official CRS is not the most accurate.
+
+In cases where an appropriate CRS is not immediately clear, the choice of CRS should depend on the properties that are most important to preserve in the subsequent maps and analysis.
+:::
+
+# Packages
+
+::: justify
+Below, we load the packages we'll need later on.
+
+```{r}
+#| warning: false
+library(rgdal)
+library(sf)
+```
+:::
+
+# CRSs in R
+
+::: justify
+Spatial R packages support a wide range of CRSs and they use the long established PROJ library. Other than searching for EPSG codes [online](https://spatialreference.org/ref/epsg/), an other quick way to find out about available CRSs is via the `rgdal::make_EPSG()` function.
+
+```{r rows.print=5}
+#| warning: false
+crs <- rgdal::make_EPSG()
+crs
+```
+
+As you can see, the function outputs a a data.frame with `EPSG` codes, CRSs names and corresponding `PROJ4-strings`.
+
+::: callout-important
+## Important:
+
+`rgdal` package will be retired by the end of 2023. Plan transition to `sf`/`stars`/`terra` functions using GDAL and PROJ.
+:::
+
+To get a list of the available individual components of `PROJ4-strings` supported by the PROJ library, use `sf::sf_proj_info()` function. For example:
+
+```{r rows.print=5}
+sf::sf_proj_info(type = "proj") # list of available projections
+sf::sf_proj_info(type = "ellps") # list of available ellipses
+```
+
+See `?sf::sf_proj_info` for more details.
+
+The CRS of a vector data object can be retrieved using `sf::st_crs()` function. For example:
+
+```{r}
+pt1 <- c(50,50) |> sf::st_point() 
+pt2 <- c(55,55) |> sf::st_point() 
+pts_sfc <- sf::st_sfc(pt1, pt2, crs = 4326)
+
+sf::st_crs(pts_sfc)
+```
+
+As you can see, the function also returns the corresponding `WKT` notation. For the same reason, the function can be used to convert `PROJ4-strings` into `WKT`. For example, in the code below, we extract the `PROJ4-string` corresponding to WGS84 CRS, from the crs data.frame we created earlier, and convert it into `WKT`.
+
+```{r}
+WGS84_prj4 <- crs[crs$code == 4326, "prj4"]
+sf::st_crs(WGS84_prj4)
+```
+
+You can set a new CRS for vector data objects with `sf::st_set_crs()` function. Below we change the CRS to Tokyo / UTM zone 51N.
+
+```{r}
+pts_sfc <- sf::st_set_crs(pts_sfc, crs[crs$note == "Tokyo / UTM zone 51N", "code"])
+```
+
+The warning message informs us that the function doesn't transform data values from one CRS to another, only the CRS attribute.
+
+With raster objects, use `raster::projection()` function to access and set CRS information.
+
+::: callout-important
+## Important
+
+Raster objects only support `PROJ4-string` notation currently.
+:::
+:::

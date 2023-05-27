@@ -1,0 +1,34 @@
+---
+listing:
+  contents: 
+    - posts/avgtemp/*.qmd
+    - posts/Case_study_Cyclistic/*.qmd
+    - posts/gganimate/*.qmd
+    - posts/gis_crs/*.qmd
+    - posts/gis_osm/*.qmd
+    - posts/janitor/*.qmd
+    - posts/reg_diagn/*.qmd
+    - posts/renv_get_started/*.qmd
+  fields: [image, date, title, reading-time, categories]
+  sort:
+    - "date desc"
+    - "title"
+  type: grid
+  grid-columns: 4
+  #categories: true
+  #sort-ui: true
+  #filter-ui: true
+  feed: true
+page-layout: full
+format: 
+  html: 
+    include-in-header:
+      - theme.html
+    include-after-body: 
+      - theme.js
+    #fontsize: 70px
+---
+
+::: {style="text-align: justify"}
+See more posts in [Archive...](https://g-bez.github.io/my-portfolio/archive.html)
+:::

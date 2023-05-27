@@ -1,0 +1,231 @@
+---
+title: "Case study - Average temperature in Europe from 2011 to 2022"
+date: "2022-11-22"
+categories: [R, GIS, Visualization, Case study]
+image: gis_thumbnail.jpg
+format:
+  html:
+    code-tools: true
+    fontsize: 0.9em
+    df-print: paged
+    include-in-header: navbar.html
+    css: theme.css
+    toc: true
+comments: 
+    utterances: 
+      repo:  G-Bez/my-portfolio 
+      theme: photon-dark
+title-block-banner: false
+editor: visual
+---
+
+```{css, echo = FALSE}
+.justify {
+  text-align: justify !important
+}
+```
+
+::: justify
+In this brief case study I'll analyze average temperatures in Europe from 2011 to 2022 (up to June 2022) and build an animated raster plot of temperatures with `terra` , `ggplot2` and `gganimate` packages.
+:::
+
+# Packages
+
+::: justify
+We start by loading the needed packages
+:::
+
+```{r}
+#| message: false
+#| warning: false
+library(data.table) # fast data manipulation for big datasets
+library(reshape2)
+library(terra)
+library(xts)      # packages for time 
+library(tsbox)    # series objects
+library(ggplot2)
+library(gganimate)
+library(RColorBrewer)
+```
+
+# E-OBS dataset
+
+::: justify
+Our data source is a subset of the open [E-OBS dataset](https://surfobs.climate.copernicus.eu/dataaccess/access_eobs.php) provided by [Copernicus Climate Change Service](https://climate.copernicus.eu/about-us) (C3S). To manually access the data, open the E-OBS link I just provided, scroll down until you see 'Access to smaller chunks' section, and click on the corresponding link. Then, find the 2011-2022 subset of the 0.25 degree resolution dataset and click on 'TG' (which stands for daily mean temperature). Here I choose the lower resolution version since it's more lightweight. Do the same for the 0.1 degree resolution if you want more precise data.
+
+Here I'll directly scrape the dataset from Copernicus website.
+
+```{r}
+Url <- "https://knmi-ecad-assets-prd.s3.amazonaws.com/ensembles/data/Grid_0.25deg_reg_ensemble/tg_ens_mean_0.25deg_reg_2011-2022_v26.0e.nc"
+temp <- tempfile(fileext = ".nc")
+options(timeout = 5000); download.file(url = Url, temp, mode = "wb"); options(timeout = 60)
+
+rt <- terra::rast(temp)
+rt
+```
+
+These are daily data ranging from 2011-01-01 to 2022-06-30.
+:::
+
+# Extract monthly subset
+
+::: justify
+Since the object contains more than 80 millions cells (201 rows, 464 columns and 4199 layers), I'll extract a subset (a single day for each month) in order to improve the rendering time.
+
+First, in order to plot the data, the `SpatRaster` object must be converted into a data.frame-like format. Here I'll convert it to data.table format for better performance.
+
+```{r}
+dt <- as.data.table(rt, xy = T)
+
+daily_range <- seq.Date(from = as.Date("2011-01-01"), to = as.Date("2022-06-30"), by = "day") |>
+  as.character()
+names(dt) <- c("x", "y", daily_range)
+
+dim(dt)
+```
+
+The result is a data.table with 19.902 rows and 4201 columns, the first two being the x and y coordinates of raster grid cells, and the other ones being the grid cells values for each day. Then, all column names, except the first two, where changed to match their corresponding dates.
+
+Now, since the wide format isn't `ggplot2`-friendly, the data must be converted to long format, with `reshape2::melt()` function.
+
+```{r}
+dt_long <- melt(dt, id.vars = c("x","y")) |> as.data.table() |> setkeyv(c("x", "y"))
+names(dt_long) <- c("x", "y", "date", "value")
+str(dt_long)
+```
+
+Finally, we can extract the monthly subset.
+
+```{r}
+monthly_range <- seq.Date(from = as.Date("2011-01-01"), to = as.Date("2022-06-30"), by = "month") |> 
+  as.character()
+
+dt_monthly <- dt_long[date %in% monthly_range]
+dt_monthly$date <- as.Date(dt_monthly$date)
+
+str(dt_monthly)
+```
+
+This final subset has 2.746.476 rows, way less than the 83.568.498 rows in `dt_long`. This should provide a good performance improvement.
+:::
+
+# A quick time series decomposition
+
+::: justify
+Before building the animated plot, let's do a quick time series decomposition to see if the trend component of our daily data is increasing. First, we summarize our daily means (i.e. we compute means of raster pixels values for each day; means of avg. temperatures in whole Europe).
+
+```{r}
+summ <- dt_long[, .(mean = mean(value, na.rm = T)), by = date]
+summ$date <- as.Date(summ$date)
+summ
+```
+
+Then we convert 'summ' into a time series object, that can be used with the decomposition function `stl()` .
+
+```{r}
+ts <- xts::xts(summ$mean, order.by = summ$date) |> tsbox::ts_ts()
+str(ts)
+```
+
+Finally we plot the the time series decomposition.
+
+```{r}
+#| out-width: 100%
+#| out-height: 250%
+stl(ts, s.window = 365) |> 
+  plot(main = "Time series decomposition of avg. daily temp. in Europe\nFrom 2011-01-01 to 2022-30-06")
+```
+
+There's a clear increasing trend from 8°C ca. up to more than 9°C, from 2011 to start of 2020, that later reverts back to 2011-2012 values.
+
+```{r}
+#| echo: false
+rm(daily_range, dt, dt_long, rt, temp, Url)
+```
+:::
+
+# Choose a color palette
+
+::: justify
+Before building the animated plot, we should choose a good color palette. Since we're dealing with temperature data in degrees Celsius (which have a 0 value), a diverging palette is ideal. `RColorBrewer` package offers many diverging colorblind-friendly palettes. Show the available palettes with `RColorBrewer::display.brewer.all()` function.
+
+```{r}
+#| out-width: 100%
+display.brewer.all(type = "div", colorblindFriendly = T)
+```
+
+The first palette (RdYlBu) is a perfect choice for temperature data, so we'll stick with it in the following visualizations.
+:::
+
+# Static example
+
+::: justify
+Before rendering the actual animation, let's try to plot a static chart for a specific date (for example 2011-01-01). First, we set a custom `ggplot2` dark theme, for better contrast with `RColorBrewer` palette.
+
+```{r}
+#| code-fold: true
+#| code-summary: "Custom theme"
+theme_update(
+  axis.text = element_text(size = 9, colour = "whitesmoke"),
+  axis.ticks = element_line(colour = "whitesmoke"),
+  legend.background = element_blank(),
+  panel.background = element_rect(fill = "gray15"),
+  panel.border = element_rect(colour = "whitesmoke", fill = NA),
+  panel.grid.major = element_line(colour = "grey10"),
+  panel.grid.minor = element_blank(),
+  plot.background = element_rect(fill = "gray10"),
+  plot.title = element_text(hjust = 0.5),
+  plot.subtitle = element_text(face = "italic", hjust = 0.5),
+  strip.background = element_rect(colour = "gray10", fill = "grey10"),
+  strip.text = element_text(size = 9, face = "bold"),
+  title = element_text(size = 10, face = "bold"),
+  text = element_text(colour = "whitesmoke")
+)
+```
+
+Then we use `ggplot2::geom_raster()` to plot the data.
+
+```{r}
+#| out-width: 100%
+#| out-height: 250%
+#| warning: false
+static <- ggplot(dt_monthly[date == "2011-01-01"], aes(x, y, fill = value)) +
+  geom_raster(interpolate = T) +
+  coord_sf(crs = 4326) +
+  scale_fill_gradientn( colours = brewer.pal(11, "RdYlBu") |> rev() ) +
+  labs(x = "lon", y = "lat", title = "Avg. temperature", subtitle = "Date: 2011-01-01", fill = "Temp. (C°)")
+static
+```
+
+Unfortunately there are some missing cells for Turkey and North Africa; anyway we got a nice static map of average temperatures in 2011-01-01.
+:::
+
+# Animated plot
+
+::: justify
+Finally let's see how temperatures change over time with an animated plot. See [Animated plots in R with gganimate package](https://g-bez.github.io/my-portfolio/posts/gganimate/) for a quick introduction to `gganimate` package.
+
+```{r}
+#| eval: false
+anim <- ggplot(dt_monthly, aes(x, y, fill = value)) +
+  geom_raster(interpolate = T) +
+  scale_fill_gradientn( colours = brewer.pal(11, "RdYlBu") |> rev() ) +
+  transition_states(as.character(date)) +
+  ease_aes("quadratic-in-out") +
+  labs(x = "lon", y = "lat", title = "Avg. temperature", subtitle = "Date: {closest_state}")
+
+animate(anim, nframes = length(monthly_range)*4+50, end_pause = 50, duration = 90)
+```
+
+![](anim.gif){fig-align="center" width="80%"}
+
+Unfortunately, due to the limitations of my personal hardware I can't render smoother and more detailed animations. Anyway this is still a nice showcase of `gganimate` and spatial packages working together in R.
+:::
+
+# Acknowledgments
+
+::: justify
+"I acknowledge the E-OBS dataset from the EU-FP6 project UERRA (<https://www.uerra.eu>) and the Copernicus Climate Change Service, and the data providers in the ECA&D project (<https://www.ecad.eu>)"
+
+Cornes, R., G. van der Schrier, E.J.M. van den Besselaar, and P.D. Jones. 2018: An Ensemble Version of the E-OBS Temperature and Precipitation Datasets, J. Geophys. Res. Atmos., **123**. doi:10.1029/2017JD028200"
+:::

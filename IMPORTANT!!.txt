@@ -1,0 +1,3 @@
+
+RICORDATI DI RIMUOVERE manualmente <div id="quarto-content"> da index.html quando fai il deploy del sito
+trova il modo di farlo in automatico

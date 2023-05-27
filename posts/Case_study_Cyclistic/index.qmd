@@ -1,0 +1,523 @@
+---
+title: "Case study - Cyclistic"
+date: "2022-10-19"
+categories: [R, Case study]
+image: cyclistic_thumbnail.jpeg
+format:
+  html:
+    code-tools: true
+    fontsize: 0.9em
+    include-in-header: navbar.html
+    css: theme.css
+comments: 
+    utterances: 
+      repo:  G-Bez/my-portfolio 
+      theme: photon-dark
+title-block-banner: false
+editor: visual
+---
+
+::: {style="text-align: justify"}
+## Introduction
+
+In this case study we will perform real-world tasks of a junior data analyst, working for a fictional bike sharing company, called Cyclistic. This case study is taken from [Google data analytics professional certificate](https://www.coursera.org/professional-certificates/google-data-analytics) on Coursera.
+
+Cyclistic's director of marketing believes the company's future success depends on maximizing the number of annual memberships. Therefore our (fictional) team wants to understand how casual riders and annual members differ. The final goal is to design a new marketing strategy to convert casuals into members, and more specifically, we need to answer two questions:
+
+-   How Cyclistic can increase its revenue based on the available data?
+-   How the marketing team can use social media to help with maximizing the number of members?
+
+But first the marketing team recommendations must be backed up with compelling data insights and visualizations, in order to get approved by the management.
+
+## Packages
+
+Here is the list of packages we'll use throughout this case study.
+
+-   **data.table**: Fast data manipulation.
+-   **lubridate**: Datetime tools.
+-   **geosphere**: Spherical trigonometry for spatial applications.
+-   **rstatix**: Framework for basic statistical tests.
+-   **robustbase**: Basic robust statistics.
+-   **ggplot2**: Data visualization.
+-   **ggmap**: Spatial visualizations with for ggplot2 users.
+-   **viridisLite**: Colorblind friendly color palettes.
+-   **patchwork**: Easy plot composition for ggplot2 users.
+
+We start by loading these packages.
+
+```{r Packages}
+#| output: false
+library(data.table)
+library(lubridate)
+library(geosphere)
+library(rstatix)
+library(robustbase)
+library(ggplot2)
+library(ggmap)
+library(viridisLite)
+library(patchwork)
+```
+
+## Dataset
+
+The relevant historical bike trip data can be downloaded from [this url](https://divvy-tripdata.s3.amazonaws.com/index.html) (see [license agreement](https://www.divvybikes.com/data-license-agreement)). Here we use data ranging from June 2021 to May 2022 (archives from "202106-divvy-tripdata.zip" to "202205-divvy-tripdata.zip" included)
+
+Each archive contains a single monthly dataset, where each observation represents a unique bike ride. Each dataset has 13 columns/variables:
+
+-   **ride_id**: alphanumeric id for each ride.
+-   **rideable_type**: Bike type. Categorical variable with 3 levels: "classic_bike", "docked_bike", "electric_bike".
+-   **member_casual**: Customer type. Categorical variable with 2 levels: "casual", "member".
+-   **started_at**: Ride start datetime.
+-   **ended_at**: Ride end datetime.
+-   **start_station_name**: Name of the start station.
+-   **start_station_id**: Alphanumeric id for start station.
+-   **end_station_name**: Name of the end station.
+-   **end_station_id**: Alphanumeric id for end station.
+-   **start_lat**: Start latitude coordinate.
+-   **start_lng**: Start longitude coordinate.
+-   **end_lat**: End latitude coordinate.
+-   **end_lng**: End longitude coordinate.
+
+## Data scraping and manipulation
+
+As first step, we scrape the datasets, merge them into a total dataset, and do some manipulation. In particular we add some additional columns, computed from the existing ones:
+
+-   **ride_length**: Ride length in seconds ('ended_at' - 'started_at').
+-   **year_month**: Year and month value extracted from 'started_at' variable.
+-   **weekday**: Day of week extracted from 'started_at' variable.
+-   **ride_dist**: Mileage in meters. Computed from latitude and longitude values.
+
+Then we convert 'year_month' and 'member_casual' variables into factor datatype, and 'year_month' into ordered factor. To accomplish these tasks we use 3 custom functions.
+
+```{r Scrape and manipulate data func}
+#| code-fold: true
+#| code-summary: "Custom scraping and manipulation functions"
+add.cols <- function(dt) {
+  if(!("data.table" %in% class(dt))) stop("dt is not a data.table object.")
+  if(Sys.getlocale("LC_TIME") != "English_United States.1252") Sys.setlocale("LC_TIME", "English")
+  year_month <- format(dt$started_at, "%b %Y")
+  weekday <- lubridate::wday(dt$started_at, label = T, abbr = T, week_start = 1)
+  ride_length <- as.numeric(dt$ended_at - dt$started_at)
+  ride_dist = geosphere::distGeo(p1 = dt[, c("start_lng", "start_lat"), with = F], 
+                                 p2 = dt[, c("end_lng", "end_lat"), with = F])
+  return(cbind(dt, year_month, weekday, ride_length, ride_dist))
+}
+
+
+change.datatypes <- function(dt) {
+  if(!("data.table" %in% class(dt))) stop("dt is not a data.table object.")
+  dt[, c("rideable_type", "member_casual")] <- lapply(
+    dt[, c("rideable_type", "member_casual")],
+    as.factor
+  )
+  dt[["year_month"]] <- ordered(dt[["year_month"]], levels = unique(dt$year_month))
+  return(dt)
+}
+
+
+get.raw_data <- function(Url, Timeout = 60) {   ## increase timeout if you get timeout error
+  mm <- c("202106", "202107", "202108", "202109", "202110", "202111", "202112", "202201",
+          "202202", "202203", "202204", "202205")
+  url1 <- Url
+  urls <- lapply(url1, paste, mm, "-divvy-tripdata.zip", sep = "")[[1]]
+  
+  ls <- vector(mode = "list", length = length(mm))
+  names(ls) <- paste(mm, "-divvy-tripdata.csv", sep = "")
+  
+  options(timeout = Timeout)
+  for (i in 1:length(ls)) {
+    ls[[i]] <- tempfile(fileext = ".zip")
+    download.file(urls[i], ls[[i]])
+    ls[[i]] <- unzip(ls[[i]], names(ls)[i], exdir = tempdir()) |> 
+      data.table::fread(na.strings = c("", NA))
+  }
+  options(timeout = 60)
+  
+  raw.tot_data <- data.table::rbindlist(ls) |> add.cols() |> change.datatypes() |> 
+    data.table::setcolorder(c(1,2,13,3,4,16,14,15,5:12,17)) |> 
+    data.table::setkey(ride_id)
+  
+  invisible(gc(reset = T))
+  return(raw.tot_data)
+}
+```
+
+We call the resulting dataset 'raw.tot_data'.
+
+```{r raw.tot_data}
+url <- "https://divvy-tripdata.s3.amazonaws.com/"
+raw.tot_data <- get.raw_data(url, Timeout = 5000)
+```
+
+::: {.callout-note collapse="false"}
+## Note:
+
+The datasets are quite large (more then 5 million obs. total). If you wish to reproduce this analysis keep in mind it might take much time, even more than 1 hour with non recent hardware.
+:::
+
+## Data cleansing
+
+As next step we do some data cleansing. We must deal with missing and bad values, which the raw dataset has plenty of.
+
+```{r missing values}
+cbind(miss_val = lapply(raw.tot_data, is.na) |> lapply(sum))
+```
+
+We use two additional custom functions to accomplish this task.
+
+```{r Data cleansing func}
+#| code-fold: true
+#| code-summary: "Custom cleansing functions"
+rm.outliers <- function(data) {
+  if(!("data.table" %in% class(data))) stop("dt is not a data.table object.")
+  rl.upp_whisk <- robustbase::adjboxStats(data[ride_length > 0, ride_length])$stats[5]
+  df <- data[-which(ride_length < 0 | ride_length > rl.upp_whisk
+                    | (ride_dist == 0 & start_station_name != end_station_name)
+                    | (ride_dist != 0 & start_station_name == end_station_name)
+                    | ride_dist %in% data[order(-ride_dist), head(.SD, 2)]$ride_dist)]
+  return(df)
+}
+
+
+rm.missing <- function(data) {
+  if(!("data.table" %in% class(data))) stop("dt is not a data.table object.")
+  df <- data[, grep("*station", names(data)) := NULL]
+  df <- df[complete.cases(df)]
+  return(df)
+}
+```
+
+This is what the two functions do:
+
+-   Drop obs. with 'ride_length' \< 0, since negative times don't make sense.
+-   Drop obs. with 'ride_length' \> extreme of upper whisker of its boxplot adjusted for skewed distributions (see `robustbase::adjboxStats()` documentation).
+-   Drop obs. with 'ride_dist' = 0, and 'start_station_name' != 'end_station_name', since null distance only makes sense when start station and end station are the same.
+-   Drop obs. with 'ride_dist' != 0, and 'start_station_name' = 'end_station_name'.
+-   Drop the two highest 'ride_dist' values, since max value is physically impossible, and the second highest one, while it might make sense in theory, is also an extremely far outlier compared to other values.
+-   Drop station IDs and names variables, since they have many non imputable values, and we won't use those variables in the following analysis.
+-   Drop rows with missing 'end_lat', 'end_lng' and 'ride_dist' values.
+
+::: {.callout-important collapse="false"}
+## Warning!
+
+Arbitrarily removing observations from datasets is bad practice in real case scenarios, and might lead to strongly biased results. Always confront with your team and project stakeholders before removing any observation. However this is only a fictional case study, and this is the best we can do here.
+:::
+
+We now run the two custom functions, and assign the output to 'tot_data'. This is the final dataset we'll use throughout the rest of the analysis. It has 5.673.722 rows and 13 columns.
+
+```{r tot_data}
+#| message: false
+tot_data <- raw.tot_data |> rm.outliers() |> rm.missing()
+str(tot_data)
+```
+
+## Explorative analysis
+
+Next step is a brief exploratory analysis. We start by looking at 'ride_length' and 'ride_dist' distributions, with boxplots grouped by 'member_casual' variable, being the main variable of interest for this case study. Again, we use a custom function to draw the boxplots, and we apply a custom ggplot2 theme.
+
+```{r Custom boxplot function}
+#| code-fold: true
+#| code-summary: "Custom boxplot function"
+box_plot <- function(data, x, y, mult=1, Fill = "thistle2", outl.size = 0.2, Notch = F, Coef = 1.5, 
+                     stat = "mean", Breaks = waiver(), Title = "Title", Subtitle = waiver(), 
+                     x.lab = "x-axis label", y.lab = "y-axis label") {
+  
+  x = parse(text = x)
+  y = parse(text = y)
+  
+  box <- ggplot2::ggplot(data, aes(x = eval(x), y = eval(y)*mult)) +
+    geom_boxplot(outlier.size = outl.size, fill = Fill, notch = Notch, coef = Coef) +
+    stat_summary(fun = stat) +
+    scale_y_continuous(breaks = Breaks) +
+    ggtitle(Title, Subtitle) +
+    xlab(x.lab) +
+    ylab(y.lab)
+  
+  return(box)
+}
+```
+
+```{r Custom ggplot2 theme}
+#| code-fold: true
+#| code-summary: "Custom ggplot2 theme"
+theme_update(
+  axis.text = element_text(size = 11),
+  legend.background = element_blank(),
+  panel.background = element_rect(fill = "grey85"),
+  panel.border = element_rect(colour = "black", fill = NA),
+  panel.grid = element_line(colour = "whitesmoke"),
+  panel.grid.minor.y = element_blank(),
+  panel.grid.major.x = element_blank(),
+  plot.title = element_text(hjust = 0.5),
+  plot.subtitle = element_text(face = "italic", hjust = 0.5),
+  strip.background = element_rect(colour = "black", fill = "grey85"),
+  strip.text = element_text(size = 10, face = "bold"),
+  title = element_text(size = 12, face = "bold")
+)
+```
+
+Below you can see the resulting plots:
+
+```{r boxplots}
+#| warning: false
+#| out-width: "90%"
+#| out-height: "90%"
+rl_box <- box_plot(tot_data, "member_casual", "ride_length", mult = 1/60,
+                        Fill =  viridisLite::turbo(25)[c(5,16)], Notch = T, Breaks = seq(0,90,5), 
+                        Title = "Ride length boxplots", x.lab = "Membership",
+                        y.lab = "Ride length (min.)")
+rd_box <- box_plot(tot_data, "member_casual", "ride_dist", mult = 1/1000,
+                        Fill =  viridisLite::turbo(25)[c(5,16)], Notch = T, Breaks = seq(0,35,2.5), 
+                        Title = "Ride dist boxplots", x.lab = "Membership", 
+                        y.lab = "Ride distance (km)")
+
+rl_box + rd_box # patchwork composition
+```
+
+All the four distributions are heavily right skewed, with mean (black dot) \> median, long upper whiskers and many outliers on the upper side.
+
+Looking at 'ride_length' plot, we notice casuals group has higher variance than members one, since casuals box is wider. Also, all casuals boxplot statistics have higher values than their members counterparts. Hence it seems like casual customers have a tendency to take longer rides, and more diverse use cases for Cyclistic's bikes. Conversely, the two 'ride_dist' boxplots look very similar, suggesting the two groups cover the same distance on average. Additional more formal analysis is required here in order to draw conclusions. This preliminar graphical analysis suggests members are more likely to use Cyclistic's bikes for daily routine tasks, like commuting to work, compared to casual customers who occasionally rent them for leisure. Moreover, from the boxplots results, it's clear that the current Cyclistic strategy doesn't profit from 'ride_length', since members, being the most profitable group, take shorter rides.
+
+As next step we compute some summary statistics for 'ride_length' and 'rideable_type' variables. We'll use them later to draw additional visualizations. Again we write a custom function to do it, in order to save keystrokes.
+
+```{r custom summary function}
+#| code-fold: true
+#| code-summary: "Custom summary function"
+Summ <- function(data, var, group_by, order_by = group_by) {
+  if(!("data.table" %in% class(data))) stop("dt is not a data.table object.")
+  
+  x = parse(text = var)
+  summ = data[
+    ,
+    .(obs = NROW(eval(x)), quart1 = quantile(eval(x), 0.25), mean = mean(eval(x)), 
+      median = median(eval(x)), quart3 = quantile(eval(x), 0.75), iqr = IQR(eval(x)),
+      stdev = sd(eval(x))), 
+    by = group_by
+  ] |> data.table::setorderv(cols = order_by)
+  
+  return(summ)
+}
+```
+
+```{r summaries}
+rl_summ_by_ym <- Summ(tot_data, "ride_length", c("member_casual", "year_month"))
+rl_summ_by_wd <- Summ(tot_data, "ride_length", c("member_casual", "weekday"))
+rt_summ <- tot_data[, .(obs = .N), by = c("member_casual", "rideable_type")]
+```
+
+::: {#summaries .panel-tabset}
+## rl_summ_by_ym
+
+```{r}
+rl_summ_by_ym
+```
+
+## rl_summ_by_wd
+
+```{r}
+rl_summ_by_wd
+```
+
+## rt_summ
+
+```{r}
+rt_summ
+```
+:::
+
+As final step of our exploratory data analysis, we perform Welch's t-tests on 'ride_length' and 'ride_dist' variables means, with 'member_casual' being the grouping factor. We also compute Cohen's D estimates to see the actual effect size of 'member_casual' on the other two variables.
+
+::: {.callout-note collapse="false"}
+## Note:
+
+Since we have a very large dataset, Welch's tests will almost certainly reject the null hypothesis of equal population means for member and casual customers. That's why we also estimate the actual effect sizes of 'member_casual' variable with Cohen's d statistics.
+:::
+
+```{r welch t-tests}
+welch_rl <- t.test(ride_length ~ member_casual, data = tot_data)
+welch_rd <- t.test(ride_dist ~ member_casual, data = tot_data)
+```
+
+::: {#welch .panel-tabset}
+## welch_rl
+
+```{r}
+welch_rl
+```
+
+## welch_rd
+
+```{r}
+welch_rd
+```
+:::
+
+As expected, both tests reject the null hypothesis of equal population means. So let's see how strong the relationships between 'member_casuals', and 'ride_dist' and 'ride_length' variables actually are. Relying on the two boxplots, we can assume a moderate to high effect size on 'ride_length' variable, and a small effect size on 'ride_dist' variable.
+
+```{r cohens D estimates}
+cohensD_rl <- rstatix::cohens_d(ride_length ~ member_casual, data = tot_data)
+cohensD_rd <- rstatix::cohens_d(ride_dist ~ member_casual, data = tot_data)
+```
+
+::: {#cohensD .panel-tabset}
+## cohensD_rl
+
+```{r}
+cohensD_rl
+```
+
+## cohensD_rd
+
+```{r}
+cohensD_rd
+```
+:::
+
+As expected, our assumptions about effect sizes turned out correct. 'member_casual' has a moderate effect size on 'ride_length' variable, and a negligible effect on 'ride_dist'. That's more evidence supporting our previous findings about the two types of customers: casuals tend to take significantly longer rides and are more likely to use Cyclistic bikes for leisure.
+
+## Visualizations
+
+Last step of our analysis consists of some additional visualizations about the total number of rides, and some maps.
+
+```{r custom viz functions}
+#| code-fold: true
+#| code-summary: "Custom visualiz. functions"
+col_plot <- function(data, x, y, group, mult = 1, Legend = F, text_vjust = 0, text_col = "black", 
+                     text_fface = "bold", text.size = 2.5, facet_nrow = 2, facet_strip = "right", 
+                     Breaks = waiver(), col_man = rep("black", facet_nrow), 
+                     Fill_man = rep("thistle2", facet_nrow), Title = "Title", Subtitle = waiver(), 
+                     x.lab = "x-axis label", y.lab = "y-axis label", Round = 2, Angle = 0) {
+  x = parse(text = x)
+  y = parse(text = y)
+  group = parse(text = group)
+  
+  col <- ggplot2::ggplot(data, aes(x = eval(x), y = eval(y)*mult)) +
+    geom_col(aes(color = eval(group), fill = eval(group)), show.legend = Legend) +
+    geom_text(aes(label = round(eval(y)*mult, Round)), 
+              vjust = text_vjust, 
+              colour = text_col, 
+              fontface = text_fface, 
+              size = text.size) +
+    facet_wrap(~eval(group), nrow = facet_nrow, strip.position = facet_strip) +
+    scale_y_continuous(breaks = Breaks) +
+    scale_color_manual(values = col_man) +
+    scale_fill_manual(values = Fill_man) +
+    theme(axis.text.x = element_text(angle = Angle)) +
+    ggtitle(Title, Subtitle) +
+    xlab(x.lab) +
+    ylab(y.lab)
+  
+  return(col)
+}
+
+
+map_plot <- function(data, lng, lat, group, Zoom = 11, Crop = F, Type = "toner-lite", transp = 0.05,
+                     dot.size = 0.85, col_man = "black", fill_man = "black", x.lab = "longitude",
+                     y.lab = "latitude", Title = "map") {
+  lng = parse(text = lng)
+  lat = parse(text = lat)
+  group = parse(text = group)
+  
+  map.lim = c(min(data[, eval(lng)]), min(data[, eval(lat)]), 
+              max(data[, eval(lng)]), max(data[, eval(lat)]))
+  map = get_stamenmap(bbox = map.lim, zoom = Zoom, maptype = Type, crop = Crop)
+  
+  map.plot <- ggmap::ggmap(map) +
+    geom_point(data = data, 
+               aes(x = eval(lng), y = eval(lat), fill = eval(group), colour = eval(group)),
+               alpha = transp, size = dot.size) +
+    scale_color_manual(values = col_man) +
+    scale_fill_manual(values = fill_man) +
+    guides(colour = guide_legend(override.aes = list(alpha = 1, size = 1.5))) +
+    theme(legend.title = element_blank(), legend.position = c(0.80, 0.90),
+          legend.background = element_rect(colour = "black", size = 0.1)) +
+    xlab(x.lab) +
+    ylab(y.lab) +
+    ggtitle(label = Title)
+  
+  return(map.plot)
+}
+```
+
+Below you can look at column plots for number of rides by month and by day of week, both grouped by 'member_casual'.
+
+```{r ride_length colplots}
+#| message: false
+#| out-width: "90%"
+#| out-height: "90%"
+nr.ym <- col_plot(rl_summ_by_ym, "year_month", "obs", "member_casual", mult = 1/1000,
+                       text_vjust = 1.2, Breaks = seq(0, 500, 50), Title = "Num. rides by month",
+                       Fill_man = viridisLite::turbo(25)[c(5,16)], x.lab = "Month",
+                       y.lab = "Num. rides (thousands)", Round = 0, Angle = 90)
+nr.wd <- col_plot(rl_summ_by_wd, "weekday", "obs", "member_casual", mult = 1/1000,
+                       text_vjust = 5, Breaks = seq(0, 500, 50), Title = "Num. rides by weekday",
+                       Fill_man = viridisLite::turbo(25)[c(5,16)], x.lab = "Weekday",
+                       y.lab = "Num. rides (thousands)", Round = 0)
+
+nr.ym + nr.wd #patchwork composition
+```
+
+These plots are quite interesting. The first one shows an obvious decline of the number of rides in cold seasons, for both casual and member customers, but the decline is steeper for casual riders. The second plot shows plain different trends in the number of rides by day of week: casuals do ride more during the weekend, while members have an opposite trend, with maximum number of rides during mid-week, and a decline towards the weekend. Those are pretty strong evidences that annual members mostly use Cyclistic bike sharing service to commute to work, while casuals rent bikes for leisure, mainly.
+
+With the following column plot we also take a look at customers preferences about bike types.
+
+```{r bike type colplot}
+#| message: false
+#| out-width: "90%"
+#| out-height: "90%"
+nr.rt <- ggplot(rt_summ, aes(x = rideable_type, y = obs/1000)) +
+    geom_col(aes(fill = member_casual), position = "dodge", colour = "black") +
+    geom_text(
+      aes(group = member_casual, label = round(obs/1000)), 
+      position = position_dodge2(width = 1),
+      vjust = 2, fontface = "bold"
+    ) +
+    scale_fill_manual(values = viridisLite::turbo(25)[c(5,16)]) +
+    theme(legend.position = c(.85, .85), legend.title = element_blank()) +
+    ylab("Num. rides (thousands)") +
+    xlab("Bike type") + 
+    ggtitle("Num. rides by bike type")
+
+nr.rt
+```
+
+As we can see, docked bikes ar by far the least popular category, and more important, those are only used by casual customers. It makes sense in accordance to previous findings, that annual members prefer the flexibility of non-docked bikes when commuting to work.
+
+In the end, we draw two maps paired with scatterplots of start and end coordinates.
+
+```{r maps}
+#| message: false
+#| out-width: "90%"
+#| out-height: "90%"
+start_map <- map_plot(tot_data, "start_lng", "start_lat", "member_casual",
+                           col_man = viridisLite::turbo(25)[c(5,16)], 
+                           fill_man = viridisLite::turbo(25)[c(5,16)], Title = "Start map")
+end_map <- map_plot(tot_data, "end_lng", "end_lat", "member_casual",
+                         col_man = viridisLite::turbo(25)[c(5,16)], 
+                         fill_man = viridisLite::turbo(25)[c(5,16)], Title = "End map")
+
+start_map + end_map #patchwork composition
+```
+
+The two maps clearly show that member customers are Chicago locals mainly, while casuals are more dispersed and more likely to be tourists.
+
+## Findings and suggestions
+
+Based on the previous analysis we can conclude that:
+
+-   Most member customers are Chicago locals and use Cyclistic bikes for daily routine activities, especially to commute to work.
+-   Casual customers are more dispersed, use Cyclistic bikes for leisure, and are more likely to be tourists.
+
+Being the two groups fundamentally different between each other, it might be hard to convert casuals into members. However we can provide some potentially useful suggestions anyway:
+
+-   Gather more data on casual riders with surveys. Ask about their home addresses, daily habits, work, etc.
+-   Develop a dedicated social media campaign targeted at casual customers on weekends, specifically. A clever and low-cost idea might be asking the customers to share their weekend rides with Cyclistic on social media (in exchange for some discounts, etc.).
+-   Adopt a more flexible pricing structure, by offering something like a weekend-only membership. Also develop a plan to charge casual customers based on 'ride_length'.
+-   Consider cutting investments on docked bikes, and focus on non-docked ones.
+-   Consider an expansion to Chicago neighborhoods.
+-   Consider partnerships with local enterprises, like offering discounted memberships for employees.
+
+## Source code
+
+For a different take on this same case study, look at the [source code](https://github.com/G-Bez/Cyclistic-case-study) I uploaded to github, where I also used [renv](https://rstudio.github.io/renv/articles/renv.html) for dependency management, and [targets](https://books.ropensci.org/targets/) for workflow management. Follow the instructions in order to reproduce the analysis.
+:::

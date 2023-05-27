@@ -1,0 +1,166 @@
+---
+title: "Data cleansing with Janitor R package"
+date: "2022-11-03"
+categories: [R, Data cleansing]
+image: janitor_thumbnail.png
+format:
+  html:
+    df-print: paged
+    fontsize: 0.9em
+    code-tools: true
+    include-in-header: navbar.html
+    css: theme.css
+comments: 
+    utterances: 
+      repo:  G-Bez/my-portfolio 
+      theme: photon-dark
+title-block-banner: false
+editor: visual
+---
+
+::: {style="text-align: justify"}
+[`janitor`](https://github.com/sfirke/janitor) is a popular package for easy and quick data cleansing and data inspection in R. It's a [`tidyverse`](https://www.tidyverse.org/) oriented package, it plays nicely with `%>%` pipe operator and is optimized for cleaning data imported with `readr` and `readxl` packages.
+
+## Installing janitor
+
+You can install the most recent official version of `janitor` from CRAN with:
+
+```{r}
+#| eval: false
+install.packages("janitor")
+```
+
+Or the developer version from GitHub:
+
+```{r}
+#| eval: false
+devtools::install_github("sfirke/janitor")
+```
+
+## Example dataset
+
+We use a custom version of `iris` R prebuilt dataset, which I manually made 'dirty' by changing column names and adding some dirty columns and rows.
+
+```{r}
+iris_custom <- function() {
+  df <- datasets::iris
+  df$Species <- as.character(df$Species)
+  df[,6] <- NA
+  df[,7] <- 1
+  df[10,] <- NA
+  names(df) <- seq(1,7) |> as.character()
+  dirty_names <- c("Sepal length, (cm)", "Sepal width, (cm)", 
+                   "Petal length, (cm)", "Petal width, (cm)", 
+                   "species", "empty", "const")
+  df <- rbind(dirty_names, df)
+  return(df)
+}
+
+iris_dirty <- iris_custom()
+iris_dirty
+```
+
+Changes made:
+
+-   Converted 'species' column to character.
+-   Replaced 10th row with NAs.
+-   Added an empty column.
+-   Added a constant column.
+-   Changed colnames to a sequence on numbers from 1 to 7.
+-   Added dirty column names as first row.
+
+Now let's see some `janitor` functions in action.
+
+## Set column names from row
+
+With `janitor::row_to_names()` we can set our first row as column names.
+
+```{r rows.print = 5}
+#| message: false
+#| warning: false
+library(janitor)
+iris_dirty <- janitor::row_to_names(iris_dirty, row_number = 1)
+iris_dirty
+```
+
+## Clean column names
+
+Now we need to clean those column names since they have a very bad format. `janitor::clean_names()` is a very useful and easy to use function that cleans badly formatted column names. You can choose to change all names to snake case (all lower case words, separated by underscores), variations on camel case (internal capital letters between words), title case or other styles. It can also be used to remove parts of names and any special characters, including replacing % symbols with the word 'percent'. See [`snakecase::to_any_case()`](https://www.rdocumentation.org/packages/snakecase/versions/0.11.0/topics/to_any_case) function documentation for a list of allowed cases. Below a few examples.
+
+```{r}
+snake_case <- janitor::clean_names(iris_dirty) |> names() # default to snake case
+snake_case
+
+big.camel_case <- janitor::clean_names(iris_dirty, case="big_camel") |> names()
+big.camel_case
+
+all.caps_case <- janitor::clean_names(iris_dirty, case="all_caps") |> names()
+all.caps_case
+```
+
+Now let's set `iris_dirty` colnames to default snake case:
+
+```{r rows.print = 5}
+iris_dirty <- janitor::clean_names(iris_dirty)
+iris_dirty
+```
+
+## Remove empty columns and rows
+
+I previously added empty rows and columns to the original `iris` dataset. Those can be removed with `janitor::remove_empty()` function.
+
+```{r rows.print = 5}
+iris_dirty <- janitor::remove_empty(iris_dirty, quiet = F) # default removes both empty cols and rows
+```
+
+## Remove constant column
+
+There's also a function to remove columns with constant values, called `janitor::remove_constant()` . Previously I added to our dataset a 'const' column with all values equal to 1. Let's remove it:
+
+```{r rows.print = 5}
+iris_dirty <- janitor::remove_constant(iris_dirty, quiet = F)
+```
+
+You can also set `na.rm = T` to ignore NA values when considering if a column is a constant.
+
+## Frequency and contingency tables
+
+Before proceding, we set 'iris_dirty' columns to the correct datatypes, since previous manipulations changed all variables datatypes to character.
+
+```{r}
+iris_dirty[,1:4] <- lapply(iris_dirty[,1:4], as.numeric)
+iris_dirty$species <- as.factor(iris_dirty$species)
+str(iris_dirty)
+```
+
+With `janitor::tabyl()` function we can produce frequency and contingency table. The main advantage of `tabyl()` , compared to R base `table()` function, is the former returns a data.frame object. The following code returns a frequency table with 'species' being the grouping variable.
+
+```{r}
+freq_tbl <- janitor::tabyl(iris_dirty, species)
+freq_tbl
+```
+
+We can also return a contingency table for species and petal width, for example:
+
+```{r rows.print = 5}
+con_tbl <- janitor::tabyl(iris_dirty, petal_width_cm, species)
+con_tbl
+```
+
+## Formatting tabulated data
+
+`janitor::adorn_*()` functions can be used to format tabulated data; these functions are useful for reporting in Quarto and Markdown documents, when paired with `knitr::kable()` and similar functions. For example, `adorn_pct_formatting()` can be used to format the percentage output of `tabyl()` . Below, we round the percentages to 2 decimal places, and add the percentage sign at the end.
+
+```{r}
+freq_tbl <- janitor::adorn_pct_formatting(freq_tbl, digits = 2)
+freq_tbl
+```
+
+By default, the values in contingency tables are shown as counts. They can be changed to percentages with `adorn_percentages()` function.
+
+```{r}
+con_tbl <- janitor::adorn_percentages(con_tbl) |> 
+  janitor::adorn_pct_formatting(digits = 2)
+con_tbl
+```
+:::

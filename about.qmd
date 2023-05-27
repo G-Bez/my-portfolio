@@ -1,0 +1,20 @@
+---
+# title: "Hi, I'm Gianluca Bezziccheri"
+# image: profile.jpg
+# about:
+#   template: jolla
+#   links:
+#     - icon: linkedin
+#       text: LinkedIn
+#       href: https://www.linkedin.com/in/gb-34693483
+#     - icon: github
+#       text: Github
+#       href: https://github.com/G-Bez
+# format: 
+#   html: 
+#     include-in-header:
+#       - theme.html
+#     include-after-body: 
+#       - theme.js
+#     fontsize: 0.9em
+---

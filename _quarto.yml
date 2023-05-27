@@ -1,0 +1,53 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "Portfolio"
+  site-url: https://g-bez.github.io/my-portfolio/
+  open-graph:
+    image: opengraph_thumbnail.png
+    title: "My Portfolio"
+    # description: "Short posts about data analysis, related tools and methods."
+  
+  cookie-consent:
+    type: express
+    style: headline
+    palette: dark
+  
+  # page-footer: 
+  #   center:
+  #     - icon: linkedin
+  #       text: LinkedIn
+  #       href: https://www.linkedin.com/in/gb-34693483
+  #     - icon: github
+  #       text: GitHub
+  #       href: https://github.com/G-Bez
+    
+  
+  # navbar:
+  #   pinned: true
+  #   right:
+  #     - text: Archive
+  #       href: archive.qmd
+  #     - icon: github
+  #       href: https://github.com/G-Bez
+  #     - icon: rss
+  #       href: index.xml
+  #   left: 
+  #     - text: About me
+  #       href: about.qmd
+
+format:
+  html:
+    include-in-header:
+      - head_tag.js
+    include-before-body:
+      - body_tag.js
+    code-copy: true
+    code-overflow: wrap
+    theme: darkly
+    css: theme.css
+    fontsize: 0.9em
+
+editor: visual

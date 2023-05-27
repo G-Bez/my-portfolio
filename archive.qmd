@@ -1,0 +1,20 @@
+---
+title: "Archive"
+listing:
+  contents: posts/**/*.qmd
+  fields: [date, title, reading-time, categories]
+  sort:
+    - "date desc"
+    - "title"
+  type: table
+  categories: true
+  sort-ui: true
+  filter-ui: true
+  feed: true
+page-layout: full
+title-block-banner: false
+format: 
+  html: 
+    include-in-header: navbar_archive.html
+    css: theme_archive.css
+---

@@ -1,0 +1,107 @@
+---
+title: "GIS with R - Raster data"
+date: "2022-11-08"
+categories: [R, GIS]
+image: gis_thumbnail.jpg
+format:
+  html:
+    code-tools: true
+    fontsize: 0.9em
+    df-print: paged
+    include-in-header: navbar.html
+    css: theme.css
+comments: 
+    utterances: 
+      repo:  G-Bez/my-portfolio 
+      theme: photon-dark
+title-block-banner: false
+editor: visual
+---
+
+::: {style="text-align: justify"}
+Raster data are one of the two main data formats in GIS (see [GIS with R - Vector data](https://g-bez.github.io/my-portfolio/posts/gis_vector/) for more details about vector data in R). They represent spatial features with grids of pixels. Raster datasets are the basis of background images used in web-mapping and have been a vital source of geographic data since the origins of aerial photography and satellite-based remote sensing devices. Raster data topically represent continuous phenomena, such as temperature, population density, etc. but they can also represent discrete features such a soil or land-cover classes.
+
+The geographic raster data model usually consists of a raster header and a matrix (with rows and columns) representing equally spaced cells (pixels). The raster header defines the coordinate reference system, the extent and the origin. The origin (or starting point) is frequently the coordinate of the lower-left corner of the matrix. The extent via the number of columns, the number of rows and the cell size resolution. Hence, starting from the origin, we can easily access and modify each single cell by either using the ID of a cell or by explicitly specifying the rows and columns. This matrix representation avoids storing explicitly the coordinates for the four corner points of each cell corner as would be the case for rectangular vector polygons. This makes raster processing much more efficient and faster than vector data processing. However, in contrast to vector data, the cell of one raster layer can only hold a single value.
+
+Following, I provide some examples on how to deal with raster data in R.
+
+## Packages
+
+We start by loading the needed packages
+
+```{r}
+#| warning: false
+library(terra)
+library(ggplot2)
+```
+
+`terra` package is a more modern replacement for [`raster`](https://www.rdocumentation.org/packages/raster/versions/3.6-3) package. It is simpler and faster (see [a comparison of terra and raster packages](https://www.r-bloggers.com/2021/05/a-comparison-of-terra-and-raster-packages/). However, `raster` is not yet deprecated since there still might be compatibility issues between `terra` and other packages, so it might still be worth it to check its documentation.
+
+## Creating a raster layer
+
+You can use `terra::rast()` function to create a raster layer. See [rast() function documentation](https://www.rdocumentation.org/packages/terra/versions/1.2-10/topics/rast) for more details.
+
+```{r}
+rt <- terra::rast(crs = "+proj=longlat +datum=WGS84 +no_defs", xmin = 30, 
+                  xmax = 32, ymin = 44, ymax = 46.5, resolution = 0.05)
+rt
+```
+
+We just created a `SpatRaster` object, aka a rectangular grid cell with each cell being 0.05x0.05 degrees in size on WGS84 CRS. Below a description of the function parameters:
+
+-   **resolution**: spatial resolution; how large the pixels are.
+-   **xmin, xmax**: extent from east to west of the matrix, in meters.
+-   **ymin, ymax**: extent from north to south of the matrix, in meters.
+-   **crs**: coordinate reference system, in `PROJ-4` notation. See [GIS with R - Coordinate Reference Systems in R](https://g-bez.github.io/my-portfolio/posts/gis_crs/)
+
+We can also set the resolution indirectly with `nrows` and `ncols` parameters being the number of rows and columns, respectively. These two parameters are ignored if `resolution` parameter is used.
+
+```{r}
+rt <- terra::rast(crs = "+proj=longlat +datum=WGS84 +no_defs", nrows = 50,
+                    ncols = 40, xmin = 30, xmax = 32, ymin = 44, ymax = 46.5)
+rt
+```
+
+## Assign values to raster cells
+
+The `RasterLayer` object we just created is still blank. We can inspect the grid values with `terra::values()` function.
+
+```{r}
+terra::values(rt) |> is.na() |> all()
+```
+
+We can retrieve the number of cells with `terra::ncell()` function.
+
+```{r}
+terra::ncell(rt)
+```
+
+Finally, we can assign values with `terra::values()` function. Below we assign random values sampled from a normal distribution.
+
+```{r}
+terra::values(rt) <- terra::ncell(rt) |> rnorm(mean = 5, sd = 3)
+terra::values(rt)[1:100]
+```
+
+As you can see, the grid cells were properly filled.
+
+## Plot a raster layer
+
+To plot our `RasterLayer` we can use `ggplot2::geom_rast()` function. But first we need to assign its values to a data.frame.
+
+```{r}
+df_rast <- as.data.frame(rt, xy = T)
+df_rast
+```
+
+We use `xy` parameter to extract also the XY coordinates of each cell.
+
+```{r}
+#| out-width: 100%
+#| out-height: 250%
+p <- ggplot(df_rast, aes(x, y, fill = lyr.1)) +
+  geom_raster() +
+  labs(x = "lon", y = "lat", title = "Normal distr. RasterLayer")
+p
+```
+:::
