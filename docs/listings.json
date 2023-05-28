@@ -1,0 +1,32 @@
+[
+  {
+    "listing": "/index.html",
+    "items": [
+      "/posts/avgtemp/index.html",
+      "/posts/gganimate/index.html",
+      "/posts/reg_diagn/index.html",
+      "/posts/gis_crs/index.html",
+      "/posts/gis_raster/index.html",
+      "/posts/gis_vector/index.html",
+      "/posts/janitor/index.html",
+      "/posts/viridisLite/index.html",
+      "/posts/renv_get_started/index.html",
+      "/posts/Case_study_Cyclistic/index.html"
+    ]
+  },
+  {
+    "listing": "/archive.html",
+    "items": [
+      "/posts/avgtemp/index.html",
+      "/posts/gganimate/index.html",
+      "/posts/reg_diagn/index.html",
+      "/posts/gis_crs/index.html",
+      "/posts/gis_raster/index.html",
+      "/posts/gis_vector/index.html",
+      "/posts/janitor/index.html",
+      "/posts/viridisLite/index.html",
+      "/posts/renv_get_started/index.html",
+      "/posts/Case_study_Cyclistic/index.html"
+    ]
+  }
+]

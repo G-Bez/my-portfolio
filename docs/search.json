@@ -1,0 +1,16 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Portfolio",
+    "section": "",
+    "text": "See more posts in Archive…\n\n\n\n\n\n\n   \n     \n     \n       Order By\n       Default\n         \n          Title\n        \n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\n\n\n\n\n\nCase study - Average temperature in Europe from 2011 to 2022\n\n\n5 min\n\n\n\nR\n\n\nGIS\n\n\nVisualization\n\n\nCase study\n\n\n\n\nNov 22, 2022\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nAnimated plots in R with gganimate package\n\n\n7 min\n\n\n\nR\n\n\nVisualization\n\n\n\n\nNov 19, 2022\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nLinear regression diagnostics in R with lindia package\n\n\n13 min\n\n\n\nR\n\n\nRegression\n\n\n\n\nNov 17, 2022\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nGIS with R - Coordinate Reference Systems in R\n\n\n6 min\n\n\n\nR\n\n\nGIS\n\n\n\n\nNov 9, 2022\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nGIS with R - Raster data\n\n\n3 min\n\n\n\nR\n\n\nGIS\n\n\n\n\nNov 8, 2022\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nGIS with R - Vector data\n\n\n6 min\n\n\n\nR\n\n\nGIS\n\n\n\n\nNov 6, 2022\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nData cleansing with Janitor R package\n\n\n3 min\n\n\n\nR\n\n\nData cleansing\n\n\n\n\nNov 3, 2022\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nColorblind palettes in R with viridisLite package\n\n\n2 min\n\n\n\nR\n\n\nVisualization\n\n\nAccessibility\n\n\n\n\nOct 30, 2022\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nDependency management with renv R package\n\n\n3 min\n\n\n\nR\n\n\nDependency management\n\n\n\n\nOct 29, 2022\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nCase study - Cyclistic\n\n\n19 min\n\n\n\nR\n\n\nCase study\n\n\n\n\nOct 19, 2022\n\n\n\n\n\n\n\n\nNo matching items"
+  },
+  {
+    "objectID": "archive.html",
+    "href": "archive.html",
+    "title": "Archive",
+    "section": "",
+    "text": "Order By\n       Default\n         \n          Date - Oldest\n        \n         \n          Date - Newest\n        \n         \n          Title\n        \n     \n  \n    \n      \n      \n    \n\n\n\n\n\n\nDate\n\n\nTitle\n\n\nReading Time\n\n\nCategories\n\n\n\n\n\n\nNov 22, 2022\n\n\nCase study - Average temperature in Europe from 2011 to 2022\n\n\n5 min\n\n\nR,GIS,Visualization,Case study\n\n\n\n\nNov 19, 2022\n\n\nAnimated plots in R with gganimate package\n\n\n7 min\n\n\nR,Visualization\n\n\n\n\nNov 17, 2022\n\n\nLinear regression diagnostics in R with lindia package\n\n\n13 min\n\n\nR,Regression\n\n\n\n\nNov 9, 2022\n\n\nGIS with R - Coordinate Reference Systems in R\n\n\n6 min\n\n\nR,GIS\n\n\n\n\nNov 8, 2022\n\n\nGIS with R - Raster data\n\n\n3 min\n\n\nR,GIS\n\n\n\n\nNov 6, 2022\n\n\nGIS with R - Vector data\n\n\n6 min\n\n\nR,GIS\n\n\n\n\nNov 3, 2022\n\n\nData cleansing with Janitor R package\n\n\n3 min\n\n\nR,Data cleansing\n\n\n\n\nOct 30, 2022\n\n\nColorblind palettes in R with viridisLite package\n\n\n2 min\n\n\nR,Visualization,Accessibility\n\n\n\n\nOct 29, 2022\n\n\nDependency management with renv R package\n\n\n3 min\n\n\nR,Dependency management\n\n\n\n\nOct 19, 2022\n\n\nCase study - Cyclistic\n\n\n19 min\n\n\nR,Case study\n\n\n\n\n\n\nNo matching items"
+  }
+]

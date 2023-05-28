@@ -10,6 +10,7 @@ format:
     fontsize: 0.9em
     include-in-header: navbar.html
     css: theme.css
+    toc: true
 comments: 
     utterances: 
       repo:  G-Bez/my-portfolio 
@@ -18,10 +19,16 @@ title-block-banner: false
 editor: visual
 ---
 
-::: {style="text-align: justify"}
+```{css, echo = FALSE}
+.justify {
+  text-align: justify !important
+}
+```
+
+::: justify
 GIS is an acronym that is typically used to refer to a geographic information system. We can define a GIS as any software able to read, store, analyze, combine and manipulate spatially referenced data. The main conceptual feature of a geographic information system is that it can layer data based on their co-location such that seemingly unrelated data can be combined based on the fact they are located in the same area (see @fig-layer).
 
-![Conceptual diagram of a geographic information system.](image.jpg){#fig-layer fig-align="center"}
+![Conceptual diagram of a geographic information system.](image.jpg){#fig-layer alt="Conceptual diagram of a geographic information system." fig-align="center"}
 
 Tipically GIS represent spatial data in two different formats (or combinations of both):
 
@@ -29,9 +36,11 @@ Tipically GIS represent spatial data in two different formats (or combinations o
 -   **Raster data**: represent spatial features with continuous grids of pixels. Raster datasets are the basis of background images used in web-mapping and have been a vital source of geographic data since the origins of aerial photography and satellite-based remote sensing devices. See [GIS with R - Raster data](https://g-bez.github.io/my-portfolio/posts/gis_raster/) for examples about raster data in R.
 
 For all intents and purposes, R can be used as a GIS. Following I provide some examples on how to deal with vector data in R.
+:::
 
 ## Packages
 
+::: justify
 We start by loading the needed packages.
 
 ```{r}
@@ -42,9 +51,11 @@ library(patchwork)
 ```
 
 The `sf` package can be used to represent different geometry types in R. In addition to points, lines and polygons, there are 14 additional types of geometry that can be represented in `sf` which for now we ignore, but are detailed in the `sf` [vignette](https://r-spatial.github.io/sf/articles/sf1.html). `ggspatial` package is a spatial data framework for `ggplot2` .
+:::
 
 ## Points
 
+::: justify
 Points are the simplest spatial geometry, and are defined by a single XY coordinate. We can use `sf::st_point()` function to define a point.
 
 ```{r}
@@ -104,9 +115,11 @@ p <- ggplot2::ggplot(pts_sf, aes(geometry = geometry, colour = brand)) +
   labs(x = "lon", y = "lat")
 p
 ```
+:::
 
 ## Lines
 
+::: {#.justify}
 We can repeat the same process as above, but for line objects (`LINESTRING` geometry). We can create a single line with `sf::st_linestring()` function, which takes as input a matrix with at least two XY coordinates.
 
 ```{r}
@@ -150,10 +163,12 @@ p2 <- ggplot2::ggplot(line_sf, aes(geometry = line_sfc, colour = speed_limit)) +
 
 p1 / p2
 ```
+:::
 
 ## Polygons
 
-Polygons are essentially enclosed linestrings (first and last vertex are the same). You can create `POLYGON` geometries with `sf::st_polygon()` function. The function takes a list as an argument which contains one or more linestring matrices where the first and last rows are the same XY coordinate within a list element.
+::: justify
+Polygons are enclosed linestrings (first and last vertex are the same). You can create `POLYGON` geometries with `sf::st_polygon()` function. The function takes a list as an argument which contains one or more linestring matrices where the first and last rows are the same XY coordinate within a list element.
 
 ```{r}
 pol_list <- matrix(c(10,10,10,20,20,20,20,10,10,10), ncol = 2, byrow = T) |> list()

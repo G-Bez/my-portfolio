@@ -9,6 +9,7 @@ format:
     fontsize: 0.9em
     include-in-header: navbar.html
     css: theme.css
+    toc: true
 comments: 
     utterances: 
       repo:  G-Bez/my-portfolio 
@@ -17,9 +18,15 @@ title-block-banner: false
 editor: visual
 ---
 
-::: {style="text-align: justify"}
+```{css, echo = FALSE}
+.justify {
+  text-align: justify !important
+}
+```
+
 ## Introduction
 
+::: justify
 In this case study we will perform real-world tasks of a junior data analyst, working for a fictional bike sharing company, called Cyclistic. This case study is taken from [Google data analytics professional certificate](https://www.coursera.org/professional-certificates/google-data-analytics) on Coursera.
 
 Cyclistic's director of marketing believes the company's future success depends on maximizing the number of annual memberships. Therefore our (fictional) team wants to understand how casual riders and annual members differ. The final goal is to design a new marketing strategy to convert casuals into members, and more specifically, we need to answer two questions:
@@ -28,9 +35,11 @@ Cyclistic's director of marketing believes the company's future success depends 
 -   How the marketing team can use social media to help with maximizing the number of members?
 
 But first the marketing team recommendations must be backed up with compelling data insights and visualizations, in order to get approved by the management.
+:::
 
 ## Packages
 
+::: justify
 Here is the list of packages we'll use throughout this case study.
 
 -   **data.table**: Fast data manipulation.
@@ -44,6 +53,7 @@ Here is the list of packages we'll use throughout this case study.
 -   **patchwork**: Easy plot composition for ggplot2 users.
 
 We start by loading these packages.
+:::
 
 ```{r Packages}
 #| output: false
@@ -60,7 +70,8 @@ library(patchwork)
 
 ## Dataset
 
-The relevant historical bike trip data can be downloaded from [this url](https://divvy-tripdata.s3.amazonaws.com/index.html) (see [license agreement](https://www.divvybikes.com/data-license-agreement)). Here we use data ranging from June 2021 to May 2022 (archives from "202106-divvy-tripdata.zip" to "202205-divvy-tripdata.zip" included)
+::: justify
+The relevant historical bike trip data can be downloaded from [this url](https://divvy-tripdata.s3.amazonaws.com/index.html) (see [license agreement](https://www.divvybikes.com/data-license-agreement)). Here we use data ranging from June 2021 to May 2022 (archives from "202106-divvy-tripdata.zip" to "202205-divvy-tripdata.zip" included).
 
 Each archive contains a single monthly dataset, where each observation represents a unique bike ride. Each dataset has 13 columns/variables:
 
@@ -77,9 +88,11 @@ Each archive contains a single monthly dataset, where each observation represent
 -   **start_lng**: Start longitude coordinate.
 -   **end_lat**: End latitude coordinate.
 -   **end_lng**: End longitude coordinate.
+:::
 
 ## Data scraping and manipulation
 
+::: justify
 As first step, we scrape the datasets, merge them into a total dataset, and do some manipulation. In particular we add some additional columns, computed from the existing ones:
 
 -   **ride_length**: Ride length in seconds ('ended_at' - 'started_at').
@@ -88,6 +101,7 @@ As first step, we scrape the datasets, merge them into a total dataset, and do s
 -   **ride_dist**: Mileage in meters. Computed from latitude and longitude values.
 
 Then we convert 'year_month' and 'member_casual' variables into factor datatype, and 'year_month' into ordered factor. To accomplish these tasks we use 3 custom functions.
+:::
 
 ```{r Scrape and manipulate data func}
 #| code-fold: true
@@ -142,7 +156,9 @@ get.raw_data <- function(Url, Timeout = 60) {   ## increase timeout if you get t
 }
 ```
 
+::: justify
 We call the resulting dataset 'raw.tot_data'.
+:::
 
 ```{r raw.tot_data}
 url <- "https://divvy-tripdata.s3.amazonaws.com/"
@@ -150,20 +166,26 @@ raw.tot_data <- get.raw_data(url, Timeout = 5000)
 ```
 
 ::: {.callout-note collapse="false"}
+::: callout-note
 ## Note:
 
 The datasets are quite large (more then 5 million obs. total). If you wish to reproduce this analysis keep in mind it might take much time, even more than 1 hour with non recent hardware.
 :::
+:::
 
 ## Data cleansing
 
+::: justify
 As next step we do some data cleansing. We must deal with missing and bad values, which the raw dataset has plenty of.
+:::
 
 ```{r missing values}
 cbind(miss_val = lapply(raw.tot_data, is.na) |> lapply(sum))
 ```
 
+::: justify
 We use two additional custom functions to accomplish this task.
+:::
 
 ```{r Data cleansing func}
 #| code-fold: true
@@ -187,6 +209,7 @@ rm.missing <- function(data) {
 }
 ```
 
+::: justify
 This is what the two functions do:
 
 -   Drop obs. with 'ride_length' \< 0, since negative times don't make sense.
@@ -197,13 +220,14 @@ This is what the two functions do:
 -   Drop station IDs and names variables, since they have many non imputable values, and we won't use those variables in the following analysis.
 -   Drop rows with missing 'end_lat', 'end_lng' and 'ride_dist' values.
 
-::: {.callout-important collapse="false"}
+::: callout-warning
 ## Warning!
 
 Arbitrarily removing observations from datasets is bad practice in real case scenarios, and might lead to strongly biased results. Always confront with your team and project stakeholders before removing any observation. However this is only a fictional case study, and this is the best we can do here.
 :::
 
 We now run the two custom functions, and assign the output to 'tot_data'. This is the final dataset we'll use throughout the rest of the analysis. It has 5.673.722 rows and 13 columns.
+:::
 
 ```{r tot_data}
 #| message: false
@@ -213,7 +237,9 @@ str(tot_data)
 
 ## Explorative analysis
 
+::: justify
 Next step is a brief exploratory analysis. We start by looking at 'ride_length' and 'ride_dist' distributions, with boxplots grouped by 'member_casual' variable, being the main variable of interest for this case study. Again, we use a custom function to draw the boxplots, and we apply a custom ggplot2 theme.
+:::
 
 ```{r Custom boxplot function}
 #| code-fold: true
@@ -256,7 +282,9 @@ theme_update(
 )
 ```
 
+::: justify
 Below you can see the resulting plots:
+:::
 
 ```{r boxplots}
 #| warning: false
@@ -274,11 +302,13 @@ rd_box <- box_plot(tot_data, "member_casual", "ride_dist", mult = 1/1000,
 rl_box + rd_box # patchwork composition
 ```
 
+::: justify
 All the four distributions are heavily right skewed, with mean (black dot) \> median, long upper whiskers and many outliers on the upper side.
 
 Looking at 'ride_length' plot, we notice casuals group has higher variance than members one, since casuals box is wider. Also, all casuals boxplot statistics have higher values than their members counterparts. Hence it seems like casual customers have a tendency to take longer rides, and more diverse use cases for Cyclistic's bikes. Conversely, the two 'ride_dist' boxplots look very similar, suggesting the two groups cover the same distance on average. Additional more formal analysis is required here in order to draw conclusions. This preliminar graphical analysis suggests members are more likely to use Cyclistic's bikes for daily routine tasks, like commuting to work, compared to casual customers who occasionally rent them for leisure. Moreover, from the boxplots results, it's clear that the current Cyclistic strategy doesn't profit from 'ride_length', since members, being the most profitable group, take shorter rides.
 
 As next step we compute some summary statistics for 'ride_length' and 'rideable_type' variables. We'll use them later to draw additional visualizations. Again we write a custom function to do it, in order to save keystrokes.
+:::
 
 ```{r custom summary function}
 #| code-fold: true
@@ -325,12 +355,14 @@ rt_summ
 ```
 :::
 
+::: justify
 As final step of our exploratory data analysis, we perform Welch's t-tests on 'ride_length' and 'ride_dist' variables means, with 'member_casual' being the grouping factor. We also compute Cohen's D estimates to see the actual effect size of 'member_casual' on the other two variables.
 
-::: {.callout-note collapse="false"}
+::: {.callout-note collapse="False"}
 ## Note:
 
 Since we have a very large dataset, Welch's tests will almost certainly reject the null hypothesis of equal population means for member and casual customers. That's why we also estimate the actual effect sizes of 'member_casual' variable with Cohen's d statistics.
+:::
 :::
 
 ```{r welch t-tests}
@@ -352,7 +384,9 @@ welch_rd
 ```
 :::
 
+::: justify
 As expected, both tests reject the null hypothesis of equal population means. So let's see how strong the relationships between 'member_casuals', and 'ride_dist' and 'ride_length' variables actually are. Relying on the two boxplots, we can assume a moderate to high effect size on 'ride_length' variable, and a small effect size on 'ride_dist' variable.
+:::
 
 ```{r cohens D estimates}
 cohensD_rl <- rstatix::cohens_d(ride_length ~ member_casual, data = tot_data)
@@ -373,11 +407,15 @@ cohensD_rd
 ```
 :::
 
+::: justify
 As expected, our assumptions about effect sizes turned out correct. 'member_casual' has a moderate effect size on 'ride_length' variable, and a negligible effect on 'ride_dist'. That's more evidence supporting our previous findings about the two types of customers: casuals tend to take significantly longer rides and are more likely to use Cyclistic bikes for leisure.
+:::
 
 ## Visualizations
 
+::: justify
 Last step of our analysis consists of some additional visualizations about the total number of rides, and some maps.
+:::
 
 ```{r custom viz functions}
 #| code-fold: true
@@ -439,7 +477,9 @@ map_plot <- function(data, lng, lat, group, Zoom = 11, Crop = F, Type = "toner-l
 }
 ```
 
+::: justify
 Below you can look at column plots for number of rides by month and by day of week, both grouped by 'member_casual'.
+:::
 
 ```{r ride_length colplots}
 #| message: false
@@ -457,9 +497,11 @@ nr.wd <- col_plot(rl_summ_by_wd, "weekday", "obs", "member_casual", mult = 1/100
 nr.ym + nr.wd #patchwork composition
 ```
 
+::: justify
 These plots are quite interesting. The first one shows an obvious decline of the number of rides in cold seasons, for both casual and member customers, but the decline is steeper for casual riders. The second plot shows plain different trends in the number of rides by day of week: casuals do ride more during the weekend, while members have an opposite trend, with maximum number of rides during mid-week, and a decline towards the weekend. Those are pretty strong evidences that annual members mostly use Cyclistic bike sharing service to commute to work, while casuals rent bikes for leisure, mainly.
 
 With the following column plot we also take a look at customers preferences about bike types.
+:::
 
 ```{r bike type colplot}
 #| message: false
@@ -481,9 +523,11 @@ nr.rt <- ggplot(rt_summ, aes(x = rideable_type, y = obs/1000)) +
 nr.rt
 ```
 
+::: justify
 As we can see, docked bikes ar by far the least popular category, and more important, those are only used by casual customers. It makes sense in accordance to previous findings, that annual members prefer the flexibility of non-docked bikes when commuting to work.
 
-In the end, we draw two maps paired with scatterplots of start and end coordinates.
+Eventually, we draw two maps paired with scatterplots of start and end coordinates.
+:::
 
 ```{r maps}
 #| message: false
@@ -499,10 +543,13 @@ end_map <- map_plot(tot_data, "end_lng", "end_lat", "member_casual",
 start_map + end_map #patchwork composition
 ```
 
+::: justify
 The two maps clearly show that member customers are Chicago locals mainly, while casuals are more dispersed and more likely to be tourists.
+:::
 
 ## Findings and suggestions
 
+::: justify
 Based on the previous analysis we can conclude that:
 
 -   Most member customers are Chicago locals and use Cyclistic bikes for daily routine activities, especially to commute to work.
@@ -516,8 +563,10 @@ Being the two groups fundamentally different between each other, it might be har
 -   Consider cutting investments on docked bikes, and focus on non-docked ones.
 -   Consider an expansion to Chicago neighborhoods.
 -   Consider partnerships with local enterprises, like offering discounted memberships for employees.
+:::
 
 ## Source code
 
+::: justify
 For a different take on this same case study, look at the [source code](https://github.com/G-Bez/Cyclistic-case-study) I uploaded to github, where I also used [renv](https://rstudio.github.io/renv/articles/renv.html) for dependency management, and [targets](https://books.ropensci.org/targets/) for workflow management. Follow the instructions in order to reproduce the analysis.
 :::

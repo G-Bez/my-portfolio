@@ -1,0 +1,1327 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.475">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2022-11-17">
+
+<title>Portfolio - Linear regression diagnostics in R with lindia package</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"headline",
+  "consent_type":"express",
+  "palette":"dark",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  });
+});
+</script> 
+  
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-566H2H3');</script>
+<!-- End Google Tag Manager -->
+
+
+<link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Dosis:300" rel="stylesheet">
+
+<meta property="og:title" content="My Portfolio">
+<meta property="og:image" content="https://g-bez.github.io/my-portfolio/opengraph_thumbnail.png">
+<meta property="og:site-name" content="Portfolio">
+<meta property="og:image:height" content="1080">
+<meta property="og:image:width" content="1920">
+</head><body>
+
+
+<!-- ===== NAVBAR SECTION ===== -->
+<nav class="navbar navbar-default navbar-expand-lg nav-menu">
+  <div class="container-fluid">
+    
+    <button class="navbar-toggler nav-button" type="button" data-toggle="collapse" data-target="#myNavbar">
+        <div class="line1 ham"></div>
+        <div class="line2 ham"></div>
+        <div class="line3 ham"></div>      
+    </button>
+      
+    <div class="collapse navbar-collapse justify-content-end" id="myNavbar">
+      
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link m-2 menu-item nav-active active" href="https://g-bez.github.io/my-portfolio/"> Home </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link m-2 menu-item nav-active active" href="https://g-bez.github.io/my-portfolio/archive.html"> Archive </a>
+        </li>
+      </ul>
+      
+      <ul class="navbar-nav ml-auto">
+      </ul>
+    </div>
+      
+  </div>
+</nav>
+
+<section class="hero-section">
+
+</section>
+<!--===== END OF NAVBAR SECTION ===== -->
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+<link href="../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<link rel="stylesheet" href="../../theme.css">
+<link rel="stylesheet" href="theme.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#linear-models-assumptions" id="toc-linear-models-assumptions" class="nav-link active" data-scroll-target="#linear-models-assumptions">Linear models assumptions</a></li>
+  <li><a href="#install-lindia" id="toc-install-lindia" class="nav-link" data-scroll-target="#install-lindia">Install lindia</a></li>
+  <li><a href="#packages" id="toc-packages" class="nav-link" data-scroll-target="#packages">Packages</a></li>
+  <li><a href="#dataset" id="toc-dataset" class="nav-link" data-scroll-target="#dataset">Dataset</a></li>
+  <li><a href="#linear-model" id="toc-linear-model" class="nav-link" data-scroll-target="#linear-model">Linear model</a></li>
+  <li><a href="#diagnostics-with-lindia" id="toc-diagnostics-with-lindia" class="nav-link" data-scroll-target="#diagnostics-with-lindia">Diagnostics with lindia</a></li>
+  <li><a href="#test-linearity-assumption" id="toc-test-linearity-assumption" class="nav-link" data-scroll-target="#test-linearity-assumption">Test linearity assumption</a></li>
+  <li><a href="#test-for-null-residuals-mean" id="toc-test-for-null-residuals-mean" class="nav-link" data-scroll-target="#test-for-null-residuals-mean">Test for null residuals mean</a></li>
+  <li><a href="#test-if-predictors-are-correlated-with-residuals" id="toc-test-if-predictors-are-correlated-with-residuals" class="nav-link" data-scroll-target="#test-if-predictors-are-correlated-with-residuals">Test if predictors are correlated with residuals</a></li>
+  <li><a href="#test-homoskedasticity-assumption" id="toc-test-homoskedasticity-assumption" class="nav-link" data-scroll-target="#test-homoskedasticity-assumption">Test homoskedasticity assumption</a></li>
+  <li><a href="#test-no-perfect-multicollinearity-assumption" id="toc-test-no-perfect-multicollinearity-assumption" class="nav-link" data-scroll-target="#test-no-perfect-multicollinearity-assumption">Test no perfect multicollinearity assumption</a></li>
+  <li><a href="#test-normality-of-residuals-assumption" id="toc-test-normality-of-residuals-assumption" class="nav-link" data-scroll-target="#test-normality-of-residuals-assumption">Test normality of residuals assumption</a></li>
+  <li><a href="#check-for-outliers-and-influential-observations" id="toc-check-for-outliers-and-influential-observations" class="nav-link" data-scroll-target="#check-for-outliers-and-influential-observations">Check for outliers and influential observations</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-566H2H3" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Linear regression diagnostics in R with lindia package</h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">Regression</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 17, 2022</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+<style type="text/css">
+.justify {
+  text-align: justify !important
+}
+</style>
+</div>
+<div class="justify">
+<p>Regression diagnostics is the part of regression analysis whose objective is to investigate if the calculated model and the assumptions we made about the data and the model, are consistent with the recorded data. These diagnostics include graphical and numerical tools for checking the adequacy of the assumptions with respect to both the data and the form of the model. Here I’ll provide some examples of graphical disgnostics in R with <a href="https://github.com/yeukyul/lindia"><code>lindia</code></a> package. <code>lindia</code> is an extention to <a href="http://ggplot2.org"><code>ggplot2</code></a> to provide streamlined plotting features of linear model diagnostic plots.</p>
+</div>
+<section id="linear-models-assumptions" class="level2">
+<h2 class="anchored" data-anchor-id="linear-models-assumptions">Linear models assumptions</h2>
+<div class="justify">
+<p>We start with a quick recap of <strong>OLS linear regression models</strong> <strong>assumptions</strong>. Linear models make a number of assumptions about the predictor variables, the response variables and their relationship. Numerous extensions have been developed that allow each of these assumptions to be relaxed (i.e.&nbsp;reduced to a weaker form), and in some cases eliminated entirely. Generally these extensions make the estimation procedure more complex and time-consuming, and may also require more data in order to produce an equally precise model. The following are the major assumptions made by standard linear regression models with standard estimation techniques (e.g.&nbsp;ordinary least squares):</p>
+<ul>
+<li><p><strong>Linearity</strong>: the basic assumption of the linear regression model, as the name suggests, is that of a linear relationship between the dependent and independent variables.</p>
+<p><span class="math inline">\(y_i = \beta_1x_{1i}+ \beta_2x_{2i} + ...+\beta_nx_{ni} + \epsilon_i\)</span></p>
+<p>Here the linearity is only with respect to the parameters. Oddly enough, there’s no such restriction on the degree or form of the explanatory variables themselves. Those can be transforned as you like, for example taking the square or logarithm of one or more predictors; polynomials are also allowed.</p></li>
+<li><p><strong>Null population mean of error terms</strong>: the error term accounts for the variation in the dependent variable that the independent variables do not explain. Random chance should determine the values of the error term. For your model to be unbiased, the average value of the error term must equal zero.</p></li>
+<li><p><strong>Predictors uncorrelated with residuals</strong>: if an independent variable is correlated with the error term, we can use the independent variable to predict the error term, which violates the notion that the error term represents unpredictable random error. This assumption is also referred to as exogeneity. When this type of correlation exists, there is endogeneity. Violations of this assumption can occur because there is simultaneity between the independent and dependent variables, omitted variable bias, or measurement error in the independent variables.</p></li>
+<li><p><strong>No autocorrelation of residuals</strong>: the residuals in the linear regression model are assumed to be independently and identically distributed (i.i.d.). This implies that each error term is independent and unrelated to the other error terms. So, knowing one error term tells us nothing about the other(s). Also, all errors have the same distribution, the normal distribution (with zero mean and finite variance). The error term at a particular point in time should have no correlation with any of the past values. This makes the error terms equivalent to random noise that cannot be predicted. In the case of correlation between the residuals, the model’s accuracy is affected. Autocorrelation or serial correlation is a problem <strong>specific to regressions involving time-series</strong>.</p></li>
+<li><p><strong>No multicollinearity</strong>: the independent variables should not be correlated with each other. If there is a linear relationship between one or more explanatory variables, it adds to the complexity of the model without being able to delineate the impact of each explanatory variable on the response variable.</p></li>
+<li><p><strong>Normality of residuals</strong>: the classic linear regression model assumes that the error term is normally distributed. If this assumption is violated, it is not a big problem, especially if we have a large number of observations. This is because the central limit theorem will apply if we have a large number of observations, implying that the sampling distribution will resemble normality irrespective of the parent distribution for large sample sizes. However, if the number of observations is small and the normality assumption is violated, the standard errors in your model’s output will be unreliable.</p></li>
+<li><p><strong>Homoskedasticity</strong>: an important assumption of linear regression is that the error terms have the same variance across all observations. Unequal variance in the error terms is called heteroskedasticity and may be caused due to many reasons like the presence of outliers, or an incorrectly specified model. If we run the regression with heteroskedasticity present, the standard errors would be large and the model would have unreliable predictions.</p></li>
+</ul>
+</div>
+</section>
+<section id="install-lindia" class="level2">
+<h2 class="anchored" data-anchor-id="install-lindia">Install lindia</h2>
+<div class="justify">
+<p>You can install <code>lindia</code> from CRAN repository with:</p>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"lindia"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="justify">
+<p>Or the developer version from GitHub:</p>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"yeukyul/lindia"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="packages" class="level2">
+<h2 class="anchored" data-anchor-id="packages">Packages</h2>
+<div class="justify">
+<p>We start by loading the needed packages.</p>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lindia)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(olsrr)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="dataset" class="level2">
+<h2 class="anchored" data-anchor-id="dataset">Dataset</h2>
+<div class="justify">
+<p>We’ll build a linear model on <code>swiss</code> R prebuilt dataset.</p>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>swiss <span class="ot">&lt;-</span> datasets<span class="sc">::</span>swiss</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>swiss</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Fertility"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Agriculture"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Examination"],"name":[3],"type":["int"],"align":["right"]},{"label":["Education"],"name":[4],"type":["int"],"align":["right"]},{"label":["Catholic"],"name":[5],"type":["dbl"],"align":["right"]},{"label":["Infant.Mortality"],"name":[6],"type":["dbl"],"align":["right"]}],"data":[{"1":"80.2","2":"17.0","3":"15","4":"12","5":"9.96","6":"22.2","_rn_":"Courtelary"},{"1":"83.1","2":"45.1","3":"6","4":"9","5":"84.84","6":"22.2","_rn_":"Delemont"},{"1":"92.5","2":"39.7","3":"5","4":"5","5":"93.40","6":"20.2","_rn_":"Franches-Mnt"},{"1":"85.8","2":"36.5","3":"12","4":"7","5":"33.77","6":"20.3","_rn_":"Moutier"},{"1":"76.9","2":"43.5","3":"17","4":"15","5":"5.16","6":"20.6","_rn_":"Neuveville"},{"1":"76.1","2":"35.3","3":"9","4":"7","5":"90.57","6":"26.6","_rn_":"Porrentruy"},{"1":"83.8","2":"70.2","3":"16","4":"7","5":"92.85","6":"23.6","_rn_":"Broye"},{"1":"92.4","2":"67.8","3":"14","4":"8","5":"97.16","6":"24.9","_rn_":"Glane"},{"1":"82.4","2":"53.3","3":"12","4":"7","5":"97.67","6":"21.0","_rn_":"Gruyere"},{"1":"82.9","2":"45.2","3":"16","4":"13","5":"91.38","6":"24.4","_rn_":"Sarine"},{"1":"87.1","2":"64.5","3":"14","4":"6","5":"98.61","6":"24.5","_rn_":"Veveyse"},{"1":"64.1","2":"62.0","3":"21","4":"12","5":"8.52","6":"16.5","_rn_":"Aigle"},{"1":"66.9","2":"67.5","3":"14","4":"7","5":"2.27","6":"19.1","_rn_":"Aubonne"},{"1":"68.9","2":"60.7","3":"19","4":"12","5":"4.43","6":"22.7","_rn_":"Avenches"},{"1":"61.7","2":"69.3","3":"22","4":"5","5":"2.82","6":"18.7","_rn_":"Cossonay"},{"1":"68.3","2":"72.6","3":"18","4":"2","5":"24.20","6":"21.2","_rn_":"Echallens"},{"1":"71.7","2":"34.0","3":"17","4":"8","5":"3.30","6":"20.0","_rn_":"Grandson"},{"1":"55.7","2":"19.4","3":"26","4":"28","5":"12.11","6":"20.2","_rn_":"Lausanne"},{"1":"54.3","2":"15.2","3":"31","4":"20","5":"2.15","6":"10.8","_rn_":"La Vallee"},{"1":"65.1","2":"73.0","3":"19","4":"9","5":"2.84","6":"20.0","_rn_":"Lavaux"},{"1":"65.5","2":"59.8","3":"22","4":"10","5":"5.23","6":"18.0","_rn_":"Morges"},{"1":"65.0","2":"55.1","3":"14","4":"3","5":"4.52","6":"22.4","_rn_":"Moudon"},{"1":"56.6","2":"50.9","3":"22","4":"12","5":"15.14","6":"16.7","_rn_":"Nyone"},{"1":"57.4","2":"54.1","3":"20","4":"6","5":"4.20","6":"15.3","_rn_":"Orbe"},{"1":"72.5","2":"71.2","3":"12","4":"1","5":"2.40","6":"21.0","_rn_":"Oron"},{"1":"74.2","2":"58.1","3":"14","4":"8","5":"5.23","6":"23.8","_rn_":"Payerne"},{"1":"72.0","2":"63.5","3":"6","4":"3","5":"2.56","6":"18.0","_rn_":"Paysd'enhaut"},{"1":"60.5","2":"60.8","3":"16","4":"10","5":"7.72","6":"16.3","_rn_":"Rolle"},{"1":"58.3","2":"26.8","3":"25","4":"19","5":"18.46","6":"20.9","_rn_":"Vevey"},{"1":"65.4","2":"49.5","3":"15","4":"8","5":"6.10","6":"22.5","_rn_":"Yverdon"},{"1":"75.5","2":"85.9","3":"3","4":"2","5":"99.71","6":"15.1","_rn_":"Conthey"},{"1":"69.3","2":"84.9","3":"7","4":"6","5":"99.68","6":"19.8","_rn_":"Entremont"},{"1":"77.3","2":"89.7","3":"5","4":"2","5":"100.00","6":"18.3","_rn_":"Herens"},{"1":"70.5","2":"78.2","3":"12","4":"6","5":"98.96","6":"19.4","_rn_":"Martigwy"},{"1":"79.4","2":"64.9","3":"7","4":"3","5":"98.22","6":"20.2","_rn_":"Monthey"},{"1":"65.0","2":"75.9","3":"9","4":"9","5":"99.06","6":"17.8","_rn_":"St Maurice"},{"1":"92.2","2":"84.6","3":"3","4":"3","5":"99.46","6":"16.3","_rn_":"Sierre"},{"1":"79.3","2":"63.1","3":"13","4":"13","5":"96.83","6":"18.1","_rn_":"Sion"},{"1":"70.4","2":"38.4","3":"26","4":"12","5":"5.62","6":"20.3","_rn_":"Boudry"},{"1":"65.7","2":"7.7","3":"29","4":"11","5":"13.79","6":"20.5","_rn_":"La Chauxdfnd"},{"1":"72.7","2":"16.7","3":"22","4":"13","5":"11.22","6":"18.9","_rn_":"Le Locle"},{"1":"64.4","2":"17.6","3":"35","4":"32","5":"16.92","6":"23.0","_rn_":"Neuchatel"},{"1":"77.6","2":"37.6","3":"15","4":"7","5":"4.97","6":"20.0","_rn_":"Val de Ruz"},{"1":"67.6","2":"18.7","3":"25","4":"7","5":"8.65","6":"19.5","_rn_":"ValdeTravers"},{"1":"35.0","2":"1.2","3":"37","4":"53","5":"42.34","6":"18.0","_rn_":"V. De Geneve"},{"1":"44.7","2":"46.6","3":"16","4":"29","5":"50.43","6":"18.2","_rn_":"Rive Droite"},{"1":"42.8","2":"27.7","3":"22","4":"29","5":"58.33","6":"19.3","_rn_":"Rive Gauche"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="justify">
+<p>The data frame (47 observations on 6 variables) has standardized fertility measure and socio-economic indicators for each of 47 French-speaking provinces of Switzerland at about 1888. Below a list of its variables:</p>
+<ul>
+<li><strong>Fertility</strong>: <em>I<sub>g</sub></em>, ‘common standardized fertility measure’.</li>
+<li><strong>Agriculture</strong>: % of males involved in agriculture as occupation.</li>
+<li><strong>Examination</strong>: % draftees receiving highest mark on army examination.</li>
+<li><strong>Education</strong>: % education beyond primary school for draftees.</li>
+<li><strong>Catholic</strong>: % ‘catholic’ (as opposed to ‘protestant’).</li>
+<li><strong>Infant.Mortality</strong>: live births who live less than 1 year.</li>
+</ul>
+<p>All variables but ‘Fertility’ give proportions of the population.</p>
+</div>
+</section>
+<section id="linear-model" class="level2">
+<h2 class="anchored" data-anchor-id="linear-model">Linear model</h2>
+<div class="justify">
+<p>We build a linear model with ‘Fertility’ as dependent variable, and other variables as predictors, with <code>lm()</code> function.</p>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> Fertility <span class="sc">~</span> ., <span class="at">data =</span> swiss)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Fertility ~ ., data = swiss)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-15.2743  -5.2617   0.5032   4.1198  15.3213 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)      66.91518   10.70604   6.250 1.91e-07 ***
+Agriculture      -0.17211    0.07030  -2.448  0.01873 *  
+Examination      -0.25801    0.25388  -1.016  0.31546    
+Education        -0.87094    0.18303  -4.758 2.43e-05 ***
+Catholic          0.10412    0.03526   2.953  0.00519 ** 
+Infant.Mortality  1.07705    0.38172   2.822  0.00734 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 7.165 on 41 degrees of freedom
+Multiple R-squared:  0.7067,    Adjusted R-squared:  0.671 
+F-statistic: 19.76 on 5 and 41 DF,  p-value: 5.594e-10</code></pre>
+</div>
+</div>
+<div class="justify">
+<p>It seems like a decent model, with a sufficiently high <em>R<sup>2</sup></em> (0.671), and most estimates being statistically significant (with a confidence level of at least 95%), except for ‘Examination’ variable. So we just drop it and re-build the model.</p>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> Fertility <span class="sc">~</span> Agriculture <span class="sc">+</span> Education <span class="sc">+</span> Catholic <span class="sc">+</span> Infant.Mortality, <span class="at">data =</span> swiss)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Fertility ~ Agriculture + Education + Catholic + 
+    Infant.Mortality, data = swiss)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-14.6765  -6.0522   0.7514   3.1664  16.1422 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)      62.10131    9.60489   6.466 8.49e-08 ***
+Agriculture      -0.15462    0.06819  -2.267  0.02857 *  
+Education        -0.98026    0.14814  -6.617 5.14e-08 ***
+Catholic          0.12467    0.02889   4.315 9.50e-05 ***
+Infant.Mortality  1.07844    0.38187   2.824  0.00722 ** 
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 7.168 on 42 degrees of freedom
+Multiple R-squared:  0.6993,    Adjusted R-squared:  0.6707 
+F-statistic: 24.42 on 4 and 42 DF,  p-value: 1.717e-10</code></pre>
+</div>
+</div>
+<div class="justify">
+<p>Now, all estimates are statistically significant, with lower standard errors, more narrow confidence intervals, lower p-values and a minimal loss of goodness of fit (<em>R<sup>2</sup></em> = 0.6707). Below we draw the regression plots for each regressor with a custom function.</p>
+</div>
+<div class="cell">
+<details>
+<summary>Custom function</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>regr_p <span class="ot">&lt;-</span> <span class="cf">function</span>(Data, x, y) {</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">=</span> <span class="fu">parse</span>(<span class="at">text =</span> x)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">=</span> <span class="fu">parse</span>(<span class="at">text =</span> y)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  model_summ <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">data =</span> Data, <span class="fu">eval</span>(y) <span class="sc">~</span> <span class="fu">eval</span>(x)) <span class="sc">|&gt;</span> <span class="fu">summary</span>()</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  Sign <span class="ot">&lt;-</span> <span class="cf">if</span>(model_summ[[<span class="st">"coefficients"</span>]][<span class="dv">2</span>] <span class="sc">&gt;=</span> <span class="dv">0</span>) <span class="st">"+"</span> <span class="cf">else</span> <span class="st">""</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  Title <span class="ot">=</span> <span class="fu">paste</span>(<span class="st">"Regression plot (X="</span>, x, <span class="st">")"</span>, <span class="at">sep =</span> <span class="st">""</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  Subtitle <span class="ot">=</span> <span class="fu">paste</span>(y, <span class="st">"="</span>, model_summ[[<span class="st">"coefficients"</span>]][<span class="dv">1</span>] <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">2</span>), Sign, </span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>                   model_summ[[<span class="st">"coefficients"</span>]][<span class="dv">2</span>] <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">2</span>), <span class="st">"*"</span>, x, <span class="st">"   "</span>, <span class="st">"</span><span class="sc">\n</span><span class="st">r-squared= "</span>,</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>                   model_summ[[<span class="st">"r.squared"</span>]] <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">4</span>), <span class="st">"  Adj.r-squared= "</span>,</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>                   model_summ[[<span class="st">"adj.r.squared"</span>]] <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">4</span>))</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> ggplot2<span class="sc">::</span><span class="fu">ggplot</span>( <span class="at">data =</span> Data, ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">eval</span>(x), <span class="at">y =</span> <span class="fu">eval</span>(y)) ) <span class="sc">+</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">colour =</span> <span class="st">"red3"</span>) <span class="sc">+</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">ggtitle</span>(<span class="at">label =</span> Title, <span class="at">subtitle =</span> Subtitle) <span class="sc">+</span></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">xlab</span>(x) <span class="sc">+</span> </span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">ylab</span>(y) <span class="sc">+</span></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">theme</span>(<span class="at">plot.title =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">10</span>, <span class="at">face =</span> <span class="st">"bold"</span>), </span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>                   <span class="at">plot.subtitle =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">8</span>))</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(p)</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>ls <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">"list"</span>, <span class="dv">4</span>)</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(ls) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Agriculture"</span>, <span class="st">"Education"</span>, <span class="st">"Catholic"</span>, <span class="st">"Infant.Mortality"</span>)</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(ls)) {</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>  ls[[i]] <span class="ot">&lt;-</span> <span class="fu">regr_p</span>(swiss, <span class="fu">names</span>(ls[i]), <span class="st">"Fertility"</span>)</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>(ls[[<span class="dv">1</span>]] <span class="sc">+</span> ls[[<span class="dv">2</span>]]) <span class="sc">/</span> (ls[[<span class="dv">3</span>]] <span class="sc">+</span> ls[[<span class="dv">4</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-8-1.png" style="width:100.0%;height:250.0%"></p>
+</div>
+</div>
+<div class="justify">
+<p>First thing to notice is the presence of some ‘lonely’ outliers that may heavily influence some of the estimates (especially in the ‘Education’ and ‘Catholic’ models). We’ll address these outliers later. Except for the outliers, though, the linear model seems like a decent fit for all the four models. In particular, the ‘Education’ one has a relatively high <em>R<sup>2</sup></em> (0.4406), and a clear descending pattern. This result is in accordance with most modern fertility studies that confirm the existence of a negative correlation between fertility rates and education status. For example see <a href="https://pubmed.ncbi.nlm.nih.gov/7482677/">Women’s education and fertility: results from 26 Demographic and Health Surveys</a>. The ‘Agriculture’ model also exhibits a clear linear ascending pattern, regardless of the low <em>R<sup>2</sup></em>. The other two models require further investigations. Anyway, empirical data confirms the existence of a positive correlation between fertility and religiosity (see <a href="https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-020-8331-7">Human fertility in relation to education, economy, religion, contraception, and family planning programs</a>), and between fertility and infant mortality (see <a href="https://pubmed.ncbi.nlm.nih.gov/12314064/">The influence of infant and child mortality on fertility in selected countries of the Asian and Pacific region</a>), as wee see in the respective plots.</p>
+</div>
+</section>
+<section id="diagnostics-with-lindia" class="level2">
+<h2 class="anchored" data-anchor-id="diagnostics-with-lindia">Diagnostics with lindia</h2>
+<div class="justify">
+<p><code>lindia</code> provides a set of streamlined functions that allow easy generation of linear regression diagnostic plots necessary for checking linear model assumptions. This package is meant for easy scheming of linear regression diagnostics, while preserving merits of “The Grammar of Graphics” as implemented in <code>ggplot2</code>.</p>
+<p>The main function of <code>lindia</code> package is <code>lindia::gg_diagnose()</code> , which outputs an arranged grid of all the diagnostics plots available in <code>lindia</code> .</p>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>lindia<span class="sc">::</span><span class="fu">gg_diagnose</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-9-1.png" style="width:100.0%;height:250.0%"></p>
+</div>
+</div>
+<div class="justify">
+<p>As you can see, the output includes:</p>
+<ul>
+<li>Histogram of residuals.</li>
+<li>Residuals vs.&nbsp;predictors plots.</li>
+<li>Residual vs.&nbsp;fit plots.</li>
+<li>QQ-plot.</li>
+<li>Scale-location plot.</li>
+<li>Residual vs leverage plot.</li>
+<li>Cook’s distance plot.</li>
+</ul>
+<p>You can also add a boxcox plot to the grid, by adding <code>boxcox=T</code> parameter to the function call. If you need more flexibility in determining graphical elements and inclusion/exclusion of certain plots, set <code>plot.all=F</code> parameter in the function call. It will return a list of all plots, which the user can manipulate.</p>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>l <span class="ot">&lt;-</span> lindia<span class="sc">::</span><span class="fu">gg_diagnose</span>(model, <span class="at">plot.all =</span> F)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(l)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] "residual_hist"    "Agriculture"      "Education"        "Catholic"        
+ [5] "Infant.Mortality" "res_fitted"       "qqplot"           "scalelocation"   
+ [9] "resleverage"      "cooksd"          </code></pre>
+</div>
+</div>
+<div class="justify">
+<p>You can draw all the plots in a list with <code>lindia::plot_all()</code> function. For example, with the following code, we draw all the plots in ‘l’ list, except for residuals vs predictors plots.</p>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>lindia<span class="sc">::</span><span class="fu">plot_all</span>(l[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-11-1.png" style="width:100.0%;height:250.0%"></p>
+</div>
+</div>
+<div class="justify">
+<p>You can also draw the plots individually, via the corresponding functions:</p>
+<ul>
+<li><code>gg_reshist()</code>.</li>
+<li><code>gg_resfitted()</code>.</li>
+<li><code>gg_resX()</code>.</li>
+<li><code>gg_qqplot()</code>.</li>
+<li><code>gg_boxcox()</code>.</li>
+<li><code>gg_scalelocation()</code>.</li>
+<li><code>gg_resleverage()</code>.</li>
+<li><code>gg_cooksd()</code>.</li>
+</ul>
+<p>For example, you can draw the histogram of residuals with <code>lindia::gg_reshist()</code> .</p>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>lindia<span class="sc">::</span><span class="fu">gg_reshist</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-12-1.png" style="width:100.0%;height:250.0%"></p>
+</div>
+</div>
+<div class="justify">
+<p>All graphical styles returned by <code>lindia</code> graphing function can be overwritten by a call to <code>ggplot::theme()</code> (except <code>lindia::gg_resX()</code> and <code>lindia::gg_diagnose()</code>, which would return a list rather than a single ggplot object). For example:</p>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>lindia<span class="sc">::</span><span class="fu">gg_reshist</span>(model) <span class="sc">+</span> ggplot2<span class="sc">::</span><span class="fu">theme_dark</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-13-1.png" style="width:100.0%;height:250.0%"></p>
+</div>
+</div>
+</section>
+<section id="test-linearity-assumption" class="level2">
+<h2 class="anchored" data-anchor-id="test-linearity-assumption">Test linearity assumption</h2>
+<div class="justify">
+<p>The easiest and most used method to assess if the linearity assumption holds is through <strong>residual plots</strong> (i.e.&nbsp;residuals vs fitted and residuals vs predictors plots). If the plots exhibit a clear non linear pattern, then the assumption of linearity is violated. It’s also important to check for outliers, since the OLS method is sensitive to them. Let’s take a closer look at the residuals plots of our swiss model.</p>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>lindia<span class="sc">::</span><span class="fu">plot_all</span>(l[<span class="fu">c</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>)])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-14-1.png" style="width:100.0%;height:250.0%"></p>
+</div>
+</div>
+<div class="justify">
+<p>Linearity seems to hold reasonably well in ‘Agriculture’, ‘Infant.Mortality’. The points are randomly dispersed around the horizontal lines and don’t exhibit clear non linear patterns. Except for a weird pattern in the middle, also ‘Catholic’ plot exhibits a somewhat linear pattern. ‘Education’ plot has an extreme outlier, but seems to follow a linear trend too. Looking at the ‘Fitted values’ plots we also see a clear horizontal pattern, thus the linear model is a good fit overall. The linearity assumption holds reasonably well, here.</p>
+</div>
+</section>
+<section id="test-for-null-residuals-mean" class="level2">
+<h2 class="anchored" data-anchor-id="test-for-null-residuals-mean">Test for null residuals mean</h2>
+<div class="justify">
+<p>The points in the residuals plots are clearly centered around 0, so it’s safe to assume the assumption holds. Anyway we can compute the actual mean for an additional proof.</p>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>model<span class="sc">$</span>residuals <span class="sc">|&gt;</span> <span class="fu">mean</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 3.76029e-16</code></pre>
+</div>
+</div>
+<div class="justify">
+<p>As you can see, the mean is so close to 0 that it’s practically null.</p>
+</div>
+</section>
+<section id="test-if-predictors-are-correlated-with-residuals" class="level2">
+<h2 class="anchored" data-anchor-id="test-if-predictors-are-correlated-with-residuals">Test if predictors are correlated with residuals</h2>
+<div class="justify">
+<p>The residual plots already show there’s no clear correlation between residuals and predictors, but we can do an additional check with a correlation matrix. We can plot a nice correlation matrix with <code>corrplot::corrplot()</code> function.</p>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">resid =</span> model<span class="sc">$</span>residuals, swiss[,<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>)]) <span class="sc">|&gt;</span> </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cor</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  corrplot<span class="sc">::</span><span class="fu">corrplot</span>(<span class="at">method =</span> <span class="st">"number"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-16-1.png" style="width:100.0%;height:250.0%"></p>
+</div>
+</div>
+<div class="justify">
+<p>As you can see, the correlations between residuals and predictors are practically null, thus the assumption holds.</p>
+</div>
+</section>
+<section id="test-homoskedasticity-assumption" class="level2">
+<h2 class="anchored" data-anchor-id="test-homoskedasticity-assumption">Test homoskedasticity assumption</h2>
+<div class="justify">
+<p>The residuals vs fitted plot is also a good tool to test for homoskedasticity, together with scale-location plot, which is an even better alternative when testing specifically for homoskedasticity.</p>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>lindia<span class="sc">::</span><span class="fu">plot_all</span>(l[<span class="fu">c</span>(<span class="dv">6</span>,<span class="dv">8</span>)], <span class="at">ncol =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-17-1.png" style="width:100.0%;height:250.0%"></p>
+</div>
+</div>
+<div class="justify">
+<p>There’s no evident fan/conic shape in the first plot. The scale-location plot shows an approximately horizontal pattern (the plot is quite squeezed here), but is heavily influenced by a single outlier in the far left of the plot. Further investigation is needed. To get more info, we can run a formal heteroskedasticity test, like Breusch-Pagan test. If the p-value is less than the significance level, then the null hypotesis of homoskedasticity is rejected. You can run a BP test in R with <code>car::ncvTest()</code> function.</p>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>car<span class="sc">::</span><span class="fu">ncvTest</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Non-constant Variance Score Test 
+Variance formula: ~ fitted.values 
+Chisquare = 0.4687214, Df = 1, p = 0.49358</code></pre>
+</div>
+</div>
+<div class="justify">
+<p>p &gt; 0.05, so we can’t reject the null hypotesis of homoskedasticity. Based on the previous tests, we can assume the homoskedasticity assumption actually holds.</p>
+</div>
+</section>
+<section id="test-no-perfect-multicollinearity-assumption" class="level2">
+<h2 class="anchored" data-anchor-id="test-no-perfect-multicollinearity-assumption">Test no perfect multicollinearity assumption</h2>
+<div class="justify">
+<p>The presence of multicollinearity can be assessed by checking the correlation between predictors, and/or by computing the <a href="https://corporatefinanceinstitute.com/resources/data-science/variance-inflation-factor-vif/">Variance Inflation Factor (VIF)</a> for each predictor. We already plotted a correlation matrix above; there’s a quite high correlation between ‘Education’ and ‘Agriculture’ variables. It makes sense that an higher percentual of individuals working in agriculture is tied to a lower education overall. So let’s see if the VIFs also suggest the presence of multicollinearity. We can compute the VIFs and associated tolerance values with <code>olsrr::ols_vif_tol()</code> function.</p>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>olsrr<span class="sc">::</span><span class="fu">ols_vif_tol</span>(model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["Variables"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Tolerance"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["VIF"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"Agriculture","2":"0.4657331","3":"2.147153"},{"1":"Education","2":"0.5505512","3":"1.816361"},{"1":"Catholic","2":"0.7692805","3":"1.299916"},{"1":"Infant.Mortality","2":"0.9029118","3":"1.107528"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="justify">
+<p>‘Agriculture’ variable actually has the highest VIF value, but since all VIFs are lower than 3, and all tolerance values are higher then 0.25 (those thresholds are the most commonly used ones, but they might vary a bit depending on how sensitive you want your multicollinearity test to be), we can exclude the presence of multicollinearity.</p>
+</div>
+</section>
+<section id="test-normality-of-residuals-assumption" class="level2">
+<h2 class="anchored" data-anchor-id="test-normality-of-residuals-assumption">Test normality of residuals assumption</h2>
+<div class="justify">
+<p>The easiest and most reliable way to test the normality assumption is by looking and the histogram of residuals and QQ plot.</p>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>lindia<span class="sc">::</span><span class="fu">plot_all</span>(l[<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">7</span>)], <span class="at">ncol =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-20-1.png" style="width:100.0%;height:250.0%"></p>
+</div>
+</div>
+<div class="justify">
+<p>The standardized residuals seem to follow the normal distribution reasonably well here. For a more detailed qq plot, with a confidence interval included, you can use functions from other packages, like <code>car::qqPlot()</code> .</p>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>qq <span class="ot">&lt;-</span> car<span class="sc">::</span><span class="fu">qqPlot</span>(model<span class="sc">$</span>residuals, <span class="at">id=</span>F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-21-1.png" style="width:100.0%;height:250.0%"></p>
+</div>
+</div>
+<div class="justify">
+<p>Most observations fall inside the confidence interval, thus we can assume the normality assumption holds.</p>
+</div>
+</section>
+<section id="check-for-outliers-and-influential-observations" class="level2">
+<h2 class="anchored" data-anchor-id="check-for-outliers-and-influential-observations">Check for outliers and influential observations</h2>
+<div class="justify">
+<p>Previously, we observed some extreme data points that may negatively influence our model. The check for highly influential values, we can look at the residuals vs.&nbsp;leverage plot, and at the Cook’s distance plot.</p>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_all</span>(l[<span class="fu">c</span>(<span class="dv">9</span>,<span class="dv">10</span>)], <span class="at">ncol =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-22-1.png" style="width:100.0%;height:250.0%"></p>
+</div>
+</div>
+<div class="justify">
+<p>Both plots show highly influential data points, that when removed from the model, might greatly affect the parameters estimates. As we can see, there are at least 2 observations with high leverage, compared to other data points, and 3 observations (marked with the corresponding indexes) higher then the threshold level in the Cook’s plot. Let’s take a closer look at these data points.</p>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>swiss[<span class="fu">c</span>(<span class="dv">6</span>,<span class="dv">37</span>,<span class="dv">47</span>),<span class="sc">-</span><span class="dv">3</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Fertility"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["Agriculture"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["Education"],"name":[3],"type":["int"],"align":["right"]},{"label":["Catholic"],"name":[4],"type":["dbl"],"align":["right"]},{"label":["Infant.Mortality"],"name":[5],"type":["dbl"],"align":["right"]}],"data":[{"1":"76.1","2":"35.3","3":"7","4":"90.57","5":"26.6","_rn_":"Porrentruy"},{"1":"92.2","2":"84.6","3":"3","4":"99.46","5":"16.3","_rn_":"Sierre"},{"1":"42.8","2":"27.7","3":"29","4":"58.33","5":"19.3","_rn_":"Rive Gauche"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<div class="justify">
+<p>‘Porrentruy’ has a relatively low ‘Fertility’ for such high ‘Infant.Mortality’. The other two data points seem coherent with our previous model.</p>
+<p>Generally speaking, arbitrarily removing data points is not good practice. Anyway, let’s try to re-build the model without these 3 observations, in order to see how influencial they are.</p>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>model2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Fertility <span class="sc">~</span> Agriculture <span class="sc">+</span> Education <span class="sc">+</span> Catholic <span class="sc">+</span> Infant.Mortality, <span class="at">data =</span> swiss[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">6</span>,<span class="dv">37</span>,<span class="dv">47</span>),])</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+lm(formula = Fertility ~ Agriculture + Education + Catholic + 
+    Infant.Mortality, data = swiss[-c(6, 37, 47), ])
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-10.9764  -4.7365   0.7061   3.7102  12.5382 
+
+Coefficients:
+                 Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)      55.67762    8.09634   6.877 3.16e-08 ***
+Agriculture      -0.20119    0.05787  -3.477  0.00126 ** 
+Education        -0.94425    0.12679  -7.447 5.25e-09 ***
+Catholic          0.13174    0.02494   5.283 5.11e-06 ***
+Infant.Mortality  1.50098    0.33565   4.472 6.52e-05 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+Residual standard error: 5.925 on 39 degrees of freedom
+Multiple R-squared:  0.7683,    Adjusted R-squared:  0.7445 
+F-statistic: 32.32 on 4 and 39 DF,  p-value: 6.619e-12</code></pre>
+</div>
+</div>
+<div class="justify">
+<p>The 3 data points were actually very influencial. This new model is significantly more accurate, with higher <em>R<sup>2</sup></em> and lower p-values (especially the ‘Agriculture’ and ‘Infant.Mortality’ ones got way lower).</p>
+</div>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="G-Bez/my-portfolio" issue-term="pathname" theme="photon-dark" crossorigin="anonymous" async="">
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb30" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Linear regression diagnostics in R with lindia package"</span></span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2022-11-17"</span></span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span><span class="co"> [R, Regression]</span></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a><span class="an">image:</span><span class="co"> regression_thumbnail.png</span></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a><span class="co">    df-print: paged</span></span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a><span class="co">    fontsize: 0.9em</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a><span class="co">    include-in-header: navbar.html</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a><span class="co">    css: theme.css</span></span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a><span class="an">comments:</span><span class="co"> </span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a><span class="co">    utterances: </span></span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a><span class="co">      repo:  G-Bez/my-portfolio </span></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a><span class="co">      theme: photon-dark</span></span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a><span class="an">title-block-banner:</span><span class="co"> false</span></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a><span class="an">editor:</span><span class="co"> visual</span></span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a><span class="in">```{css, echo = FALSE}</span></span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a><span class="op">.</span><span class="fu">justify</span> <span class="op">{</span></span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a>  text<span class="op">-</span>align<span class="op">:</span> justify <span class="op">!</span>important</span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-27"><a href="#cb30-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-28"><a href="#cb30-28" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-29"><a href="#cb30-29" aria-hidden="true" tabindex="-1"></a>Regression diagnostics is the part of regression analysis whose objective is to investigate if the calculated model and the assumptions we made about the data and the model, are consistent with the recorded data. These diagnostics include graphical and numerical tools for checking the adequacy of the assumptions with respect to both the data and the form of the model. Here I'll provide some examples of graphical disgnostics in R with <span class="co">[</span><span class="ot">`lindia`</span><span class="co">](https://github.com/yeukyul/lindia)</span> package. <span class="in">`lindia`</span> is an extention to <span class="co">[</span><span class="ot">`ggplot2`</span><span class="co">](http://ggplot2.org)</span> to provide streamlined plotting features of linear model diagnostic plots.</span>
+<span id="cb30-30"><a href="#cb30-30" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-31"><a href="#cb30-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-32"><a href="#cb30-32" aria-hidden="true" tabindex="-1"></a><span class="fu">## Linear models assumptions</span></span>
+<span id="cb30-33"><a href="#cb30-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-34"><a href="#cb30-34" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-35"><a href="#cb30-35" aria-hidden="true" tabindex="-1"></a>We start with a quick recap of **OLS linear regression models** **assumptions**. Linear models make a number of assumptions about the predictor variables, the response variables and their relationship. Numerous extensions have been developed that allow each of these assumptions to be relaxed (i.e. reduced to a weaker form), and in some cases eliminated entirely. Generally these extensions make the estimation procedure more complex and time-consuming, and may also require more data in order to produce an equally precise model. The following are the major assumptions made by standard linear regression models with standard estimation techniques (e.g. ordinary least squares):</span>
+<span id="cb30-36"><a href="#cb30-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-37"><a href="#cb30-37" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Linearity**: the basic assumption of the linear regression model, as the name suggests, is that of a linear relationship between the dependent and independent variables.</span>
+<span id="cb30-38"><a href="#cb30-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-39"><a href="#cb30-39" aria-hidden="true" tabindex="-1"></a>    $y_i = \beta_1x_{1i}+ \beta_2x_{2i} + ...+\beta_nx_{ni} + \epsilon_i$</span>
+<span id="cb30-40"><a href="#cb30-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-41"><a href="#cb30-41" aria-hidden="true" tabindex="-1"></a>    Here the linearity is only with respect to the parameters. Oddly enough, there's no such restriction on the degree or form of the explanatory variables themselves. Those can be transforned as you like, for example taking the square or logarithm of one or more predictors; polynomials are also allowed.</span>
+<span id="cb30-42"><a href="#cb30-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-43"><a href="#cb30-43" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Null population mean of error terms**: the error term accounts for the variation in the dependent variable that the independent variables do not explain. Random chance should determine the values of the error term. For your model to be unbiased, the average value of the error term must equal zero.</span>
+<span id="cb30-44"><a href="#cb30-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-45"><a href="#cb30-45" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Predictors uncorrelated with residuals**: if an independent variable is correlated with the error term, we can use the independent variable to predict the error term, which violates the notion that the error term represents unpredictable random error. This assumption is also referred to as exogeneity. When this type of correlation exists, there is endogeneity. Violations of this assumption can occur because there is simultaneity between the independent and dependent variables, omitted variable bias, or measurement error in the independent variables.</span>
+<span id="cb30-46"><a href="#cb30-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-47"><a href="#cb30-47" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**No autocorrelation of residuals**: the residuals in the linear regression model are assumed to be independently and identically distributed (i.i.d.). This implies that each error term is independent and unrelated to the other error terms. So, knowing one error term tells us nothing about the other(s). Also, all errors have the same distribution, the normal distribution (with zero mean and finite variance). The error term at a particular point in time should have no correlation with any of the past values. This makes the error terms equivalent to random noise that cannot be predicted. In the case of correlation between the residuals, the model's accuracy is affected. Autocorrelation or serial correlation is a problem **specific to regressions involving time-series**.</span>
+<span id="cb30-48"><a href="#cb30-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-49"><a href="#cb30-49" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**No multicollinearity**: the independent variables should not be correlated with each other. If there is a linear relationship between one or more explanatory variables, it adds to the complexity of the model without being able to delineate the impact of each explanatory variable on the response variable.</span>
+<span id="cb30-50"><a href="#cb30-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-51"><a href="#cb30-51" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Normality of residuals**: the classic linear regression model assumes that the error term is normally distributed. If this assumption is violated, it is not a big problem, especially if we have a large number of observations. This is because the central limit theorem will apply if we have a large number of observations, implying that the sampling distribution will resemble normality irrespective of the parent distribution for large sample sizes. However, if the number of observations is small and the normality assumption is violated, the standard errors in your model's output will be unreliable.</span>
+<span id="cb30-52"><a href="#cb30-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-53"><a href="#cb30-53" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Homoskedasticity**: an important assumption of linear regression is that the error terms have the same variance across all observations. Unequal variance in the error terms is called heteroskedasticity and may be caused due to many reasons like the presence of outliers, or an incorrectly specified model. If we run the regression with heteroskedasticity present, the standard errors would be large and the model would have unreliable predictions.</span>
+<span id="cb30-54"><a href="#cb30-54" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-55"><a href="#cb30-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-56"><a href="#cb30-56" aria-hidden="true" tabindex="-1"></a><span class="fu">## Install lindia</span></span>
+<span id="cb30-57"><a href="#cb30-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-58"><a href="#cb30-58" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-59"><a href="#cb30-59" aria-hidden="true" tabindex="-1"></a>You can install <span class="in">`lindia`</span> from CRAN repository with:</span>
+<span id="cb30-60"><a href="#cb30-60" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-61"><a href="#cb30-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-64"><a href="#cb30-64" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-65"><a href="#cb30-65" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb30-66"><a href="#cb30-66" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"lindia"</span>)</span>
+<span id="cb30-67"><a href="#cb30-67" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-68"><a href="#cb30-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-69"><a href="#cb30-69" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-70"><a href="#cb30-70" aria-hidden="true" tabindex="-1"></a>Or the developer version from GitHub:</span>
+<span id="cb30-71"><a href="#cb30-71" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-72"><a href="#cb30-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-75"><a href="#cb30-75" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-76"><a href="#cb30-76" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb30-77"><a href="#cb30-77" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"yeukyul/lindia"</span>)</span>
+<span id="cb30-78"><a href="#cb30-78" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-79"><a href="#cb30-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-80"><a href="#cb30-80" aria-hidden="true" tabindex="-1"></a><span class="fu">## Packages</span></span>
+<span id="cb30-81"><a href="#cb30-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-82"><a href="#cb30-82" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-83"><a href="#cb30-83" aria-hidden="true" tabindex="-1"></a>We start by loading the needed packages.</span>
+<span id="cb30-84"><a href="#cb30-84" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-85"><a href="#cb30-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-88"><a href="#cb30-88" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-89"><a href="#cb30-89" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb30-90"><a href="#cb30-90" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lindia)</span>
+<span id="cb30-91"><a href="#cb30-91" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb30-92"><a href="#cb30-92" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb30-93"><a href="#cb30-93" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb30-94"><a href="#cb30-94" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(olsrr)</span>
+<span id="cb30-95"><a href="#cb30-95" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(corrplot)</span>
+<span id="cb30-96"><a href="#cb30-96" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-97"><a href="#cb30-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-98"><a href="#cb30-98" aria-hidden="true" tabindex="-1"></a><span class="fu">## Dataset</span></span>
+<span id="cb30-99"><a href="#cb30-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-100"><a href="#cb30-100" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-101"><a href="#cb30-101" aria-hidden="true" tabindex="-1"></a>We'll build a linear model on <span class="in">`swiss`</span> R prebuilt dataset.</span>
+<span id="cb30-102"><a href="#cb30-102" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-103"><a href="#cb30-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-106"><a href="#cb30-106" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-107"><a href="#cb30-107" aria-hidden="true" tabindex="-1"></a>swiss <span class="ot">&lt;-</span> datasets<span class="sc">::</span>swiss</span>
+<span id="cb30-108"><a href="#cb30-108" aria-hidden="true" tabindex="-1"></a>swiss</span>
+<span id="cb30-109"><a href="#cb30-109" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-110"><a href="#cb30-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-111"><a href="#cb30-111" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-112"><a href="#cb30-112" aria-hidden="true" tabindex="-1"></a>The data frame (47 observations on 6 variables) has standardized fertility measure and socio-economic indicators for each of 47 French-speaking provinces of Switzerland at about 1888. Below a list of its variables:</span>
+<span id="cb30-113"><a href="#cb30-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-114"><a href="#cb30-114" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Fertility**: *I~g~*, 'common standardized fertility measure'.</span>
+<span id="cb30-115"><a href="#cb30-115" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Agriculture**: % of males involved in agriculture as occupation.</span>
+<span id="cb30-116"><a href="#cb30-116" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Examination**: % draftees receiving highest mark on army examination.</span>
+<span id="cb30-117"><a href="#cb30-117" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Education**: % education beyond primary school for draftees.</span>
+<span id="cb30-118"><a href="#cb30-118" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Catholic**: % 'catholic' (as opposed to 'protestant').</span>
+<span id="cb30-119"><a href="#cb30-119" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>**Infant.Mortality**: live births who live less than 1 year.</span>
+<span id="cb30-120"><a href="#cb30-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-121"><a href="#cb30-121" aria-hidden="true" tabindex="-1"></a>All variables but 'Fertility' give proportions of the population.</span>
+<span id="cb30-122"><a href="#cb30-122" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-123"><a href="#cb30-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-124"><a href="#cb30-124" aria-hidden="true" tabindex="-1"></a><span class="fu">## Linear model</span></span>
+<span id="cb30-125"><a href="#cb30-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-126"><a href="#cb30-126" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-127"><a href="#cb30-127" aria-hidden="true" tabindex="-1"></a>We build a linear model with 'Fertility' as dependent variable, and other variables as predictors, with <span class="in">`lm()`</span> function.</span>
+<span id="cb30-128"><a href="#cb30-128" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-129"><a href="#cb30-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-132"><a href="#cb30-132" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-133"><a href="#cb30-133" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> Fertility <span class="sc">~</span> ., <span class="at">data =</span> swiss)</span>
+<span id="cb30-134"><a href="#cb30-134" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span>
+<span id="cb30-135"><a href="#cb30-135" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-136"><a href="#cb30-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-137"><a href="#cb30-137" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-138"><a href="#cb30-138" aria-hidden="true" tabindex="-1"></a>It seems like a decent model, with a sufficiently high *R^2^* (0.671), and most estimates being statistically significant (with a confidence level of at least 95%), except for 'Examination' variable. So we just drop it and re-build the model.</span>
+<span id="cb30-139"><a href="#cb30-139" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-140"><a href="#cb30-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-143"><a href="#cb30-143" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-144"><a href="#cb30-144" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">formula =</span> Fertility <span class="sc">~</span> Agriculture <span class="sc">+</span> Education <span class="sc">+</span> Catholic <span class="sc">+</span> Infant.Mortality, <span class="at">data =</span> swiss)</span>
+<span id="cb30-145"><a href="#cb30-145" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model)</span>
+<span id="cb30-146"><a href="#cb30-146" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-147"><a href="#cb30-147" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-148"><a href="#cb30-148" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-149"><a href="#cb30-149" aria-hidden="true" tabindex="-1"></a>Now, all estimates are statistically significant, with lower standard errors, more narrow confidence intervals, lower p-values and a minimal loss of goodness of fit (*R^2^* = 0.6707). Below we draw the regression plots for each regressor with a custom function.</span>
+<span id="cb30-150"><a href="#cb30-150" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-151"><a href="#cb30-151" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-154"><a href="#cb30-154" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-155"><a href="#cb30-155" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb30-156"><a href="#cb30-156" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-fold: true</span></span>
+<span id="cb30-157"><a href="#cb30-157" aria-hidden="true" tabindex="-1"></a><span class="co">#| code-summary: "Custom function"</span></span>
+<span id="cb30-158"><a href="#cb30-158" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: 100%</span></span>
+<span id="cb30-159"><a href="#cb30-159" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-height: 250%</span></span>
+<span id="cb30-160"><a href="#cb30-160" aria-hidden="true" tabindex="-1"></a>regr_p <span class="ot">&lt;-</span> <span class="cf">function</span>(Data, x, y) {</span>
+<span id="cb30-161"><a href="#cb30-161" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">=</span> <span class="fu">parse</span>(<span class="at">text =</span> x)</span>
+<span id="cb30-162"><a href="#cb30-162" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">=</span> <span class="fu">parse</span>(<span class="at">text =</span> y)</span>
+<span id="cb30-163"><a href="#cb30-163" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-164"><a href="#cb30-164" aria-hidden="true" tabindex="-1"></a>  model_summ <span class="ot">&lt;-</span> <span class="fu">lm</span>(<span class="at">data =</span> Data, <span class="fu">eval</span>(y) <span class="sc">~</span> <span class="fu">eval</span>(x)) <span class="sc">|&gt;</span> <span class="fu">summary</span>()</span>
+<span id="cb30-165"><a href="#cb30-165" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-166"><a href="#cb30-166" aria-hidden="true" tabindex="-1"></a>  Sign <span class="ot">&lt;-</span> <span class="cf">if</span>(model_summ[[<span class="st">"coefficients"</span>]][<span class="dv">2</span>] <span class="sc">&gt;=</span> <span class="dv">0</span>) <span class="st">"+"</span> <span class="cf">else</span> <span class="st">""</span></span>
+<span id="cb30-167"><a href="#cb30-167" aria-hidden="true" tabindex="-1"></a>  Title <span class="ot">=</span> <span class="fu">paste</span>(<span class="st">"Regression plot (X="</span>, x, <span class="st">")"</span>, <span class="at">sep =</span> <span class="st">""</span>)</span>
+<span id="cb30-168"><a href="#cb30-168" aria-hidden="true" tabindex="-1"></a>  Subtitle <span class="ot">=</span> <span class="fu">paste</span>(y, <span class="st">"="</span>, model_summ[[<span class="st">"coefficients"</span>]][<span class="dv">1</span>] <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">2</span>), Sign, </span>
+<span id="cb30-169"><a href="#cb30-169" aria-hidden="true" tabindex="-1"></a>                   model_summ[[<span class="st">"coefficients"</span>]][<span class="dv">2</span>] <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">2</span>), <span class="st">"*"</span>, x, <span class="st">"   "</span>, <span class="st">"</span><span class="sc">\n</span><span class="st">r-squared= "</span>,</span>
+<span id="cb30-170"><a href="#cb30-170" aria-hidden="true" tabindex="-1"></a>                   model_summ[[<span class="st">"r.squared"</span>]] <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">4</span>), <span class="st">"  Adj.r-squared= "</span>,</span>
+<span id="cb30-171"><a href="#cb30-171" aria-hidden="true" tabindex="-1"></a>                   model_summ[[<span class="st">"adj.r.squared"</span>]] <span class="sc">|&gt;</span> <span class="fu">round</span>(<span class="dv">4</span>))</span>
+<span id="cb30-172"><a href="#cb30-172" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb30-173"><a href="#cb30-173" aria-hidden="true" tabindex="-1"></a>  p <span class="ot">&lt;-</span> ggplot2<span class="sc">::</span><span class="fu">ggplot</span>( <span class="at">data =</span> Data, ggplot2<span class="sc">::</span><span class="fu">aes</span>(<span class="at">x =</span> <span class="fu">eval</span>(x), <span class="at">y =</span> <span class="fu">eval</span>(y)) ) <span class="sc">+</span></span>
+<span id="cb30-174"><a href="#cb30-174" aria-hidden="true" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb30-175"><a href="#cb30-175" aria-hidden="true" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">colour =</span> <span class="st">"red3"</span>) <span class="sc">+</span></span>
+<span id="cb30-176"><a href="#cb30-176" aria-hidden="true" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">ggtitle</span>(<span class="at">label =</span> Title, <span class="at">subtitle =</span> Subtitle) <span class="sc">+</span></span>
+<span id="cb30-177"><a href="#cb30-177" aria-hidden="true" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">xlab</span>(x) <span class="sc">+</span> </span>
+<span id="cb30-178"><a href="#cb30-178" aria-hidden="true" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">ylab</span>(y) <span class="sc">+</span></span>
+<span id="cb30-179"><a href="#cb30-179" aria-hidden="true" tabindex="-1"></a>    ggplot2<span class="sc">::</span><span class="fu">theme</span>(<span class="at">plot.title =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">10</span>, <span class="at">face =</span> <span class="st">"bold"</span>), </span>
+<span id="cb30-180"><a href="#cb30-180" aria-hidden="true" tabindex="-1"></a>                   <span class="at">plot.subtitle =</span> ggplot2<span class="sc">::</span><span class="fu">element_text</span>(<span class="at">hjust =</span> <span class="fl">0.5</span>, <span class="at">size =</span> <span class="dv">8</span>))</span>
+<span id="cb30-181"><a href="#cb30-181" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(p)</span>
+<span id="cb30-182"><a href="#cb30-182" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb30-183"><a href="#cb30-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-184"><a href="#cb30-184" aria-hidden="true" tabindex="-1"></a>ls <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">"list"</span>, <span class="dv">4</span>)</span>
+<span id="cb30-185"><a href="#cb30-185" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(ls) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Agriculture"</span>, <span class="st">"Education"</span>, <span class="st">"Catholic"</span>, <span class="st">"Infant.Mortality"</span>)</span>
+<span id="cb30-186"><a href="#cb30-186" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(ls)) {</span>
+<span id="cb30-187"><a href="#cb30-187" aria-hidden="true" tabindex="-1"></a>  ls[[i]] <span class="ot">&lt;-</span> <span class="fu">regr_p</span>(swiss, <span class="fu">names</span>(ls[i]), <span class="st">"Fertility"</span>)</span>
+<span id="cb30-188"><a href="#cb30-188" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb30-189"><a href="#cb30-189" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-190"><a href="#cb30-190" aria-hidden="true" tabindex="-1"></a>(ls[[<span class="dv">1</span>]] <span class="sc">+</span> ls[[<span class="dv">2</span>]]) <span class="sc">/</span> (ls[[<span class="dv">3</span>]] <span class="sc">+</span> ls[[<span class="dv">4</span>]])</span>
+<span id="cb30-191"><a href="#cb30-191" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-192"><a href="#cb30-192" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-193"><a href="#cb30-193" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-194"><a href="#cb30-194" aria-hidden="true" tabindex="-1"></a>First thing to notice is the presence of some 'lonely' outliers that may heavily influence some of the estimates (especially in the 'Education' and 'Catholic' models). We'll address these outliers later. Except for the outliers, though, the linear model seems like a decent fit for all the four models. In particular, the 'Education' one has a relatively high *R^2^* (0.4406), and a clear descending pattern. This result is in accordance with most modern fertility studies that confirm the existence of a negative correlation between fertility rates and education status. For example see [Women's education and fertility: results from 26 Demographic and Health Surveys](https://pubmed.ncbi.nlm.nih.gov/7482677/). The 'Agriculture' model also exhibits a clear linear ascending pattern, regardless of the low *R^2^*. The other two models require further investigations. Anyway, empirical data confirms the existence of a positive correlation between fertility and religiosity (see <span class="co">[</span><span class="ot">Human fertility in relation to education, economy, religion, contraception, and family planning programs</span><span class="co">](https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-020-8331-7)</span>), and between fertility and infant mortality (see <span class="co">[</span><span class="ot">The influence of infant and child mortality on fertility in selected countries of the Asian and Pacific region</span><span class="co">](https://pubmed.ncbi.nlm.nih.gov/12314064/)</span>), as wee see in the respective plots.</span>
+<span id="cb30-195"><a href="#cb30-195" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-196"><a href="#cb30-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-197"><a href="#cb30-197" aria-hidden="true" tabindex="-1"></a><span class="fu">## Diagnostics with lindia</span></span>
+<span id="cb30-198"><a href="#cb30-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-199"><a href="#cb30-199" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-200"><a href="#cb30-200" aria-hidden="true" tabindex="-1"></a><span class="in">`lindia`</span> provides a set of streamlined functions that allow easy generation of linear regression diagnostic plots necessary for checking linear model assumptions. This package is meant for easy scheming of linear regression diagnostics, while preserving merits of "The Grammar of Graphics" as implemented in <span class="in">`ggplot2`</span>.</span>
+<span id="cb30-201"><a href="#cb30-201" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-202"><a href="#cb30-202" aria-hidden="true" tabindex="-1"></a>The main function of <span class="in">`lindia`</span> package is <span class="in">`lindia::gg_diagnose()`</span> , which outputs an arranged grid of all the diagnostics plots available in <span class="in">`lindia`</span> .</span>
+<span id="cb30-203"><a href="#cb30-203" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-204"><a href="#cb30-204" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-207"><a href="#cb30-207" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-208"><a href="#cb30-208" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb30-209"><a href="#cb30-209" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: 100%</span></span>
+<span id="cb30-210"><a href="#cb30-210" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-height: 250%</span></span>
+<span id="cb30-211"><a href="#cb30-211" aria-hidden="true" tabindex="-1"></a>lindia<span class="sc">::</span><span class="fu">gg_diagnose</span>(model)</span>
+<span id="cb30-212"><a href="#cb30-212" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-213"><a href="#cb30-213" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-214"><a href="#cb30-214" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-215"><a href="#cb30-215" aria-hidden="true" tabindex="-1"></a>As you can see, the output includes:</span>
+<span id="cb30-216"><a href="#cb30-216" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-217"><a href="#cb30-217" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Histogram of residuals.</span>
+<span id="cb30-218"><a href="#cb30-218" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Residuals vs. predictors plots.</span>
+<span id="cb30-219"><a href="#cb30-219" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Residual vs. fit plots.</span>
+<span id="cb30-220"><a href="#cb30-220" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>QQ-plot.</span>
+<span id="cb30-221"><a href="#cb30-221" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Scale-location plot.</span>
+<span id="cb30-222"><a href="#cb30-222" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Residual vs leverage plot.</span>
+<span id="cb30-223"><a href="#cb30-223" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Cook's distance plot.</span>
+<span id="cb30-224"><a href="#cb30-224" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-225"><a href="#cb30-225" aria-hidden="true" tabindex="-1"></a>You can also add a boxcox plot to the grid, by adding <span class="in">`boxcox=T`</span> parameter to the function call. If you need more flexibility in determining graphical elements and inclusion/exclusion of certain plots, set <span class="in">`plot.all=F`</span> parameter in the function call. It will return a list of all plots, which the user can manipulate.</span>
+<span id="cb30-226"><a href="#cb30-226" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-227"><a href="#cb30-227" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-230"><a href="#cb30-230" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-231"><a href="#cb30-231" aria-hidden="true" tabindex="-1"></a>l <span class="ot">&lt;-</span> lindia<span class="sc">::</span><span class="fu">gg_diagnose</span>(model, <span class="at">plot.all =</span> F)</span>
+<span id="cb30-232"><a href="#cb30-232" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(l)</span>
+<span id="cb30-233"><a href="#cb30-233" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-234"><a href="#cb30-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-235"><a href="#cb30-235" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-236"><a href="#cb30-236" aria-hidden="true" tabindex="-1"></a>You can draw all the plots in a list with <span class="in">`lindia::plot_all()`</span> function. For example, with the following code, we draw all the plots in 'l' list, except for residuals vs predictors plots.</span>
+<span id="cb30-237"><a href="#cb30-237" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-238"><a href="#cb30-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-241"><a href="#cb30-241" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-242"><a href="#cb30-242" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb30-243"><a href="#cb30-243" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: 100%</span></span>
+<span id="cb30-244"><a href="#cb30-244" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-height: 250%</span></span>
+<span id="cb30-245"><a href="#cb30-245" aria-hidden="true" tabindex="-1"></a>lindia<span class="sc">::</span><span class="fu">plot_all</span>(l[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">5</span>)])</span>
+<span id="cb30-246"><a href="#cb30-246" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-247"><a href="#cb30-247" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-248"><a href="#cb30-248" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-249"><a href="#cb30-249" aria-hidden="true" tabindex="-1"></a>You can also draw the plots individually, via the corresponding functions:</span>
+<span id="cb30-250"><a href="#cb30-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-251"><a href="#cb30-251" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`gg_reshist()`</span>.</span>
+<span id="cb30-252"><a href="#cb30-252" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`gg_resfitted()`</span>.</span>
+<span id="cb30-253"><a href="#cb30-253" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`gg_resX()`</span>.</span>
+<span id="cb30-254"><a href="#cb30-254" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`gg_qqplot()`</span>.</span>
+<span id="cb30-255"><a href="#cb30-255" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`gg_boxcox()`</span>.</span>
+<span id="cb30-256"><a href="#cb30-256" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`gg_scalelocation()`</span>.</span>
+<span id="cb30-257"><a href="#cb30-257" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`gg_resleverage()`</span>.</span>
+<span id="cb30-258"><a href="#cb30-258" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span><span class="in">`gg_cooksd()`</span>.</span>
+<span id="cb30-259"><a href="#cb30-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-260"><a href="#cb30-260" aria-hidden="true" tabindex="-1"></a>For example, you can draw the histogram of residuals with <span class="in">`lindia::gg_reshist()`</span> .</span>
+<span id="cb30-261"><a href="#cb30-261" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-262"><a href="#cb30-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-265"><a href="#cb30-265" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-266"><a href="#cb30-266" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb30-267"><a href="#cb30-267" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: 100%</span></span>
+<span id="cb30-268"><a href="#cb30-268" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-height: 250%</span></span>
+<span id="cb30-269"><a href="#cb30-269" aria-hidden="true" tabindex="-1"></a>lindia<span class="sc">::</span><span class="fu">gg_reshist</span>(model)</span>
+<span id="cb30-270"><a href="#cb30-270" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-271"><a href="#cb30-271" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-272"><a href="#cb30-272" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-273"><a href="#cb30-273" aria-hidden="true" tabindex="-1"></a>All graphical styles returned by <span class="in">`lindia`</span> graphing function can be overwritten by a call to <span class="in">`ggplot::theme()`</span> (except <span class="in">`lindia::gg_resX()`</span> and <span class="in">`lindia::gg_diagnose()`</span>, which would return a list rather than a single ggplot object). For example:</span>
+<span id="cb30-274"><a href="#cb30-274" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-275"><a href="#cb30-275" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-278"><a href="#cb30-278" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-279"><a href="#cb30-279" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb30-280"><a href="#cb30-280" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: 100%</span></span>
+<span id="cb30-281"><a href="#cb30-281" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-height: 250%</span></span>
+<span id="cb30-282"><a href="#cb30-282" aria-hidden="true" tabindex="-1"></a>lindia<span class="sc">::</span><span class="fu">gg_reshist</span>(model) <span class="sc">+</span> ggplot2<span class="sc">::</span><span class="fu">theme_dark</span>()</span>
+<span id="cb30-283"><a href="#cb30-283" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-284"><a href="#cb30-284" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-285"><a href="#cb30-285" aria-hidden="true" tabindex="-1"></a><span class="fu">## Test linearity assumption</span></span>
+<span id="cb30-286"><a href="#cb30-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-287"><a href="#cb30-287" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-288"><a href="#cb30-288" aria-hidden="true" tabindex="-1"></a>The easiest and most used method to assess if the linearity assumption holds is through **residual plots** (i.e. residuals vs fitted and residuals vs predictors plots). If the plots exhibit a clear non linear pattern, then the assumption of linearity is violated. It's also important to check for outliers, since the OLS method is sensitive to them. Let's take a closer look at the residuals plots of our swiss model.</span>
+<span id="cb30-289"><a href="#cb30-289" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-290"><a href="#cb30-290" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-293"><a href="#cb30-293" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-294"><a href="#cb30-294" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: 100%</span></span>
+<span id="cb30-295"><a href="#cb30-295" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-height: 250%</span></span>
+<span id="cb30-296"><a href="#cb30-296" aria-hidden="true" tabindex="-1"></a>lindia<span class="sc">::</span><span class="fu">plot_all</span>(l[<span class="fu">c</span>(<span class="dv">2</span><span class="sc">:</span><span class="dv">6</span>)])</span>
+<span id="cb30-297"><a href="#cb30-297" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-298"><a href="#cb30-298" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-299"><a href="#cb30-299" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-300"><a href="#cb30-300" aria-hidden="true" tabindex="-1"></a>Linearity seems to hold reasonably well in 'Agriculture', 'Infant.Mortality'. The points are randomly dispersed around the horizontal lines and don't exhibit clear non linear patterns. Except for a weird pattern in the middle, also 'Catholic' plot exhibits a somewhat linear pattern. 'Education' plot has an extreme outlier, but seems to follow a linear trend too. Looking at the 'Fitted values' plots we also see a clear horizontal pattern, thus the linear model is a good fit overall. The linearity assumption holds reasonably well, here.</span>
+<span id="cb30-301"><a href="#cb30-301" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-302"><a href="#cb30-302" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-303"><a href="#cb30-303" aria-hidden="true" tabindex="-1"></a><span class="fu">## Test for null residuals mean</span></span>
+<span id="cb30-304"><a href="#cb30-304" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-305"><a href="#cb30-305" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-306"><a href="#cb30-306" aria-hidden="true" tabindex="-1"></a>The points in the residuals plots are clearly centered around 0, so it's safe to assume the assumption holds. Anyway we can compute the actual mean for an additional proof.</span>
+<span id="cb30-307"><a href="#cb30-307" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-308"><a href="#cb30-308" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-311"><a href="#cb30-311" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-312"><a href="#cb30-312" aria-hidden="true" tabindex="-1"></a>model<span class="sc">$</span>residuals <span class="sc">|&gt;</span> <span class="fu">mean</span>()</span>
+<span id="cb30-313"><a href="#cb30-313" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-314"><a href="#cb30-314" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-315"><a href="#cb30-315" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-316"><a href="#cb30-316" aria-hidden="true" tabindex="-1"></a>As you can see, the mean is so close to 0 that it's practically null.</span>
+<span id="cb30-317"><a href="#cb30-317" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-318"><a href="#cb30-318" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-319"><a href="#cb30-319" aria-hidden="true" tabindex="-1"></a><span class="fu">## Test if predictors are correlated with residuals</span></span>
+<span id="cb30-320"><a href="#cb30-320" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-321"><a href="#cb30-321" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-322"><a href="#cb30-322" aria-hidden="true" tabindex="-1"></a>The residual plots already show there's no clear correlation between residuals and predictors, but we can do an additional check with a correlation matrix. We can plot a nice correlation matrix with <span class="in">`corrplot::corrplot()`</span> function.</span>
+<span id="cb30-323"><a href="#cb30-323" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-324"><a href="#cb30-324" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-327"><a href="#cb30-327" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-328"><a href="#cb30-328" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: 100%</span></span>
+<span id="cb30-329"><a href="#cb30-329" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-height: 250%</span></span>
+<span id="cb30-330"><a href="#cb30-330" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(<span class="at">resid =</span> model<span class="sc">$</span>residuals, swiss[,<span class="sc">-</span><span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">3</span>)]) <span class="sc">|&gt;</span> </span>
+<span id="cb30-331"><a href="#cb30-331" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cor</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb30-332"><a href="#cb30-332" aria-hidden="true" tabindex="-1"></a>  corrplot<span class="sc">::</span><span class="fu">corrplot</span>(<span class="at">method =</span> <span class="st">"number"</span>)</span>
+<span id="cb30-333"><a href="#cb30-333" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-334"><a href="#cb30-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-335"><a href="#cb30-335" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-336"><a href="#cb30-336" aria-hidden="true" tabindex="-1"></a>As you can see, the correlations between residuals and predictors are practically null, thus the assumption holds.</span>
+<span id="cb30-337"><a href="#cb30-337" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-338"><a href="#cb30-338" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-339"><a href="#cb30-339" aria-hidden="true" tabindex="-1"></a><span class="fu">## Test homoskedasticity assumption</span></span>
+<span id="cb30-340"><a href="#cb30-340" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-341"><a href="#cb30-341" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-342"><a href="#cb30-342" aria-hidden="true" tabindex="-1"></a>The residuals vs fitted plot is also a good tool to test for homoskedasticity, together with scale-location plot, which is an even better alternative when testing specifically for homoskedasticity.</span>
+<span id="cb30-343"><a href="#cb30-343" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-344"><a href="#cb30-344" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-347"><a href="#cb30-347" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-348"><a href="#cb30-348" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb30-349"><a href="#cb30-349" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: 100%</span></span>
+<span id="cb30-350"><a href="#cb30-350" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-height: 250%</span></span>
+<span id="cb30-351"><a href="#cb30-351" aria-hidden="true" tabindex="-1"></a>lindia<span class="sc">::</span><span class="fu">plot_all</span>(l[<span class="fu">c</span>(<span class="dv">6</span>,<span class="dv">8</span>)], <span class="at">ncol =</span> <span class="dv">2</span>)</span>
+<span id="cb30-352"><a href="#cb30-352" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-353"><a href="#cb30-353" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-354"><a href="#cb30-354" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-355"><a href="#cb30-355" aria-hidden="true" tabindex="-1"></a>There's no evident fan/conic shape in the first plot. The scale-location plot shows an approximately horizontal pattern (the plot is quite squeezed here), but is heavily influenced by a single outlier in the far left of the plot. Further investigation is needed. To get more info, we can run a formal heteroskedasticity test, like Breusch-Pagan test. If the p-value is less than the significance level, then the null hypotesis of homoskedasticity is rejected. You can run a BP test in R with <span class="in">`car::ncvTest()`</span> function.</span>
+<span id="cb30-356"><a href="#cb30-356" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-357"><a href="#cb30-357" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-360"><a href="#cb30-360" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-361"><a href="#cb30-361" aria-hidden="true" tabindex="-1"></a>car<span class="sc">::</span><span class="fu">ncvTest</span>(model)</span>
+<span id="cb30-362"><a href="#cb30-362" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-363"><a href="#cb30-363" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-364"><a href="#cb30-364" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-365"><a href="#cb30-365" aria-hidden="true" tabindex="-1"></a>p <span class="sc">\&gt;</span> 0.05, so we can't reject the null hypotesis of homoskedasticity. Based on the previous tests, we can assume the homoskedasticity assumption actually holds.</span>
+<span id="cb30-366"><a href="#cb30-366" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-367"><a href="#cb30-367" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-368"><a href="#cb30-368" aria-hidden="true" tabindex="-1"></a><span class="fu">## Test no perfect multicollinearity assumption</span></span>
+<span id="cb30-369"><a href="#cb30-369" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-370"><a href="#cb30-370" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-371"><a href="#cb30-371" aria-hidden="true" tabindex="-1"></a>The presence of multicollinearity can be assessed by checking the correlation between predictors, and/or by computing the <span class="co">[</span><span class="ot">Variance Inflation Factor (VIF)</span><span class="co">](https://corporatefinanceinstitute.com/resources/data-science/variance-inflation-factor-vif/)</span> for each predictor. We already plotted a correlation matrix above; there's a quite high correlation between 'Education' and 'Agriculture' variables. It makes sense that an higher percentual of individuals working in agriculture is tied to a lower education overall. So let's see if the VIFs also suggest the presence of multicollinearity. We can compute the VIFs and associated tolerance values with <span class="in">`olsrr::ols_vif_tol()`</span> function.</span>
+<span id="cb30-372"><a href="#cb30-372" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-373"><a href="#cb30-373" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-376"><a href="#cb30-376" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-377"><a href="#cb30-377" aria-hidden="true" tabindex="-1"></a>olsrr<span class="sc">::</span><span class="fu">ols_vif_tol</span>(model)</span>
+<span id="cb30-378"><a href="#cb30-378" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-379"><a href="#cb30-379" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-380"><a href="#cb30-380" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-381"><a href="#cb30-381" aria-hidden="true" tabindex="-1"></a>'Agriculture' variable actually has the highest VIF value, but since all VIFs are lower than 3, and all tolerance values are higher then 0.25 (those thresholds are the most commonly used ones, but they might vary a bit depending on how sensitive you want your multicollinearity test to be), we can exclude the presence of multicollinearity.</span>
+<span id="cb30-382"><a href="#cb30-382" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-383"><a href="#cb30-383" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-384"><a href="#cb30-384" aria-hidden="true" tabindex="-1"></a><span class="fu">## Test normality of residuals assumption</span></span>
+<span id="cb30-385"><a href="#cb30-385" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-386"><a href="#cb30-386" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-387"><a href="#cb30-387" aria-hidden="true" tabindex="-1"></a>The easiest and most reliable way to test the normality assumption is by looking and the histogram of residuals and QQ plot.</span>
+<span id="cb30-388"><a href="#cb30-388" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-389"><a href="#cb30-389" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-392"><a href="#cb30-392" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-393"><a href="#cb30-393" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb30-394"><a href="#cb30-394" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: 100%</span></span>
+<span id="cb30-395"><a href="#cb30-395" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-height: 250%</span></span>
+<span id="cb30-396"><a href="#cb30-396" aria-hidden="true" tabindex="-1"></a>lindia<span class="sc">::</span><span class="fu">plot_all</span>(l[<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">7</span>)], <span class="at">ncol =</span> <span class="dv">2</span>)</span>
+<span id="cb30-397"><a href="#cb30-397" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-398"><a href="#cb30-398" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-399"><a href="#cb30-399" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-400"><a href="#cb30-400" aria-hidden="true" tabindex="-1"></a>The standardized residuals seem to follow the normal distribution reasonably well here. For a more detailed qq plot, with a confidence interval included, you can use functions from other packages, like <span class="in">`car::qqPlot()`</span> .</span>
+<span id="cb30-401"><a href="#cb30-401" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-402"><a href="#cb30-402" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-405"><a href="#cb30-405" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-406"><a href="#cb30-406" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: 100%</span></span>
+<span id="cb30-407"><a href="#cb30-407" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-height: 250%</span></span>
+<span id="cb30-408"><a href="#cb30-408" aria-hidden="true" tabindex="-1"></a>qq <span class="ot">&lt;-</span> car<span class="sc">::</span><span class="fu">qqPlot</span>(model<span class="sc">$</span>residuals, <span class="at">id=</span>F)</span>
+<span id="cb30-409"><a href="#cb30-409" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-410"><a href="#cb30-410" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-411"><a href="#cb30-411" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-412"><a href="#cb30-412" aria-hidden="true" tabindex="-1"></a>Most observations fall inside the confidence interval, thus we can assume the normality assumption holds.</span>
+<span id="cb30-413"><a href="#cb30-413" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-414"><a href="#cb30-414" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-415"><a href="#cb30-415" aria-hidden="true" tabindex="-1"></a><span class="fu">## Check for outliers and influential observations</span></span>
+<span id="cb30-416"><a href="#cb30-416" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-417"><a href="#cb30-417" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-418"><a href="#cb30-418" aria-hidden="true" tabindex="-1"></a>Previously, we observed some extreme data points that may negatively influence our model. The check for highly influential values, we can look at the residuals vs. leverage plot, and at the Cook's distance plot.</span>
+<span id="cb30-419"><a href="#cb30-419" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-420"><a href="#cb30-420" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-423"><a href="#cb30-423" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-424"><a href="#cb30-424" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb30-425"><a href="#cb30-425" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-width: 100%</span></span>
+<span id="cb30-426"><a href="#cb30-426" aria-hidden="true" tabindex="-1"></a><span class="co">#| out-height: 250%</span></span>
+<span id="cb30-427"><a href="#cb30-427" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_all</span>(l[<span class="fu">c</span>(<span class="dv">9</span>,<span class="dv">10</span>)], <span class="at">ncol =</span> <span class="dv">2</span>)</span>
+<span id="cb30-428"><a href="#cb30-428" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-429"><a href="#cb30-429" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-430"><a href="#cb30-430" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-431"><a href="#cb30-431" aria-hidden="true" tabindex="-1"></a>Both plots show highly influential data points, that when removed from the model, might greatly affect the parameters estimates. As we can see, there are at least 2 observations with high leverage, compared to other data points, and 3 observations (marked with the corresponding indexes) higher then the threshold level in the Cook's plot. Let's take a closer look at these data points.</span>
+<span id="cb30-432"><a href="#cb30-432" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-433"><a href="#cb30-433" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-436"><a href="#cb30-436" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-437"><a href="#cb30-437" aria-hidden="true" tabindex="-1"></a>swiss[<span class="fu">c</span>(<span class="dv">6</span>,<span class="dv">37</span>,<span class="dv">47</span>),<span class="sc">-</span><span class="dv">3</span>]</span>
+<span id="cb30-438"><a href="#cb30-438" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-439"><a href="#cb30-439" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-440"><a href="#cb30-440" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-441"><a href="#cb30-441" aria-hidden="true" tabindex="-1"></a>'Porrentruy' has a relatively low 'Fertility' for such high 'Infant.Mortality'. The other two data points seem coherent with our previous model.</span>
+<span id="cb30-442"><a href="#cb30-442" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-443"><a href="#cb30-443" aria-hidden="true" tabindex="-1"></a>Generally speaking, arbitrarily removing data points is not good practice. Anyway, let's try to re-build the model without these 3 observations, in order to see how influencial they are.</span>
+<span id="cb30-444"><a href="#cb30-444" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb30-445"><a href="#cb30-445" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-448"><a href="#cb30-448" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb30-449"><a href="#cb30-449" aria-hidden="true" tabindex="-1"></a>model2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(Fertility <span class="sc">~</span> Agriculture <span class="sc">+</span> Education <span class="sc">+</span> Catholic <span class="sc">+</span> Infant.Mortality, <span class="at">data =</span> swiss[<span class="sc">-</span><span class="fu">c</span>(<span class="dv">6</span>,<span class="dv">37</span>,<span class="dv">47</span>),])</span>
+<span id="cb30-450"><a href="#cb30-450" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(model2)</span>
+<span id="cb30-451"><a href="#cb30-451" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb30-452"><a href="#cb30-452" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-453"><a href="#cb30-453" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb30-454"><a href="#cb30-454" aria-hidden="true" tabindex="-1"></a>The 3 data points were actually very influencial. This new model is significantly more accurate, with higher *R^2^* and lower p-values (especially the 'Agriculture' and 'Infant.Mortality' ones got way lower).</span>
+<span id="cb30-455"><a href="#cb30-455" aria-hidden="true" tabindex="-1"></a>:::</span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+</body></html>

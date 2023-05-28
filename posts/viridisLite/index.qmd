@@ -9,6 +9,7 @@ format:
     code-tools: true
     include-in-header: navbar.html
     css: theme.css
+    toc: true
 comments: 
     utterances: 
       repo:  G-Bez/my-portfolio 
@@ -17,19 +18,28 @@ title-block-banner: false
 editor: visual
 ---
 
-::: {style="text-align: justify"}
+```{css, echo = FALSE}
+.justify {
+  text-align: justify !important
+}
+```
+
 ## viridisLite package
 
+::: justify
 [`viridisLite`](https://sjmgarnier.github.io/viridisLite/) is a lightweight version of `viridis` package. Both are meant to provide a series of color maps designed to improve graph readability for readers with common forms of vision impairment. Base `viridis` provides additional functionalities, while `viridsLite` is meant to be as lightweight and dependency-free as possible, for maximum compatibility with all the R ecosystems.
 
 The package can be installed with:
+:::
 
 ```{r}
 #| eval: false
 install.packages("viridisLite")
 ```
 
+::: justify
 Or you can install the developer version with:
+:::
 
 ```{r}
 #| eval: false
@@ -38,16 +48,19 @@ devtools::install_github("sjmgarnier/viridisLite")
 
 ## Palettes
 
+::: justify
 `viridisLite` offers 8 color palettes to choose from (see @fig-pal), via the corresponding convenience functions, useful when the scale must be passed as a function name. Each of those functions returns a character vector of color hex codes.
 
 ![viridisLite color palettes](viridis-scales.png){#fig-pal fig-align="center"}
 
 Below you can see the general syntax of `viridiLite` convenience functions:
+:::
 
 ``` r
 palette_name(n, alpha = 1, begin = 0, end = 1, direction = 1)
 ```
 
+::: justify
 Where:
 
 -   **n**: Number of colors to be in the palette .
@@ -56,11 +69,14 @@ Where:
 -   **end**: ending hue.
 -   **direction**: order of colors. 1 = order from darkest to lightest. 0 = from lightest to darkest.
 
-See the [official documentation](https://sjmgarnier.github.io/viridisLite/reference/viridis.html#examples) for more details. Following, we provide some examples.
+See the [official documentation](https://sjmgarnier.github.io/viridisLite/reference/viridis.html#examples) for more details. Following, I provide some examples.
+:::
 
 ## Packages
 
+::: justify
 We start by loading the packages we'll use throughout this tutorial.
+:::
 
 ```{r}
 library(ggplot2)
@@ -71,14 +87,18 @@ library(patchwork)
 
 ## Show color palettes
 
+::: justify
 Since the output of `viridisLite` functions consists of a vector of hex codes, it's quite hard to tell precisely which colors were actually picked. `scales` package provides a convenient and very easy way to visualize user generated palettes. See the following example.
+:::
 
 ```{r}
 pal <- viridisLite::mako(25)
 pal
 ```
 
+::: justify
 With `scales::show_col()` function we can plot 'pal' as a color matrix.
+:::
 
 ```{r}
 #| out-width: 100%
@@ -88,7 +108,9 @@ scales::show_col(pal)
 
 ## Plot examples
 
-Here we provide some plot examples:
+::: justify
+Below I provide some plot examples:
+:::
 
 ```{r}
 #| out-width: 100%
@@ -104,7 +126,7 @@ for (i in 1:length(vL_pals)) {
   pal_parsed = parse(text = vL_pals[i])
   
   ls[[i]] <- ggplot2::ggplot(df, aes(x, y)) +
-    stat_density2d(aes(fill = ..level..), 
+    stat_density2d(aes(fill = after_stat(level)), 
                    alpha = .5, geom = "polygon", n = 200) +
     scale_fill_gradientn(colours = eval(pal_parsed)(n = 256)) +
     ggtitle(label = vL_pals[i])
@@ -112,4 +134,3 @@ for (i in 1:length(vL_pals)) {
 
 (ls[[1]] + ls[[2]]) / (ls[[3]] + ls[[4]]) / (ls[[5]] + ls[[6]]) / (ls[[7]] + ls[[8]]) # patchwork composition
 ```
-:::

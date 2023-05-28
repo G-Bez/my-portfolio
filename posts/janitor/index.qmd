@@ -10,6 +10,7 @@ format:
     code-tools: true
     include-in-header: navbar.html
     css: theme.css
+    toc: true
 comments: 
     utterances: 
       repo:  G-Bez/my-portfolio 
@@ -18,15 +19,23 @@ title-block-banner: false
 editor: visual
 ---
 
-::: {style="text-align: justify"}
+```{css, echo = FALSE}
+.justify {
+  text-align: justify !important
+}
+```
+
+::: justify
 [`janitor`](https://github.com/sfirke/janitor) is a popular package for easy and quick data cleansing and data inspection in R. It's a [`tidyverse`](https://www.tidyverse.org/) oriented package, it plays nicely with `%>%` pipe operator and is optimized for cleaning data imported with `readr` and `readxl` packages.
+:::
 
-## Installing janitor
+## Install janitor
 
+::: justify
 You can install the most recent official version of `janitor` from CRAN with:
 
 ```{r}
-#| eval: false
+#| eval: false 
 install.packages("janitor")
 ```
 
@@ -36,9 +45,11 @@ Or the developer version from GitHub:
 #| eval: false
 devtools::install_github("sfirke/janitor")
 ```
+:::
 
 ## Example dataset
 
+::: justify
 We use a custom version of `iris` R prebuilt dataset, which I manually made 'dirty' by changing column names and adding some dirty columns and rows.
 
 ```{r}
@@ -60,7 +71,7 @@ iris_dirty <- iris_custom()
 iris_dirty
 ```
 
-Changes made:
+Changes done:
 
 -   Converted 'species' column to character.
 -   Replaced 10th row with NAs.
@@ -70,9 +81,11 @@ Changes made:
 -   Added dirty column names as first row.
 
 Now let's see some `janitor` functions in action.
+:::
 
 ## Set column names from row
 
+::: justify
 With `janitor::row_to_names()` we can set our first row as column names.
 
 ```{r rows.print = 5}
@@ -82,9 +95,11 @@ library(janitor)
 iris_dirty <- janitor::row_to_names(iris_dirty, row_number = 1)
 iris_dirty
 ```
+:::
 
 ## Clean column names
 
+::: justify
 Now we need to clean those column names since they have a very bad format. `janitor::clean_names()` is a very useful and easy to use function that cleans badly formatted column names. You can choose to change all names to snake case (all lower case words, separated by underscores), variations on camel case (internal capital letters between words), title case or other styles. It can also be used to remove parts of names and any special characters, including replacing % symbols with the word 'percent'. See [`snakecase::to_any_case()`](https://www.rdocumentation.org/packages/snakecase/versions/0.11.0/topics/to_any_case) function documentation for a list of allowed cases. Below a few examples.
 
 ```{r}
@@ -104,17 +119,21 @@ Now let's set `iris_dirty` colnames to default snake case:
 iris_dirty <- janitor::clean_names(iris_dirty)
 iris_dirty
 ```
+:::
 
 ## Remove empty columns and rows
 
+::: justify
 I previously added empty rows and columns to the original `iris` dataset. Those can be removed with `janitor::remove_empty()` function.
 
 ```{r rows.print = 5}
 iris_dirty <- janitor::remove_empty(iris_dirty, quiet = F) # default removes both empty cols and rows
 ```
+:::
 
 ## Remove constant column
 
+::: justify
 There's also a function to remove columns with constant values, called `janitor::remove_constant()` . Previously I added to our dataset a 'const' column with all values equal to 1. Let's remove it:
 
 ```{r rows.print = 5}
@@ -122,9 +141,11 @@ iris_dirty <- janitor::remove_constant(iris_dirty, quiet = F)
 ```
 
 You can also set `na.rm = T` to ignore NA values when considering if a column is a constant.
+:::
 
 ## Frequency and contingency tables
 
+::: justify
 Before proceding, we set 'iris_dirty' columns to the correct datatypes, since previous manipulations changed all variables datatypes to character.
 
 ```{r}
@@ -146,9 +167,11 @@ We can also return a contingency table for species and petal width, for example:
 con_tbl <- janitor::tabyl(iris_dirty, petal_width_cm, species)
 con_tbl
 ```
+:::
 
 ## Formatting tabulated data
 
+::: justify
 `janitor::adorn_*()` functions can be used to format tabulated data; these functions are useful for reporting in Quarto and Markdown documents, when paired with `knitr::kable()` and similar functions. For example, `adorn_pct_formatting()` can be used to format the percentage output of `tabyl()` . Below, we round the percentages to 2 decimal places, and add the percentage sign at the end.
 
 ```{r}

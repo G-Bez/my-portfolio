@@ -9,6 +9,7 @@ format:
     code-tools: true
     include-in-header: navbar.html
     css: theme.css
+    toc: true
 comments: 
     utterances: 
       repo:  G-Bez/my-portfolio 
@@ -17,7 +18,12 @@ title-block-banner: false
 editor: visual
 ---
 
-::: {style="text-align: justify"}
+```{css, echo = FALSE}
+.justify {
+  text-align: justify !important
+}
+```
+
 ```{r}
 #| echo: false
 knitr::opts_chunk$set(eval = FALSE)
@@ -25,17 +31,23 @@ knitr::opts_chunk$set(eval = FALSE)
 
 ## Introduction
 
+::: justify
 The `renv` package enables project-local dependency management to your RStudio projects, and is meant as a stable replacement for the older `Packrat` package. Basically, `renv` helps the user in making his projects and workflows consistent, robust, reproducible and portable, and ensures they keep working by managing library paths and isolating their dependencies. More easily, `renv` gives a private package library to each project. If you ever had troubles in figuring out what packages you need to install to make someone else's code work, or some of your older projects stopped working after updating your global library, `renv` is the tool you need. For more details see [renv webpage](https://rstudio.github.io/renv/index.html).
+:::
 
 ## Installation
 
+::: justify
 You can install the latest version from CRAN with:
+:::
 
 ```{r}
 install.packages("renv")
 ```
 
+::: justify
 Or the developer version from the [R-universe](https://r-universe.dev/search/):
+:::
 
 ```{r}
 install.packages("renv", repos = "https://rstudio.r-universe.dev")
@@ -43,7 +55,8 @@ install.packages("renv", repos = "https://rstudio.r-universe.dev")
 
 ## Example project
 
-To show how `renv` actually works, we create a new RStudio project with `File > New Project ... > New directory` (see @fig-newproj)
+::: justify
+To show how `renv` actually works, we create a new RStudio project with `File > New Project ... > New directory` (see @fig-newproj).
 
 ![Create new project](newproject.PNG){#fig-newproj fig-align="center"}
 
@@ -52,15 +65,19 @@ As you can see, after installing `renv`, a dedicated tickbox is added to new pro
 ![New project main dir](main_dir1.PNG){#fig-dir fig-align="center"}
 
 Since we initialized a blank project, we only have the project main file 'renv-test-project.Rproj', and user data inside the '.Rproj.user' folder.
+:::
 
 ## Initialize renv
 
+::: justify
 To manually initialize a new project-local environment with a private library for our 'renv-test-project', we run:
+:::
 
 ```{r}
 renv::init()
 ```
 
+::: justify
 `renv::init()` scans the project and looks for dependencies in your code, then creates a private package library, and saves its state in a text file called 'renv.lock' (the file contains records of packages versions, external sources, if known, repositories, and a hash assigned to each package). It also writes out the infrastructure necessary to automatically load and use the private library for new R sessions launched from the project directory.
 
 ![Main dir after renv initialization](main_dir2.PNG){#fig-dir2 fig-align="center"}
@@ -70,10 +87,13 @@ As you can see, some files and a folder were added to the project main directory
 You can see the current project private library in `renv/library/R-x.x/x86_64-w64mingw32` folder (@fig-lib). Since our project is currently blank, only `renv` package itself was added to our library.
 
 ![Initial private library](priv_lib1.PNG){#fig-lib fig-align="center"}
+:::
 
 ## Update the private library
 
+::: justify
 After initializing `renv` you can work in the project as you would normally do. You can write code and install and remove the necessary packages/dependencies.
+:::
 
 ::: callout-note
 ## Note:
@@ -81,43 +101,56 @@ After initializing `renv` you can work in the project as you would normally do. 
 When running `renv` the base `install.packages()` and `remove.packages()` functions are masked by their `renv` counterparts.
 :::
 
+::: justify
 Let's say for example we need `tibble` package for our analysis. First, we install it.
+:::
 
 ```{r}
 install.packages("tibble")
 ```
 
+::: justify
 `tibble` and all of its dependencies are added to our private library (@fig-lib2).
 
 ![Private library after installing tibble](priv_lib2.PNG){#fig-lib2 fig-align="center"}
+:::
 
+::: justify
 Then we write a simple script that uses `tibble` package. For example, the following script assigns `mtcars` R prebuilt dataset to a tibble object.
+:::
 
 ```{r}
 library(tibble)
 tbl_mtcars <- as_tibble(mtcars)
 ```
 
+::: justify
 We save this script in our project main folder (@fig-script), but you can also place it in a dedicated subfolder, as you like.
 
 ![New script file](main_dir3.PNG){#fig-script fig-align="center"}
 
 Now, we run `renv::snapshot()` to add `tibble` package and its dependencies to our lockfile.
+:::
 
 ```{r}
 renv::snapshot()
 ```
 
+::: justify
 The function scans the whole project to find new dependencies, and detects our new script file where we called `tibble` package. After finding out the new dependencies, it updates the lockfile.
+:::
 
 ## Restore a previous state
 
+::: justify
 To restore a previous project state from the lockfile, you just need to run:
+:::
 
 ```{r}
 renv::restore()
 ```
 
+::: justify
 `renv::init()` can also restore a previous state. If a lockfile already exists, running `renv::inits` prompts some choices (see @fig-init).
 
 ![init() with existing lockfile](init.PNG){#fig-init fig-align="center"}

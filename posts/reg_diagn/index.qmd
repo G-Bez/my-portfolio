@@ -10,6 +10,7 @@ format:
     fontsize: 0.9em
     include-in-header: navbar.html
     css: theme.css
+    toc: true
 comments: 
     utterances: 
       repo:  G-Bez/my-portfolio 
@@ -18,11 +19,19 @@ title-block-banner: false
 editor: visual
 ---
 
-::: {style="text-align: justify"}
+```{css, echo = FALSE}
+.justify {
+  text-align: justify !important
+}
+```
+
+::: justify
 Regression diagnostics is the part of regression analysis whose objective is to investigate if the calculated model and the assumptions we made about the data and the model, are consistent with the recorded data. These diagnostics include graphical and numerical tools for checking the adequacy of the assumptions with respect to both the data and the form of the model. Here I'll provide some examples of graphical disgnostics in R with [`lindia`](https://github.com/yeukyul/lindia) package. `lindia` is an extention to [`ggplot2`](http://ggplot2.org) to provide streamlined plotting features of linear model diagnostic plots.
+:::
 
 ## Linear models assumptions
 
+::: justify
 We start with a quick recap of **OLS linear regression models** **assumptions**. Linear models make a number of assumptions about the predictor variables, the response variables and their relationship. Numerous extensions have been developed that allow each of these assumptions to be relaxed (i.e. reduced to a weaker form), and in some cases eliminated entirely. Generally these extensions make the estimation procedure more complex and time-consuming, and may also require more data in order to produce an equally precise model. The following are the major assumptions made by standard linear regression models with standard estimation techniques (e.g. ordinary least squares):
 
 -   **Linearity**: the basic assumption of the linear regression model, as the name suggests, is that of a linear relationship between the dependent and independent variables.
@@ -42,17 +51,22 @@ We start with a quick recap of **OLS linear regression models** **assumptions**.
 -   **Normality of residuals**: the classic linear regression model assumes that the error term is normally distributed. If this assumption is violated, it is not a big problem, especially if we have a large number of observations. This is because the central limit theorem will apply if we have a large number of observations, implying that the sampling distribution will resemble normality irrespective of the parent distribution for large sample sizes. However, if the number of observations is small and the normality assumption is violated, the standard errors in your model's output will be unreliable.
 
 -   **Homoskedasticity**: an important assumption of linear regression is that the error terms have the same variance across all observations. Unequal variance in the error terms is called heteroskedasticity and may be caused due to many reasons like the presence of outliers, or an incorrectly specified model. If we run the regression with heteroskedasticity present, the standard errors would be large and the model would have unreliable predictions.
+:::
 
 ## Install lindia
 
+::: justify
 You can install `lindia` from CRAN repository with:
+:::
 
 ```{r}
 #| eval: false
 install.packages("lindia")
 ```
 
+::: justify
 Or the developer version from GitHub:
+:::
 
 ```{r}
 #| eval: false
@@ -61,7 +75,9 @@ devtools::install_github("yeukyul/lindia")
 
 ## Packages
 
+::: justify
 We start by loading the needed packages.
+:::
 
 ```{r}
 #| warning: false
@@ -75,13 +91,16 @@ library(corrplot)
 
 ## Dataset
 
+::: justify
 We'll build a linear model on `swiss` R prebuilt dataset.
+:::
 
 ```{r}
 swiss <- datasets::swiss
 swiss
 ```
 
+::: justify
 The data frame (47 observations on 6 variables) has standardized fertility measure and socio-economic indicators for each of 47 French-speaking provinces of Switzerland at about 1888. Below a list of its variables:
 
 -   **Fertility**: *I~g~*, 'common standardized fertility measure'.
@@ -92,24 +111,31 @@ The data frame (47 observations on 6 variables) has standardized fertility measu
 -   **Infant.Mortality**: live births who live less than 1 year.
 
 All variables but 'Fertility' give proportions of the population.
+:::
 
 ## Linear model
 
+::: justify
 We build a linear model with 'Fertility' as dependent variable, and other variables as predictors, with `lm()` function.
+:::
 
 ```{r}
 model <- lm(formula = Fertility ~ ., data = swiss)
 summary(model)
 ```
 
+::: justify
 It seems like a decent model, with a sufficiently high *R^2^* (0.671), and most estimates being statistically significant (with a confidence level of at least 95%), except for 'Examination' variable. So we just drop it and re-build the model.
+:::
 
 ```{r}
 model <- lm(formula = Fertility ~ Agriculture + Education + Catholic + Infant.Mortality, data = swiss)
 summary(model)
 ```
 
+::: justify
 Now, all estimates are statistically significant, with lower standard errors, more narrow confidence intervals, lower p-values and a minimal loss of goodness of fit (*R^2^* = 0.6707). Below we draw the regression plots for each regressor with a custom function.
+:::
 
 ```{r}
 #| message: false
@@ -150,13 +176,17 @@ for (i in 1:length(ls)) {
 (ls[[1]] + ls[[2]]) / (ls[[3]] + ls[[4]])
 ```
 
+::: justify
 First thing to notice is the presence of some 'lonely' outliers that may heavily influence some of the estimates (especially in the 'Education' and 'Catholic' models). We'll address these outliers later. Except for the outliers, though, the linear model seems like a decent fit for all the four models. In particular, the 'Education' one has a relatively high *R^2^* (0.4406), and a clear descending pattern. This result is in accordance with most modern fertility studies that confirm the existence of a negative correlation between fertility rates and education status. For example see [Women's education and fertility: results from 26 Demographic and Health Surveys](https://pubmed.ncbi.nlm.nih.gov/7482677/). The 'Agriculture' model also exhibits a clear linear ascending pattern, regardless of the low *R^2^*. The other two models require further investigations. Anyway, empirical data confirms the existence of a positive correlation between fertility and religiosity (see [Human fertility in relation to education, economy, religion, contraception, and family planning programs](https://bmcpublichealth.biomedcentral.com/articles/10.1186/s12889-020-8331-7)), and between fertility and infant mortality (see [The influence of infant and child mortality on fertility in selected countries of the Asian and Pacific region](https://pubmed.ncbi.nlm.nih.gov/12314064/)), as wee see in the respective plots.
+:::
 
 ## Diagnostics with lindia
 
+::: justify
 `lindia` provides a set of streamlined functions that allow easy generation of linear regression diagnostic plots necessary for checking linear model assumptions. This package is meant for easy scheming of linear regression diagnostics, while preserving merits of "The Grammar of Graphics" as implemented in `ggplot2`.
 
 The main function of `lindia` package is `lindia::gg_diagnose()` , which outputs an arranged grid of all the diagnostics plots available in `lindia` .
+:::
 
 ```{r}
 #| message: false
@@ -165,6 +195,7 @@ The main function of `lindia` package is `lindia::gg_diagnose()` , which outputs
 lindia::gg_diagnose(model)
 ```
 
+::: justify
 As you can see, the output includes:
 
 -   Histogram of residuals.
@@ -176,13 +207,16 @@ As you can see, the output includes:
 -   Cook's distance plot.
 
 You can also add a boxcox plot to the grid, by adding `boxcox=T` parameter to the function call. If you need more flexibility in determining graphical elements and inclusion/exclusion of certain plots, set `plot.all=F` parameter in the function call. It will return a list of all plots, which the user can manipulate.
+:::
 
 ```{r}
 l <- lindia::gg_diagnose(model, plot.all = F)
 names(l)
 ```
 
+::: justify
 You can draw all the plots in a list with `lindia::plot_all()` function. For example, with the following code, we draw all the plots in 'l' list, except for residuals vs predictors plots.
+:::
 
 ```{r}
 #| message: false
@@ -191,6 +225,7 @@ You can draw all the plots in a list with `lindia::plot_all()` function. For exa
 lindia::plot_all(l[-c(2:5)])
 ```
 
+::: justify
 You can also draw the plots individually, via the corresponding functions:
 
 -   `gg_reshist()`.
@@ -203,6 +238,7 @@ You can also draw the plots individually, via the corresponding functions:
 -   `gg_cooksd()`.
 
 For example, you can draw the histogram of residuals with `lindia::gg_reshist()` .
+:::
 
 ```{r}
 #| message: false
@@ -211,7 +247,9 @@ For example, you can draw the histogram of residuals with `lindia::gg_reshist()`
 lindia::gg_reshist(model)
 ```
 
+::: justify
 All graphical styles returned by `lindia` graphing function can be overwritten by a call to `ggplot::theme()` (except `lindia::gg_resX()` and `lindia::gg_diagnose()`, which would return a list rather than a single ggplot object). For example:
+:::
 
 ```{r}
 #| message: false
@@ -222,7 +260,9 @@ lindia::gg_reshist(model) + ggplot2::theme_dark()
 
 ## Test linearity assumption
 
+::: justify
 The easiest and most used method to assess if the linearity assumption holds is through **residual plots** (i.e. residuals vs fitted and residuals vs predictors plots). If the plots exhibit a clear non linear pattern, then the assumption of linearity is violated. It's also important to check for outliers, since the OLS method is sensitive to them. Let's take a closer look at the residuals plots of our swiss model.
+:::
 
 ```{r}
 #| out-width: 100%
@@ -230,21 +270,29 @@ The easiest and most used method to assess if the linearity assumption holds is 
 lindia::plot_all(l[c(2:6)])
 ```
 
+::: justify
 Linearity seems to hold reasonably well in 'Agriculture', 'Infant.Mortality'. The points are randomly dispersed around the horizontal lines and don't exhibit clear non linear patterns. Except for a weird pattern in the middle, also 'Catholic' plot exhibits a somewhat linear pattern. 'Education' plot has an extreme outlier, but seems to follow a linear trend too. Looking at the 'Fitted values' plots we also see a clear horizontal pattern, thus the linear model is a good fit overall. The linearity assumption holds reasonably well, here.
+:::
 
 ## Test for null residuals mean
 
+::: justify
 The points in the residuals plots are clearly centered around 0, so it's safe to assume the assumption holds. Anyway we can compute the actual mean for an additional proof.
+:::
 
 ```{r}
 model$residuals |> mean()
 ```
 
+::: justify
 As you can see, the mean is so close to 0 that it's practically null.
+:::
 
 ## Test if predictors are correlated with residuals
 
+::: justify
 The residual plots already show there's no clear correlation between residuals and predictors, but we can do an additional check with a correlation matrix. We can plot a nice correlation matrix with `corrplot::corrplot()` function.
+:::
 
 ```{r}
 #| out-width: 100%
@@ -254,11 +302,15 @@ data.frame(resid = model$residuals, swiss[,-c(1,3)]) |>
   corrplot::corrplot(method = "number")
 ```
 
+::: justify
 As you can see, the correlations between residuals and predictors are practically null, thus the assumption holds.
+:::
 
 ## Test homoskedasticity assumption
 
+::: justify
 The residuals vs fitted plot is also a good tool to test for homoskedasticity, together with scale-location plot, which is an even better alternative when testing specifically for homoskedasticity.
+:::
 
 ```{r}
 #| message: false
@@ -267,27 +319,37 @@ The residuals vs fitted plot is also a good tool to test for homoskedasticity, t
 lindia::plot_all(l[c(6,8)], ncol = 2)
 ```
 
+::: justify
 There's no evident fan/conic shape in the first plot. The scale-location plot shows an approximately horizontal pattern (the plot is quite squeezed here), but is heavily influenced by a single outlier in the far left of the plot. Further investigation is needed. To get more info, we can run a formal heteroskedasticity test, like Breusch-Pagan test. If the p-value is less than the significance level, then the null hypotesis of homoskedasticity is rejected. You can run a BP test in R with `car::ncvTest()` function.
+:::
 
 ```{r}
 car::ncvTest(model)
 ```
 
+::: justify
 p \> 0.05, so we can't reject the null hypotesis of homoskedasticity. Based on the previous tests, we can assume the homoskedasticity assumption actually holds.
+:::
 
 ## Test no perfect multicollinearity assumption
 
+::: justify
 The presence of multicollinearity can be assessed by checking the correlation between predictors, and/or by computing the [Variance Inflation Factor (VIF)](https://corporatefinanceinstitute.com/resources/data-science/variance-inflation-factor-vif/) for each predictor. We already plotted a correlation matrix above; there's a quite high correlation between 'Education' and 'Agriculture' variables. It makes sense that an higher percentual of individuals working in agriculture is tied to a lower education overall. So let's see if the VIFs also suggest the presence of multicollinearity. We can compute the VIFs and associated tolerance values with `olsrr::ols_vif_tol()` function.
+:::
 
 ```{r}
 olsrr::ols_vif_tol(model)
 ```
 
+::: justify
 'Agriculture' variable actually has the highest VIF value, but since all VIFs are lower than 3, and all tolerance values are higher then 0.25 (those thresholds are the most commonly used ones, but they might vary a bit depending on how sensitive you want your multicollinearity test to be), we can exclude the presence of multicollinearity.
+:::
 
 ## Test normality of residuals assumption
 
+::: justify
 The easiest and most reliable way to test the normality assumption is by looking and the histogram of residuals and QQ plot.
+:::
 
 ```{r}
 #| message: false
@@ -296,7 +358,9 @@ The easiest and most reliable way to test the normality assumption is by looking
 lindia::plot_all(l[c(1,7)], ncol = 2)
 ```
 
+::: justify
 The standardized residuals seem to follow the normal distribution reasonably well here. For a more detailed qq plot, with a confidence interval included, you can use functions from other packages, like `car::qqPlot()` .
+:::
 
 ```{r}
 #| out-width: 100%
@@ -304,11 +368,15 @@ The standardized residuals seem to follow the normal distribution reasonably wel
 qq <- car::qqPlot(model$residuals, id=F)
 ```
 
+::: justify
 Most observations fall inside the confidence interval, thus we can assume the normality assumption holds.
+:::
 
 ## Check for outliers and influential observations
 
+::: justify
 Previously, we observed some extreme data points that may negatively influence our model. The check for highly influential values, we can look at the residuals vs. leverage plot, and at the Cook's distance plot.
+:::
 
 ```{r}
 #| message: false
@@ -317,20 +385,25 @@ Previously, we observed some extreme data points that may negatively influence o
 plot_all(l[c(9,10)], ncol = 2)
 ```
 
+::: justify
 Both plots show highly influential data points, that when removed from the model, might greatly affect the parameters estimates. As we can see, there are at least 2 observations with high leverage, compared to other data points, and 3 observations (marked with the corresponding indexes) higher then the threshold level in the Cook's plot. Let's take a closer look at these data points.
+:::
 
 ```{r}
 swiss[c(6,37,47),-3]
 ```
 
+::: justify
 'Porrentruy' has a relatively low 'Fertility' for such high 'Infant.Mortality'. The other two data points seem coherent with our previous model.
 
 Generally speaking, arbitrarily removing data points is not good practice. Anyway, let's try to re-build the model without these 3 observations, in order to see how influencial they are.
+:::
 
 ```{r}
 model2 <- lm(Fertility ~ Agriculture + Education + Catholic + Infant.Mortality, data = swiss[-c(6,37,47),])
 summary(model2)
 ```
 
+::: justify
 The 3 data points were actually very influencial. This new model is significantly more accurate, with higher *R^2^* and lower p-values (especially the 'Agriculture' and 'Infant.Mortality' ones got way lower).
 :::

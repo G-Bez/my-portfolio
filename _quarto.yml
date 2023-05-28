@@ -50,4 +50,7 @@ format:
     css: theme.css
     fontsize: 0.9em
 
+execute: 
+  freeze: true
+
 editor: visual

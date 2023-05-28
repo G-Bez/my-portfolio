@@ -1,0 +1,885 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.2.475">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="dcterms.date" content="2022-11-03">
+
+<title>Portfolio - Data cleansing with Janitor R package</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1.6em;
+  vertical-align: middle;
+}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { color: #008000; } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { color: #008000; font-weight: bold; } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../../">
+<script src="../../site_libs/cookie-consent/cookie-consent.js"></script>
+<link href="../../site_libs/cookie-consent/cookie-consent.css" rel="stylesheet">
+<script src="../../site_libs/quarto-html/quarto.js"></script>
+<script src="../../site_libs/quarto-html/popper.min.js"></script>
+<script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-dark.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="dark">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit"
+  }
+}</script>
+
+<script type="text/javascript" charset="UTF-8">
+document.addEventListener('DOMContentLoaded', function () {
+cookieconsent.run({
+  "notice_banner_type":"headline",
+  "consent_type":"express",
+  "palette":"dark",
+  "language":"en",
+  "page_load_consent_levels":["strictly-necessary"],
+  "notice_banner_reject_button_hide":false,
+  "preferences_center_close_button_hide":false,
+  "website_name":""
+  });
+});
+</script> 
+  
+<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','GTM-566H2H3');</script>
+<!-- End Google Tag Manager -->
+
+
+<link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Dosis:300" rel="stylesheet">
+
+<meta property="og:title" content="My Portfolio">
+<meta property="og:image" content="https://g-bez.github.io/my-portfolio/opengraph_thumbnail.png">
+<meta property="og:site-name" content="Portfolio">
+<meta property="og:image:height" content="1080">
+<meta property="og:image:width" content="1920">
+</head><body>
+
+
+<!-- ===== NAVBAR SECTION ===== -->
+<nav class="navbar navbar-default navbar-expand-lg nav-menu">
+  <div class="container-fluid">
+    
+    <button class="navbar-toggler nav-button" type="button" data-toggle="collapse" data-target="#myNavbar">
+        <div class="line1 ham"></div>
+        <div class="line2 ham"></div>
+        <div class="line3 ham"></div>      
+    </button>
+      
+    <div class="collapse navbar-collapse justify-content-end" id="myNavbar">
+      
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link m-2 menu-item nav-active active" href="https://g-bez.github.io/my-portfolio/"> Home </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link m-2 menu-item nav-active active" href="https://g-bez.github.io/my-portfolio/archive.html"> Archive </a>
+        </li>
+      </ul>
+      
+      <ul class="navbar-nav ml-auto">
+      </ul>
+    </div>
+      
+  </div>
+</nav>
+
+<section class="hero-section">
+
+</section>
+<!--===== END OF NAVBAR SECTION ===== -->
+
+
+
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+
+<link href="../../site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet">
+<script src="../../site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+
+
+<link rel="stylesheet" href="../../theme.css">
+<link rel="stylesheet" href="theme.css">
+
+
+
+
+<div id="quarto-search-results"></div>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#install-janitor" id="toc-install-janitor" class="nav-link active" data-scroll-target="#install-janitor">Install janitor</a></li>
+  <li><a href="#example-dataset" id="toc-example-dataset" class="nav-link" data-scroll-target="#example-dataset">Example dataset</a></li>
+  <li><a href="#set-column-names-from-row" id="toc-set-column-names-from-row" class="nav-link" data-scroll-target="#set-column-names-from-row">Set column names from row</a></li>
+  <li><a href="#clean-column-names" id="toc-clean-column-names" class="nav-link" data-scroll-target="#clean-column-names">Clean column names</a></li>
+  <li><a href="#remove-empty-columns-and-rows" id="toc-remove-empty-columns-and-rows" class="nav-link" data-scroll-target="#remove-empty-columns-and-rows">Remove empty columns and rows</a></li>
+  <li><a href="#remove-constant-column" id="toc-remove-constant-column" class="nav-link" data-scroll-target="#remove-constant-column">Remove constant column</a></li>
+  <li><a href="#frequency-and-contingency-tables" id="toc-frequency-and-contingency-tables" class="nav-link" data-scroll-target="#frequency-and-contingency-tables">Frequency and contingency tables</a></li>
+  <li><a href="#formatting-tabulated-data" id="toc-formatting-tabulated-data" class="nav-link" data-scroll-target="#formatting-tabulated-data">Formatting tabulated data</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-566H2H3" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<div class="quarto-title-block"><div><h1 class="title">Data cleansing with Janitor R package</h1><button type="button" class="btn code-tools-button" id="quarto-code-tools-source"><i class="bi"></i> Code</button></div></div>
+  <div class="quarto-categories">
+    <div class="quarto-category">R</div>
+    <div class="quarto-category">Data cleansing</div>
+  </div>
+  </div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">November 3, 2022</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+<div class="cell">
+<style type="text/css">
+.justify {
+  text-align: justify !important
+}
+</style>
+</div>
+<div class="justify">
+<p><a href="https://github.com/sfirke/janitor"><code>janitor</code></a> is a popular package for easy and quick data cleansing and data inspection in R. It’s a <a href="https://www.tidyverse.org/"><code>tidyverse</code></a> oriented package, it plays nicely with <code>%&gt;%</code> pipe operator and is optimized for cleaning data imported with <code>readr</code> and <code>readxl</code> packages.</p>
+</div>
+<section id="install-janitor" class="level2">
+<h2 class="anchored" data-anchor-id="install-janitor">Install janitor</h2>
+<div class="justify">
+<p>You can install the most recent official version of <code>janitor</code> from CRAN with:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"janitor"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Or the developer version from GitHub:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"sfirke/janitor"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</section>
+<section id="example-dataset" class="level2">
+<h2 class="anchored" data-anchor-id="example-dataset">Example dataset</h2>
+<div class="justify">
+<p>We use a custom version of <code>iris</code> R prebuilt dataset, which I manually made ‘dirty’ by changing column names and adding some dirty columns and rows.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>iris_custom <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> datasets<span class="sc">::</span>iris</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>Species <span class="ot">&lt;-</span> <span class="fu">as.character</span>(df<span class="sc">$</span>Species)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  df[,<span class="dv">6</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  df[,<span class="dv">7</span>] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  df[<span class="dv">10</span>,] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(df) <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">1</span>,<span class="dv">7</span>) <span class="sc">|&gt;</span> <span class="fu">as.character</span>()</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  dirty_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Sepal length, (cm)"</span>, <span class="st">"Sepal width, (cm)"</span>, </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"Petal length, (cm)"</span>, <span class="st">"Petal width, (cm)"</span>, </span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"species"</span>, <span class="st">"empty"</span>, <span class="st">"const"</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">rbind</span>(dirty_names, df)</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(df)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>iris_dirty <span class="ot">&lt;-</span> <span class="fu">iris_custom</span>()</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>iris_dirty</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["1"],"name":[1],"type":["chr"],"align":["left"]},{"label":["2"],"name":[2],"type":["chr"],"align":["left"]},{"label":["3"],"name":[3],"type":["chr"],"align":["left"]},{"label":["4"],"name":[4],"type":["chr"],"align":["left"]},{"label":["5"],"name":[5],"type":["chr"],"align":["left"]},{"label":["6"],"name":[6],"type":["chr"],"align":["left"]},{"label":["7"],"name":[7],"type":["chr"],"align":["left"]}],"data":[{"1":"Sepal length, (cm)","2":"Sepal width, (cm)","3":"Petal length, (cm)","4":"Petal width, (cm)","5":"species","6":"empty","7":"const"},{"1":"5.1","2":"3.5","3":"1.4","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"4.9","2":"3","3":"1.4","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"4.7","2":"3.2","3":"1.3","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"4.6","2":"3.1","3":"1.5","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"5","2":"3.6","3":"1.4","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"5.4","2":"3.9","3":"1.7","4":"0.4","5":"setosa","6":"NA","7":"1"},{"1":"4.6","2":"3.4","3":"1.4","4":"0.3","5":"setosa","6":"NA","7":"1"},{"1":"5","2":"3.4","3":"1.5","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"4.4","2":"2.9","3":"1.4","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"NA","2":"NA","3":"NA","4":"NA","5":"NA","6":"NA","7":"NA"},{"1":"5.4","2":"3.7","3":"1.5","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"4.8","2":"3.4","3":"1.6","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"4.8","2":"3","3":"1.4","4":"0.1","5":"setosa","6":"NA","7":"1"},{"1":"4.3","2":"3","3":"1.1","4":"0.1","5":"setosa","6":"NA","7":"1"},{"1":"5.8","2":"4","3":"1.2","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"5.7","2":"4.4","3":"1.5","4":"0.4","5":"setosa","6":"NA","7":"1"},{"1":"5.4","2":"3.9","3":"1.3","4":"0.4","5":"setosa","6":"NA","7":"1"},{"1":"5.1","2":"3.5","3":"1.4","4":"0.3","5":"setosa","6":"NA","7":"1"},{"1":"5.7","2":"3.8","3":"1.7","4":"0.3","5":"setosa","6":"NA","7":"1"},{"1":"5.1","2":"3.8","3":"1.5","4":"0.3","5":"setosa","6":"NA","7":"1"},{"1":"5.4","2":"3.4","3":"1.7","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"5.1","2":"3.7","3":"1.5","4":"0.4","5":"setosa","6":"NA","7":"1"},{"1":"4.6","2":"3.6","3":"1","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"5.1","2":"3.3","3":"1.7","4":"0.5","5":"setosa","6":"NA","7":"1"},{"1":"4.8","2":"3.4","3":"1.9","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"5","2":"3","3":"1.6","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"5","2":"3.4","3":"1.6","4":"0.4","5":"setosa","6":"NA","7":"1"},{"1":"5.2","2":"3.5","3":"1.5","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"5.2","2":"3.4","3":"1.4","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"4.7","2":"3.2","3":"1.6","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"4.8","2":"3.1","3":"1.6","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"5.4","2":"3.4","3":"1.5","4":"0.4","5":"setosa","6":"NA","7":"1"},{"1":"5.2","2":"4.1","3":"1.5","4":"0.1","5":"setosa","6":"NA","7":"1"},{"1":"5.5","2":"4.2","3":"1.4","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"4.9","2":"3.1","3":"1.5","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"5","2":"3.2","3":"1.2","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"5.5","2":"3.5","3":"1.3","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"4.9","2":"3.6","3":"1.4","4":"0.1","5":"setosa","6":"NA","7":"1"},{"1":"4.4","2":"3","3":"1.3","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"5.1","2":"3.4","3":"1.5","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"5","2":"3.5","3":"1.3","4":"0.3","5":"setosa","6":"NA","7":"1"},{"1":"4.5","2":"2.3","3":"1.3","4":"0.3","5":"setosa","6":"NA","7":"1"},{"1":"4.4","2":"3.2","3":"1.3","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"5","2":"3.5","3":"1.6","4":"0.6","5":"setosa","6":"NA","7":"1"},{"1":"5.1","2":"3.8","3":"1.9","4":"0.4","5":"setosa","6":"NA","7":"1"},{"1":"4.8","2":"3","3":"1.4","4":"0.3","5":"setosa","6":"NA","7":"1"},{"1":"5.1","2":"3.8","3":"1.6","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"4.6","2":"3.2","3":"1.4","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"5.3","2":"3.7","3":"1.5","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"5","2":"3.3","3":"1.4","4":"0.2","5":"setosa","6":"NA","7":"1"},{"1":"7","2":"3.2","3":"4.7","4":"1.4","5":"versicolor","6":"NA","7":"1"},{"1":"6.4","2":"3.2","3":"4.5","4":"1.5","5":"versicolor","6":"NA","7":"1"},{"1":"6.9","2":"3.1","3":"4.9","4":"1.5","5":"versicolor","6":"NA","7":"1"},{"1":"5.5","2":"2.3","3":"4","4":"1.3","5":"versicolor","6":"NA","7":"1"},{"1":"6.5","2":"2.8","3":"4.6","4":"1.5","5":"versicolor","6":"NA","7":"1"},{"1":"5.7","2":"2.8","3":"4.5","4":"1.3","5":"versicolor","6":"NA","7":"1"},{"1":"6.3","2":"3.3","3":"4.7","4":"1.6","5":"versicolor","6":"NA","7":"1"},{"1":"4.9","2":"2.4","3":"3.3","4":"1","5":"versicolor","6":"NA","7":"1"},{"1":"6.6","2":"2.9","3":"4.6","4":"1.3","5":"versicolor","6":"NA","7":"1"},{"1":"5.2","2":"2.7","3":"3.9","4":"1.4","5":"versicolor","6":"NA","7":"1"},{"1":"5","2":"2","3":"3.5","4":"1","5":"versicolor","6":"NA","7":"1"},{"1":"5.9","2":"3","3":"4.2","4":"1.5","5":"versicolor","6":"NA","7":"1"},{"1":"6","2":"2.2","3":"4","4":"1","5":"versicolor","6":"NA","7":"1"},{"1":"6.1","2":"2.9","3":"4.7","4":"1.4","5":"versicolor","6":"NA","7":"1"},{"1":"5.6","2":"2.9","3":"3.6","4":"1.3","5":"versicolor","6":"NA","7":"1"},{"1":"6.7","2":"3.1","3":"4.4","4":"1.4","5":"versicolor","6":"NA","7":"1"},{"1":"5.6","2":"3","3":"4.5","4":"1.5","5":"versicolor","6":"NA","7":"1"},{"1":"5.8","2":"2.7","3":"4.1","4":"1","5":"versicolor","6":"NA","7":"1"},{"1":"6.2","2":"2.2","3":"4.5","4":"1.5","5":"versicolor","6":"NA","7":"1"},{"1":"5.6","2":"2.5","3":"3.9","4":"1.1","5":"versicolor","6":"NA","7":"1"},{"1":"5.9","2":"3.2","3":"4.8","4":"1.8","5":"versicolor","6":"NA","7":"1"},{"1":"6.1","2":"2.8","3":"4","4":"1.3","5":"versicolor","6":"NA","7":"1"},{"1":"6.3","2":"2.5","3":"4.9","4":"1.5","5":"versicolor","6":"NA","7":"1"},{"1":"6.1","2":"2.8","3":"4.7","4":"1.2","5":"versicolor","6":"NA","7":"1"},{"1":"6.4","2":"2.9","3":"4.3","4":"1.3","5":"versicolor","6":"NA","7":"1"},{"1":"6.6","2":"3","3":"4.4","4":"1.4","5":"versicolor","6":"NA","7":"1"},{"1":"6.8","2":"2.8","3":"4.8","4":"1.4","5":"versicolor","6":"NA","7":"1"},{"1":"6.7","2":"3","3":"5","4":"1.7","5":"versicolor","6":"NA","7":"1"},{"1":"6","2":"2.9","3":"4.5","4":"1.5","5":"versicolor","6":"NA","7":"1"},{"1":"5.7","2":"2.6","3":"3.5","4":"1","5":"versicolor","6":"NA","7":"1"},{"1":"5.5","2":"2.4","3":"3.8","4":"1.1","5":"versicolor","6":"NA","7":"1"},{"1":"5.5","2":"2.4","3":"3.7","4":"1","5":"versicolor","6":"NA","7":"1"},{"1":"5.8","2":"2.7","3":"3.9","4":"1.2","5":"versicolor","6":"NA","7":"1"},{"1":"6","2":"2.7","3":"5.1","4":"1.6","5":"versicolor","6":"NA","7":"1"},{"1":"5.4","2":"3","3":"4.5","4":"1.5","5":"versicolor","6":"NA","7":"1"},{"1":"6","2":"3.4","3":"4.5","4":"1.6","5":"versicolor","6":"NA","7":"1"},{"1":"6.7","2":"3.1","3":"4.7","4":"1.5","5":"versicolor","6":"NA","7":"1"},{"1":"6.3","2":"2.3","3":"4.4","4":"1.3","5":"versicolor","6":"NA","7":"1"},{"1":"5.6","2":"3","3":"4.1","4":"1.3","5":"versicolor","6":"NA","7":"1"},{"1":"5.5","2":"2.5","3":"4","4":"1.3","5":"versicolor","6":"NA","7":"1"},{"1":"5.5","2":"2.6","3":"4.4","4":"1.2","5":"versicolor","6":"NA","7":"1"},{"1":"6.1","2":"3","3":"4.6","4":"1.4","5":"versicolor","6":"NA","7":"1"},{"1":"5.8","2":"2.6","3":"4","4":"1.2","5":"versicolor","6":"NA","7":"1"},{"1":"5","2":"2.3","3":"3.3","4":"1","5":"versicolor","6":"NA","7":"1"},{"1":"5.6","2":"2.7","3":"4.2","4":"1.3","5":"versicolor","6":"NA","7":"1"},{"1":"5.7","2":"3","3":"4.2","4":"1.2","5":"versicolor","6":"NA","7":"1"},{"1":"5.7","2":"2.9","3":"4.2","4":"1.3","5":"versicolor","6":"NA","7":"1"},{"1":"6.2","2":"2.9","3":"4.3","4":"1.3","5":"versicolor","6":"NA","7":"1"},{"1":"5.1","2":"2.5","3":"3","4":"1.1","5":"versicolor","6":"NA","7":"1"},{"1":"5.7","2":"2.8","3":"4.1","4":"1.3","5":"versicolor","6":"NA","7":"1"},{"1":"6.3","2":"3.3","3":"6","4":"2.5","5":"virginica","6":"NA","7":"1"},{"1":"5.8","2":"2.7","3":"5.1","4":"1.9","5":"virginica","6":"NA","7":"1"},{"1":"7.1","2":"3","3":"5.9","4":"2.1","5":"virginica","6":"NA","7":"1"},{"1":"6.3","2":"2.9","3":"5.6","4":"1.8","5":"virginica","6":"NA","7":"1"},{"1":"6.5","2":"3","3":"5.8","4":"2.2","5":"virginica","6":"NA","7":"1"},{"1":"7.6","2":"3","3":"6.6","4":"2.1","5":"virginica","6":"NA","7":"1"},{"1":"4.9","2":"2.5","3":"4.5","4":"1.7","5":"virginica","6":"NA","7":"1"},{"1":"7.3","2":"2.9","3":"6.3","4":"1.8","5":"virginica","6":"NA","7":"1"},{"1":"6.7","2":"2.5","3":"5.8","4":"1.8","5":"virginica","6":"NA","7":"1"},{"1":"7.2","2":"3.6","3":"6.1","4":"2.5","5":"virginica","6":"NA","7":"1"},{"1":"6.5","2":"3.2","3":"5.1","4":"2","5":"virginica","6":"NA","7":"1"},{"1":"6.4","2":"2.7","3":"5.3","4":"1.9","5":"virginica","6":"NA","7":"1"},{"1":"6.8","2":"3","3":"5.5","4":"2.1","5":"virginica","6":"NA","7":"1"},{"1":"5.7","2":"2.5","3":"5","4":"2","5":"virginica","6":"NA","7":"1"},{"1":"5.8","2":"2.8","3":"5.1","4":"2.4","5":"virginica","6":"NA","7":"1"},{"1":"6.4","2":"3.2","3":"5.3","4":"2.3","5":"virginica","6":"NA","7":"1"},{"1":"6.5","2":"3","3":"5.5","4":"1.8","5":"virginica","6":"NA","7":"1"},{"1":"7.7","2":"3.8","3":"6.7","4":"2.2","5":"virginica","6":"NA","7":"1"},{"1":"7.7","2":"2.6","3":"6.9","4":"2.3","5":"virginica","6":"NA","7":"1"},{"1":"6","2":"2.2","3":"5","4":"1.5","5":"virginica","6":"NA","7":"1"},{"1":"6.9","2":"3.2","3":"5.7","4":"2.3","5":"virginica","6":"NA","7":"1"},{"1":"5.6","2":"2.8","3":"4.9","4":"2","5":"virginica","6":"NA","7":"1"},{"1":"7.7","2":"2.8","3":"6.7","4":"2","5":"virginica","6":"NA","7":"1"},{"1":"6.3","2":"2.7","3":"4.9","4":"1.8","5":"virginica","6":"NA","7":"1"},{"1":"6.7","2":"3.3","3":"5.7","4":"2.1","5":"virginica","6":"NA","7":"1"},{"1":"7.2","2":"3.2","3":"6","4":"1.8","5":"virginica","6":"NA","7":"1"},{"1":"6.2","2":"2.8","3":"4.8","4":"1.8","5":"virginica","6":"NA","7":"1"},{"1":"6.1","2":"3","3":"4.9","4":"1.8","5":"virginica","6":"NA","7":"1"},{"1":"6.4","2":"2.8","3":"5.6","4":"2.1","5":"virginica","6":"NA","7":"1"},{"1":"7.2","2":"3","3":"5.8","4":"1.6","5":"virginica","6":"NA","7":"1"},{"1":"7.4","2":"2.8","3":"6.1","4":"1.9","5":"virginica","6":"NA","7":"1"},{"1":"7.9","2":"3.8","3":"6.4","4":"2","5":"virginica","6":"NA","7":"1"},{"1":"6.4","2":"2.8","3":"5.6","4":"2.2","5":"virginica","6":"NA","7":"1"},{"1":"6.3","2":"2.8","3":"5.1","4":"1.5","5":"virginica","6":"NA","7":"1"},{"1":"6.1","2":"2.6","3":"5.6","4":"1.4","5":"virginica","6":"NA","7":"1"},{"1":"7.7","2":"3","3":"6.1","4":"2.3","5":"virginica","6":"NA","7":"1"},{"1":"6.3","2":"3.4","3":"5.6","4":"2.4","5":"virginica","6":"NA","7":"1"},{"1":"6.4","2":"3.1","3":"5.5","4":"1.8","5":"virginica","6":"NA","7":"1"},{"1":"6","2":"3","3":"4.8","4":"1.8","5":"virginica","6":"NA","7":"1"},{"1":"6.9","2":"3.1","3":"5.4","4":"2.1","5":"virginica","6":"NA","7":"1"},{"1":"6.7","2":"3.1","3":"5.6","4":"2.4","5":"virginica","6":"NA","7":"1"},{"1":"6.9","2":"3.1","3":"5.1","4":"2.3","5":"virginica","6":"NA","7":"1"},{"1":"5.8","2":"2.7","3":"5.1","4":"1.9","5":"virginica","6":"NA","7":"1"},{"1":"6.8","2":"3.2","3":"5.9","4":"2.3","5":"virginica","6":"NA","7":"1"},{"1":"6.7","2":"3.3","3":"5.7","4":"2.5","5":"virginica","6":"NA","7":"1"},{"1":"6.7","2":"3","3":"5.2","4":"2.3","5":"virginica","6":"NA","7":"1"},{"1":"6.3","2":"2.5","3":"5","4":"1.9","5":"virginica","6":"NA","7":"1"},{"1":"6.5","2":"3","3":"5.2","4":"2","5":"virginica","6":"NA","7":"1"},{"1":"6.2","2":"3.4","3":"5.4","4":"2.3","5":"virginica","6":"NA","7":"1"},{"1":"5.9","2":"3","3":"5.1","4":"1.8","5":"virginica","6":"NA","7":"1"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>Changes done:</p>
+<ul>
+<li>Converted ‘species’ column to character.</li>
+<li>Replaced 10th row with NAs.</li>
+<li>Added an empty column.</li>
+<li>Added a constant column.</li>
+<li>Changed colnames to a sequence on numbers from 1 to 7.</li>
+<li>Added dirty column names as first row.</li>
+</ul>
+<p>Now let’s see some <code>janitor</code> functions in action.</p>
+</div>
+</section>
+<section id="set-column-names-from-row" class="level2">
+<h2 class="anchored" data-anchor-id="set-column-names-from-row">Set column names from row</h2>
+<div class="justify">
+<p>With <code>janitor::row_to_names()</code> we can set our first row as column names.</p>
+<div class="cell" data-rows.print="5">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>iris_dirty <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">row_to_names</span>(iris_dirty, <span class="at">row_number =</span> <span class="dv">1</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>iris_dirty</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["Sepal length, (cm)"],"name":[1],"type":["chr"],"align":["left"]},{"label":["Sepal width, (cm)"],"name":[2],"type":["chr"],"align":["left"]},{"label":["Petal length, (cm)"],"name":[3],"type":["chr"],"align":["left"]},{"label":["Petal width, (cm)"],"name":[4],"type":["chr"],"align":["left"]},{"label":["species"],"name":[5],"type":["chr"],"align":["left"]},{"label":["empty"],"name":[6],"type":["chr"],"align":["left"]},{"label":["const"],"name":[7],"type":["chr"],"align":["left"]}],"data":[{"1":"5.1","2":"3.5","3":"1.4","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"2"},{"1":"4.9","2":"3","3":"1.4","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"3"},{"1":"4.7","2":"3.2","3":"1.3","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"4"},{"1":"4.6","2":"3.1","3":"1.5","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"5"},{"1":"5","2":"3.6","3":"1.4","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"6"},{"1":"5.4","2":"3.9","3":"1.7","4":"0.4","5":"setosa","6":"NA","7":"1","_rn_":"7"},{"1":"4.6","2":"3.4","3":"1.4","4":"0.3","5":"setosa","6":"NA","7":"1","_rn_":"8"},{"1":"5","2":"3.4","3":"1.5","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"9"},{"1":"4.4","2":"2.9","3":"1.4","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"10"},{"1":"NA","2":"NA","3":"NA","4":"NA","5":"NA","6":"NA","7":"NA","_rn_":"11"},{"1":"5.4","2":"3.7","3":"1.5","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"12"},{"1":"4.8","2":"3.4","3":"1.6","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"13"},{"1":"4.8","2":"3","3":"1.4","4":"0.1","5":"setosa","6":"NA","7":"1","_rn_":"14"},{"1":"4.3","2":"3","3":"1.1","4":"0.1","5":"setosa","6":"NA","7":"1","_rn_":"15"},{"1":"5.8","2":"4","3":"1.2","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"16"},{"1":"5.7","2":"4.4","3":"1.5","4":"0.4","5":"setosa","6":"NA","7":"1","_rn_":"17"},{"1":"5.4","2":"3.9","3":"1.3","4":"0.4","5":"setosa","6":"NA","7":"1","_rn_":"18"},{"1":"5.1","2":"3.5","3":"1.4","4":"0.3","5":"setosa","6":"NA","7":"1","_rn_":"19"},{"1":"5.7","2":"3.8","3":"1.7","4":"0.3","5":"setosa","6":"NA","7":"1","_rn_":"20"},{"1":"5.1","2":"3.8","3":"1.5","4":"0.3","5":"setosa","6":"NA","7":"1","_rn_":"21"},{"1":"5.4","2":"3.4","3":"1.7","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"22"},{"1":"5.1","2":"3.7","3":"1.5","4":"0.4","5":"setosa","6":"NA","7":"1","_rn_":"23"},{"1":"4.6","2":"3.6","3":"1","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"24"},{"1":"5.1","2":"3.3","3":"1.7","4":"0.5","5":"setosa","6":"NA","7":"1","_rn_":"25"},{"1":"4.8","2":"3.4","3":"1.9","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"26"},{"1":"5","2":"3","3":"1.6","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"27"},{"1":"5","2":"3.4","3":"1.6","4":"0.4","5":"setosa","6":"NA","7":"1","_rn_":"28"},{"1":"5.2","2":"3.5","3":"1.5","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"29"},{"1":"5.2","2":"3.4","3":"1.4","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"30"},{"1":"4.7","2":"3.2","3":"1.6","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"31"},{"1":"4.8","2":"3.1","3":"1.6","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"32"},{"1":"5.4","2":"3.4","3":"1.5","4":"0.4","5":"setosa","6":"NA","7":"1","_rn_":"33"},{"1":"5.2","2":"4.1","3":"1.5","4":"0.1","5":"setosa","6":"NA","7":"1","_rn_":"34"},{"1":"5.5","2":"4.2","3":"1.4","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"35"},{"1":"4.9","2":"3.1","3":"1.5","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"36"},{"1":"5","2":"3.2","3":"1.2","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"37"},{"1":"5.5","2":"3.5","3":"1.3","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"38"},{"1":"4.9","2":"3.6","3":"1.4","4":"0.1","5":"setosa","6":"NA","7":"1","_rn_":"39"},{"1":"4.4","2":"3","3":"1.3","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"40"},{"1":"5.1","2":"3.4","3":"1.5","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"41"},{"1":"5","2":"3.5","3":"1.3","4":"0.3","5":"setosa","6":"NA","7":"1","_rn_":"42"},{"1":"4.5","2":"2.3","3":"1.3","4":"0.3","5":"setosa","6":"NA","7":"1","_rn_":"43"},{"1":"4.4","2":"3.2","3":"1.3","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"44"},{"1":"5","2":"3.5","3":"1.6","4":"0.6","5":"setosa","6":"NA","7":"1","_rn_":"45"},{"1":"5.1","2":"3.8","3":"1.9","4":"0.4","5":"setosa","6":"NA","7":"1","_rn_":"46"},{"1":"4.8","2":"3","3":"1.4","4":"0.3","5":"setosa","6":"NA","7":"1","_rn_":"47"},{"1":"5.1","2":"3.8","3":"1.6","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"48"},{"1":"4.6","2":"3.2","3":"1.4","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"49"},{"1":"5.3","2":"3.7","3":"1.5","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"50"},{"1":"5","2":"3.3","3":"1.4","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"51"},{"1":"7","2":"3.2","3":"4.7","4":"1.4","5":"versicolor","6":"NA","7":"1","_rn_":"52"},{"1":"6.4","2":"3.2","3":"4.5","4":"1.5","5":"versicolor","6":"NA","7":"1","_rn_":"53"},{"1":"6.9","2":"3.1","3":"4.9","4":"1.5","5":"versicolor","6":"NA","7":"1","_rn_":"54"},{"1":"5.5","2":"2.3","3":"4","4":"1.3","5":"versicolor","6":"NA","7":"1","_rn_":"55"},{"1":"6.5","2":"2.8","3":"4.6","4":"1.5","5":"versicolor","6":"NA","7":"1","_rn_":"56"},{"1":"5.7","2":"2.8","3":"4.5","4":"1.3","5":"versicolor","6":"NA","7":"1","_rn_":"57"},{"1":"6.3","2":"3.3","3":"4.7","4":"1.6","5":"versicolor","6":"NA","7":"1","_rn_":"58"},{"1":"4.9","2":"2.4","3":"3.3","4":"1","5":"versicolor","6":"NA","7":"1","_rn_":"59"},{"1":"6.6","2":"2.9","3":"4.6","4":"1.3","5":"versicolor","6":"NA","7":"1","_rn_":"60"},{"1":"5.2","2":"2.7","3":"3.9","4":"1.4","5":"versicolor","6":"NA","7":"1","_rn_":"61"},{"1":"5","2":"2","3":"3.5","4":"1","5":"versicolor","6":"NA","7":"1","_rn_":"62"},{"1":"5.9","2":"3","3":"4.2","4":"1.5","5":"versicolor","6":"NA","7":"1","_rn_":"63"},{"1":"6","2":"2.2","3":"4","4":"1","5":"versicolor","6":"NA","7":"1","_rn_":"64"},{"1":"6.1","2":"2.9","3":"4.7","4":"1.4","5":"versicolor","6":"NA","7":"1","_rn_":"65"},{"1":"5.6","2":"2.9","3":"3.6","4":"1.3","5":"versicolor","6":"NA","7":"1","_rn_":"66"},{"1":"6.7","2":"3.1","3":"4.4","4":"1.4","5":"versicolor","6":"NA","7":"1","_rn_":"67"},{"1":"5.6","2":"3","3":"4.5","4":"1.5","5":"versicolor","6":"NA","7":"1","_rn_":"68"},{"1":"5.8","2":"2.7","3":"4.1","4":"1","5":"versicolor","6":"NA","7":"1","_rn_":"69"},{"1":"6.2","2":"2.2","3":"4.5","4":"1.5","5":"versicolor","6":"NA","7":"1","_rn_":"70"},{"1":"5.6","2":"2.5","3":"3.9","4":"1.1","5":"versicolor","6":"NA","7":"1","_rn_":"71"},{"1":"5.9","2":"3.2","3":"4.8","4":"1.8","5":"versicolor","6":"NA","7":"1","_rn_":"72"},{"1":"6.1","2":"2.8","3":"4","4":"1.3","5":"versicolor","6":"NA","7":"1","_rn_":"73"},{"1":"6.3","2":"2.5","3":"4.9","4":"1.5","5":"versicolor","6":"NA","7":"1","_rn_":"74"},{"1":"6.1","2":"2.8","3":"4.7","4":"1.2","5":"versicolor","6":"NA","7":"1","_rn_":"75"},{"1":"6.4","2":"2.9","3":"4.3","4":"1.3","5":"versicolor","6":"NA","7":"1","_rn_":"76"},{"1":"6.6","2":"3","3":"4.4","4":"1.4","5":"versicolor","6":"NA","7":"1","_rn_":"77"},{"1":"6.8","2":"2.8","3":"4.8","4":"1.4","5":"versicolor","6":"NA","7":"1","_rn_":"78"},{"1":"6.7","2":"3","3":"5","4":"1.7","5":"versicolor","6":"NA","7":"1","_rn_":"79"},{"1":"6","2":"2.9","3":"4.5","4":"1.5","5":"versicolor","6":"NA","7":"1","_rn_":"80"},{"1":"5.7","2":"2.6","3":"3.5","4":"1","5":"versicolor","6":"NA","7":"1","_rn_":"81"},{"1":"5.5","2":"2.4","3":"3.8","4":"1.1","5":"versicolor","6":"NA","7":"1","_rn_":"82"},{"1":"5.5","2":"2.4","3":"3.7","4":"1","5":"versicolor","6":"NA","7":"1","_rn_":"83"},{"1":"5.8","2":"2.7","3":"3.9","4":"1.2","5":"versicolor","6":"NA","7":"1","_rn_":"84"},{"1":"6","2":"2.7","3":"5.1","4":"1.6","5":"versicolor","6":"NA","7":"1","_rn_":"85"},{"1":"5.4","2":"3","3":"4.5","4":"1.5","5":"versicolor","6":"NA","7":"1","_rn_":"86"},{"1":"6","2":"3.4","3":"4.5","4":"1.6","5":"versicolor","6":"NA","7":"1","_rn_":"87"},{"1":"6.7","2":"3.1","3":"4.7","4":"1.5","5":"versicolor","6":"NA","7":"1","_rn_":"88"},{"1":"6.3","2":"2.3","3":"4.4","4":"1.3","5":"versicolor","6":"NA","7":"1","_rn_":"89"},{"1":"5.6","2":"3","3":"4.1","4":"1.3","5":"versicolor","6":"NA","7":"1","_rn_":"90"},{"1":"5.5","2":"2.5","3":"4","4":"1.3","5":"versicolor","6":"NA","7":"1","_rn_":"91"},{"1":"5.5","2":"2.6","3":"4.4","4":"1.2","5":"versicolor","6":"NA","7":"1","_rn_":"92"},{"1":"6.1","2":"3","3":"4.6","4":"1.4","5":"versicolor","6":"NA","7":"1","_rn_":"93"},{"1":"5.8","2":"2.6","3":"4","4":"1.2","5":"versicolor","6":"NA","7":"1","_rn_":"94"},{"1":"5","2":"2.3","3":"3.3","4":"1","5":"versicolor","6":"NA","7":"1","_rn_":"95"},{"1":"5.6","2":"2.7","3":"4.2","4":"1.3","5":"versicolor","6":"NA","7":"1","_rn_":"96"},{"1":"5.7","2":"3","3":"4.2","4":"1.2","5":"versicolor","6":"NA","7":"1","_rn_":"97"},{"1":"5.7","2":"2.9","3":"4.2","4":"1.3","5":"versicolor","6":"NA","7":"1","_rn_":"98"},{"1":"6.2","2":"2.9","3":"4.3","4":"1.3","5":"versicolor","6":"NA","7":"1","_rn_":"99"},{"1":"5.1","2":"2.5","3":"3","4":"1.1","5":"versicolor","6":"NA","7":"1","_rn_":"100"},{"1":"5.7","2":"2.8","3":"4.1","4":"1.3","5":"versicolor","6":"NA","7":"1","_rn_":"101"},{"1":"6.3","2":"3.3","3":"6","4":"2.5","5":"virginica","6":"NA","7":"1","_rn_":"102"},{"1":"5.8","2":"2.7","3":"5.1","4":"1.9","5":"virginica","6":"NA","7":"1","_rn_":"103"},{"1":"7.1","2":"3","3":"5.9","4":"2.1","5":"virginica","6":"NA","7":"1","_rn_":"104"},{"1":"6.3","2":"2.9","3":"5.6","4":"1.8","5":"virginica","6":"NA","7":"1","_rn_":"105"},{"1":"6.5","2":"3","3":"5.8","4":"2.2","5":"virginica","6":"NA","7":"1","_rn_":"106"},{"1":"7.6","2":"3","3":"6.6","4":"2.1","5":"virginica","6":"NA","7":"1","_rn_":"107"},{"1":"4.9","2":"2.5","3":"4.5","4":"1.7","5":"virginica","6":"NA","7":"1","_rn_":"108"},{"1":"7.3","2":"2.9","3":"6.3","4":"1.8","5":"virginica","6":"NA","7":"1","_rn_":"109"},{"1":"6.7","2":"2.5","3":"5.8","4":"1.8","5":"virginica","6":"NA","7":"1","_rn_":"110"},{"1":"7.2","2":"3.6","3":"6.1","4":"2.5","5":"virginica","6":"NA","7":"1","_rn_":"111"},{"1":"6.5","2":"3.2","3":"5.1","4":"2","5":"virginica","6":"NA","7":"1","_rn_":"112"},{"1":"6.4","2":"2.7","3":"5.3","4":"1.9","5":"virginica","6":"NA","7":"1","_rn_":"113"},{"1":"6.8","2":"3","3":"5.5","4":"2.1","5":"virginica","6":"NA","7":"1","_rn_":"114"},{"1":"5.7","2":"2.5","3":"5","4":"2","5":"virginica","6":"NA","7":"1","_rn_":"115"},{"1":"5.8","2":"2.8","3":"5.1","4":"2.4","5":"virginica","6":"NA","7":"1","_rn_":"116"},{"1":"6.4","2":"3.2","3":"5.3","4":"2.3","5":"virginica","6":"NA","7":"1","_rn_":"117"},{"1":"6.5","2":"3","3":"5.5","4":"1.8","5":"virginica","6":"NA","7":"1","_rn_":"118"},{"1":"7.7","2":"3.8","3":"6.7","4":"2.2","5":"virginica","6":"NA","7":"1","_rn_":"119"},{"1":"7.7","2":"2.6","3":"6.9","4":"2.3","5":"virginica","6":"NA","7":"1","_rn_":"120"},{"1":"6","2":"2.2","3":"5","4":"1.5","5":"virginica","6":"NA","7":"1","_rn_":"121"},{"1":"6.9","2":"3.2","3":"5.7","4":"2.3","5":"virginica","6":"NA","7":"1","_rn_":"122"},{"1":"5.6","2":"2.8","3":"4.9","4":"2","5":"virginica","6":"NA","7":"1","_rn_":"123"},{"1":"7.7","2":"2.8","3":"6.7","4":"2","5":"virginica","6":"NA","7":"1","_rn_":"124"},{"1":"6.3","2":"2.7","3":"4.9","4":"1.8","5":"virginica","6":"NA","7":"1","_rn_":"125"},{"1":"6.7","2":"3.3","3":"5.7","4":"2.1","5":"virginica","6":"NA","7":"1","_rn_":"126"},{"1":"7.2","2":"3.2","3":"6","4":"1.8","5":"virginica","6":"NA","7":"1","_rn_":"127"},{"1":"6.2","2":"2.8","3":"4.8","4":"1.8","5":"virginica","6":"NA","7":"1","_rn_":"128"},{"1":"6.1","2":"3","3":"4.9","4":"1.8","5":"virginica","6":"NA","7":"1","_rn_":"129"},{"1":"6.4","2":"2.8","3":"5.6","4":"2.1","5":"virginica","6":"NA","7":"1","_rn_":"130"},{"1":"7.2","2":"3","3":"5.8","4":"1.6","5":"virginica","6":"NA","7":"1","_rn_":"131"},{"1":"7.4","2":"2.8","3":"6.1","4":"1.9","5":"virginica","6":"NA","7":"1","_rn_":"132"},{"1":"7.9","2":"3.8","3":"6.4","4":"2","5":"virginica","6":"NA","7":"1","_rn_":"133"},{"1":"6.4","2":"2.8","3":"5.6","4":"2.2","5":"virginica","6":"NA","7":"1","_rn_":"134"},{"1":"6.3","2":"2.8","3":"5.1","4":"1.5","5":"virginica","6":"NA","7":"1","_rn_":"135"},{"1":"6.1","2":"2.6","3":"5.6","4":"1.4","5":"virginica","6":"NA","7":"1","_rn_":"136"},{"1":"7.7","2":"3","3":"6.1","4":"2.3","5":"virginica","6":"NA","7":"1","_rn_":"137"},{"1":"6.3","2":"3.4","3":"5.6","4":"2.4","5":"virginica","6":"NA","7":"1","_rn_":"138"},{"1":"6.4","2":"3.1","3":"5.5","4":"1.8","5":"virginica","6":"NA","7":"1","_rn_":"139"},{"1":"6","2":"3","3":"4.8","4":"1.8","5":"virginica","6":"NA","7":"1","_rn_":"140"},{"1":"6.9","2":"3.1","3":"5.4","4":"2.1","5":"virginica","6":"NA","7":"1","_rn_":"141"},{"1":"6.7","2":"3.1","3":"5.6","4":"2.4","5":"virginica","6":"NA","7":"1","_rn_":"142"},{"1":"6.9","2":"3.1","3":"5.1","4":"2.3","5":"virginica","6":"NA","7":"1","_rn_":"143"},{"1":"5.8","2":"2.7","3":"5.1","4":"1.9","5":"virginica","6":"NA","7":"1","_rn_":"144"},{"1":"6.8","2":"3.2","3":"5.9","4":"2.3","5":"virginica","6":"NA","7":"1","_rn_":"145"},{"1":"6.7","2":"3.3","3":"5.7","4":"2.5","5":"virginica","6":"NA","7":"1","_rn_":"146"},{"1":"6.7","2":"3","3":"5.2","4":"2.3","5":"virginica","6":"NA","7":"1","_rn_":"147"},{"1":"6.3","2":"2.5","3":"5","4":"1.9","5":"virginica","6":"NA","7":"1","_rn_":"148"},{"1":"6.5","2":"3","3":"5.2","4":"2","5":"virginica","6":"NA","7":"1","_rn_":"149"},{"1":"6.2","2":"3.4","3":"5.4","4":"2.3","5":"virginica","6":"NA","7":"1","_rn_":"150"},{"1":"5.9","2":"3","3":"5.1","4":"1.8","5":"virginica","6":"NA","7":"1","_rn_":"151"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[5],"max":[5]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="clean-column-names" class="level2">
+<h2 class="anchored" data-anchor-id="clean-column-names">Clean column names</h2>
+<div class="justify">
+<p>Now we need to clean those column names since they have a very bad format. <code>janitor::clean_names()</code> is a very useful and easy to use function that cleans badly formatted column names. You can choose to change all names to snake case (all lower case words, separated by underscores), variations on camel case (internal capital letters between words), title case or other styles. It can also be used to remove parts of names and any special characters, including replacing % symbols with the word ‘percent’. See <a href="https://www.rdocumentation.org/packages/snakecase/versions/0.11.0/topics/to_any_case"><code>snakecase::to_any_case()</code></a> function documentation for a list of allowed cases. Below a few examples.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>snake_case <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">clean_names</span>(iris_dirty) <span class="sc">|&gt;</span> <span class="fu">names</span>() <span class="co"># default to snake case</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>snake_case</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "sepal_length_cm" "sepal_width_cm"  "petal_length_cm" "petal_width_cm" 
+[5] "species"         "empty"           "const"          </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>big.camel_case <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">clean_names</span>(iris_dirty, <span class="at">case=</span><span class="st">"big_camel"</span>) <span class="sc">|&gt;</span> <span class="fu">names</span>()</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>big.camel_case</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "SepalLengthCm" "SepalWidthCm"  "PetalLengthCm" "PetalWidthCm" 
+[5] "Species"       "Empty"         "Const"        </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>all.caps_case <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">clean_names</span>(iris_dirty, <span class="at">case=</span><span class="st">"all_caps"</span>) <span class="sc">|&gt;</span> <span class="fu">names</span>()</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>all.caps_case</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "SEPAL_LENGTH_CM" "SEPAL_WIDTH_CM"  "PETAL_LENGTH_CM" "PETAL_WIDTH_CM" 
+[5] "SPECIES"         "EMPTY"           "CONST"          </code></pre>
+</div>
+</div>
+<p>Now let’s set <code>iris_dirty</code> colnames to default snake case:</p>
+<div class="cell" data-rows.print="5">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>iris_dirty <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">clean_names</span>(iris_dirty)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>iris_dirty</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":[""],"name":["_rn_"],"type":[""],"align":["left"]},{"label":["sepal_length_cm"],"name":[1],"type":["chr"],"align":["left"]},{"label":["sepal_width_cm"],"name":[2],"type":["chr"],"align":["left"]},{"label":["petal_length_cm"],"name":[3],"type":["chr"],"align":["left"]},{"label":["petal_width_cm"],"name":[4],"type":["chr"],"align":["left"]},{"label":["species"],"name":[5],"type":["chr"],"align":["left"]},{"label":["empty"],"name":[6],"type":["chr"],"align":["left"]},{"label":["const"],"name":[7],"type":["chr"],"align":["left"]}],"data":[{"1":"5.1","2":"3.5","3":"1.4","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"2"},{"1":"4.9","2":"3","3":"1.4","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"3"},{"1":"4.7","2":"3.2","3":"1.3","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"4"},{"1":"4.6","2":"3.1","3":"1.5","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"5"},{"1":"5","2":"3.6","3":"1.4","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"6"},{"1":"5.4","2":"3.9","3":"1.7","4":"0.4","5":"setosa","6":"NA","7":"1","_rn_":"7"},{"1":"4.6","2":"3.4","3":"1.4","4":"0.3","5":"setosa","6":"NA","7":"1","_rn_":"8"},{"1":"5","2":"3.4","3":"1.5","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"9"},{"1":"4.4","2":"2.9","3":"1.4","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"10"},{"1":"NA","2":"NA","3":"NA","4":"NA","5":"NA","6":"NA","7":"NA","_rn_":"11"},{"1":"5.4","2":"3.7","3":"1.5","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"12"},{"1":"4.8","2":"3.4","3":"1.6","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"13"},{"1":"4.8","2":"3","3":"1.4","4":"0.1","5":"setosa","6":"NA","7":"1","_rn_":"14"},{"1":"4.3","2":"3","3":"1.1","4":"0.1","5":"setosa","6":"NA","7":"1","_rn_":"15"},{"1":"5.8","2":"4","3":"1.2","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"16"},{"1":"5.7","2":"4.4","3":"1.5","4":"0.4","5":"setosa","6":"NA","7":"1","_rn_":"17"},{"1":"5.4","2":"3.9","3":"1.3","4":"0.4","5":"setosa","6":"NA","7":"1","_rn_":"18"},{"1":"5.1","2":"3.5","3":"1.4","4":"0.3","5":"setosa","6":"NA","7":"1","_rn_":"19"},{"1":"5.7","2":"3.8","3":"1.7","4":"0.3","5":"setosa","6":"NA","7":"1","_rn_":"20"},{"1":"5.1","2":"3.8","3":"1.5","4":"0.3","5":"setosa","6":"NA","7":"1","_rn_":"21"},{"1":"5.4","2":"3.4","3":"1.7","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"22"},{"1":"5.1","2":"3.7","3":"1.5","4":"0.4","5":"setosa","6":"NA","7":"1","_rn_":"23"},{"1":"4.6","2":"3.6","3":"1","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"24"},{"1":"5.1","2":"3.3","3":"1.7","4":"0.5","5":"setosa","6":"NA","7":"1","_rn_":"25"},{"1":"4.8","2":"3.4","3":"1.9","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"26"},{"1":"5","2":"3","3":"1.6","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"27"},{"1":"5","2":"3.4","3":"1.6","4":"0.4","5":"setosa","6":"NA","7":"1","_rn_":"28"},{"1":"5.2","2":"3.5","3":"1.5","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"29"},{"1":"5.2","2":"3.4","3":"1.4","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"30"},{"1":"4.7","2":"3.2","3":"1.6","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"31"},{"1":"4.8","2":"3.1","3":"1.6","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"32"},{"1":"5.4","2":"3.4","3":"1.5","4":"0.4","5":"setosa","6":"NA","7":"1","_rn_":"33"},{"1":"5.2","2":"4.1","3":"1.5","4":"0.1","5":"setosa","6":"NA","7":"1","_rn_":"34"},{"1":"5.5","2":"4.2","3":"1.4","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"35"},{"1":"4.9","2":"3.1","3":"1.5","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"36"},{"1":"5","2":"3.2","3":"1.2","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"37"},{"1":"5.5","2":"3.5","3":"1.3","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"38"},{"1":"4.9","2":"3.6","3":"1.4","4":"0.1","5":"setosa","6":"NA","7":"1","_rn_":"39"},{"1":"4.4","2":"3","3":"1.3","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"40"},{"1":"5.1","2":"3.4","3":"1.5","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"41"},{"1":"5","2":"3.5","3":"1.3","4":"0.3","5":"setosa","6":"NA","7":"1","_rn_":"42"},{"1":"4.5","2":"2.3","3":"1.3","4":"0.3","5":"setosa","6":"NA","7":"1","_rn_":"43"},{"1":"4.4","2":"3.2","3":"1.3","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"44"},{"1":"5","2":"3.5","3":"1.6","4":"0.6","5":"setosa","6":"NA","7":"1","_rn_":"45"},{"1":"5.1","2":"3.8","3":"1.9","4":"0.4","5":"setosa","6":"NA","7":"1","_rn_":"46"},{"1":"4.8","2":"3","3":"1.4","4":"0.3","5":"setosa","6":"NA","7":"1","_rn_":"47"},{"1":"5.1","2":"3.8","3":"1.6","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"48"},{"1":"4.6","2":"3.2","3":"1.4","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"49"},{"1":"5.3","2":"3.7","3":"1.5","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"50"},{"1":"5","2":"3.3","3":"1.4","4":"0.2","5":"setosa","6":"NA","7":"1","_rn_":"51"},{"1":"7","2":"3.2","3":"4.7","4":"1.4","5":"versicolor","6":"NA","7":"1","_rn_":"52"},{"1":"6.4","2":"3.2","3":"4.5","4":"1.5","5":"versicolor","6":"NA","7":"1","_rn_":"53"},{"1":"6.9","2":"3.1","3":"4.9","4":"1.5","5":"versicolor","6":"NA","7":"1","_rn_":"54"},{"1":"5.5","2":"2.3","3":"4","4":"1.3","5":"versicolor","6":"NA","7":"1","_rn_":"55"},{"1":"6.5","2":"2.8","3":"4.6","4":"1.5","5":"versicolor","6":"NA","7":"1","_rn_":"56"},{"1":"5.7","2":"2.8","3":"4.5","4":"1.3","5":"versicolor","6":"NA","7":"1","_rn_":"57"},{"1":"6.3","2":"3.3","3":"4.7","4":"1.6","5":"versicolor","6":"NA","7":"1","_rn_":"58"},{"1":"4.9","2":"2.4","3":"3.3","4":"1","5":"versicolor","6":"NA","7":"1","_rn_":"59"},{"1":"6.6","2":"2.9","3":"4.6","4":"1.3","5":"versicolor","6":"NA","7":"1","_rn_":"60"},{"1":"5.2","2":"2.7","3":"3.9","4":"1.4","5":"versicolor","6":"NA","7":"1","_rn_":"61"},{"1":"5","2":"2","3":"3.5","4":"1","5":"versicolor","6":"NA","7":"1","_rn_":"62"},{"1":"5.9","2":"3","3":"4.2","4":"1.5","5":"versicolor","6":"NA","7":"1","_rn_":"63"},{"1":"6","2":"2.2","3":"4","4":"1","5":"versicolor","6":"NA","7":"1","_rn_":"64"},{"1":"6.1","2":"2.9","3":"4.7","4":"1.4","5":"versicolor","6":"NA","7":"1","_rn_":"65"},{"1":"5.6","2":"2.9","3":"3.6","4":"1.3","5":"versicolor","6":"NA","7":"1","_rn_":"66"},{"1":"6.7","2":"3.1","3":"4.4","4":"1.4","5":"versicolor","6":"NA","7":"1","_rn_":"67"},{"1":"5.6","2":"3","3":"4.5","4":"1.5","5":"versicolor","6":"NA","7":"1","_rn_":"68"},{"1":"5.8","2":"2.7","3":"4.1","4":"1","5":"versicolor","6":"NA","7":"1","_rn_":"69"},{"1":"6.2","2":"2.2","3":"4.5","4":"1.5","5":"versicolor","6":"NA","7":"1","_rn_":"70"},{"1":"5.6","2":"2.5","3":"3.9","4":"1.1","5":"versicolor","6":"NA","7":"1","_rn_":"71"},{"1":"5.9","2":"3.2","3":"4.8","4":"1.8","5":"versicolor","6":"NA","7":"1","_rn_":"72"},{"1":"6.1","2":"2.8","3":"4","4":"1.3","5":"versicolor","6":"NA","7":"1","_rn_":"73"},{"1":"6.3","2":"2.5","3":"4.9","4":"1.5","5":"versicolor","6":"NA","7":"1","_rn_":"74"},{"1":"6.1","2":"2.8","3":"4.7","4":"1.2","5":"versicolor","6":"NA","7":"1","_rn_":"75"},{"1":"6.4","2":"2.9","3":"4.3","4":"1.3","5":"versicolor","6":"NA","7":"1","_rn_":"76"},{"1":"6.6","2":"3","3":"4.4","4":"1.4","5":"versicolor","6":"NA","7":"1","_rn_":"77"},{"1":"6.8","2":"2.8","3":"4.8","4":"1.4","5":"versicolor","6":"NA","7":"1","_rn_":"78"},{"1":"6.7","2":"3","3":"5","4":"1.7","5":"versicolor","6":"NA","7":"1","_rn_":"79"},{"1":"6","2":"2.9","3":"4.5","4":"1.5","5":"versicolor","6":"NA","7":"1","_rn_":"80"},{"1":"5.7","2":"2.6","3":"3.5","4":"1","5":"versicolor","6":"NA","7":"1","_rn_":"81"},{"1":"5.5","2":"2.4","3":"3.8","4":"1.1","5":"versicolor","6":"NA","7":"1","_rn_":"82"},{"1":"5.5","2":"2.4","3":"3.7","4":"1","5":"versicolor","6":"NA","7":"1","_rn_":"83"},{"1":"5.8","2":"2.7","3":"3.9","4":"1.2","5":"versicolor","6":"NA","7":"1","_rn_":"84"},{"1":"6","2":"2.7","3":"5.1","4":"1.6","5":"versicolor","6":"NA","7":"1","_rn_":"85"},{"1":"5.4","2":"3","3":"4.5","4":"1.5","5":"versicolor","6":"NA","7":"1","_rn_":"86"},{"1":"6","2":"3.4","3":"4.5","4":"1.6","5":"versicolor","6":"NA","7":"1","_rn_":"87"},{"1":"6.7","2":"3.1","3":"4.7","4":"1.5","5":"versicolor","6":"NA","7":"1","_rn_":"88"},{"1":"6.3","2":"2.3","3":"4.4","4":"1.3","5":"versicolor","6":"NA","7":"1","_rn_":"89"},{"1":"5.6","2":"3","3":"4.1","4":"1.3","5":"versicolor","6":"NA","7":"1","_rn_":"90"},{"1":"5.5","2":"2.5","3":"4","4":"1.3","5":"versicolor","6":"NA","7":"1","_rn_":"91"},{"1":"5.5","2":"2.6","3":"4.4","4":"1.2","5":"versicolor","6":"NA","7":"1","_rn_":"92"},{"1":"6.1","2":"3","3":"4.6","4":"1.4","5":"versicolor","6":"NA","7":"1","_rn_":"93"},{"1":"5.8","2":"2.6","3":"4","4":"1.2","5":"versicolor","6":"NA","7":"1","_rn_":"94"},{"1":"5","2":"2.3","3":"3.3","4":"1","5":"versicolor","6":"NA","7":"1","_rn_":"95"},{"1":"5.6","2":"2.7","3":"4.2","4":"1.3","5":"versicolor","6":"NA","7":"1","_rn_":"96"},{"1":"5.7","2":"3","3":"4.2","4":"1.2","5":"versicolor","6":"NA","7":"1","_rn_":"97"},{"1":"5.7","2":"2.9","3":"4.2","4":"1.3","5":"versicolor","6":"NA","7":"1","_rn_":"98"},{"1":"6.2","2":"2.9","3":"4.3","4":"1.3","5":"versicolor","6":"NA","7":"1","_rn_":"99"},{"1":"5.1","2":"2.5","3":"3","4":"1.1","5":"versicolor","6":"NA","7":"1","_rn_":"100"},{"1":"5.7","2":"2.8","3":"4.1","4":"1.3","5":"versicolor","6":"NA","7":"1","_rn_":"101"},{"1":"6.3","2":"3.3","3":"6","4":"2.5","5":"virginica","6":"NA","7":"1","_rn_":"102"},{"1":"5.8","2":"2.7","3":"5.1","4":"1.9","5":"virginica","6":"NA","7":"1","_rn_":"103"},{"1":"7.1","2":"3","3":"5.9","4":"2.1","5":"virginica","6":"NA","7":"1","_rn_":"104"},{"1":"6.3","2":"2.9","3":"5.6","4":"1.8","5":"virginica","6":"NA","7":"1","_rn_":"105"},{"1":"6.5","2":"3","3":"5.8","4":"2.2","5":"virginica","6":"NA","7":"1","_rn_":"106"},{"1":"7.6","2":"3","3":"6.6","4":"2.1","5":"virginica","6":"NA","7":"1","_rn_":"107"},{"1":"4.9","2":"2.5","3":"4.5","4":"1.7","5":"virginica","6":"NA","7":"1","_rn_":"108"},{"1":"7.3","2":"2.9","3":"6.3","4":"1.8","5":"virginica","6":"NA","7":"1","_rn_":"109"},{"1":"6.7","2":"2.5","3":"5.8","4":"1.8","5":"virginica","6":"NA","7":"1","_rn_":"110"},{"1":"7.2","2":"3.6","3":"6.1","4":"2.5","5":"virginica","6":"NA","7":"1","_rn_":"111"},{"1":"6.5","2":"3.2","3":"5.1","4":"2","5":"virginica","6":"NA","7":"1","_rn_":"112"},{"1":"6.4","2":"2.7","3":"5.3","4":"1.9","5":"virginica","6":"NA","7":"1","_rn_":"113"},{"1":"6.8","2":"3","3":"5.5","4":"2.1","5":"virginica","6":"NA","7":"1","_rn_":"114"},{"1":"5.7","2":"2.5","3":"5","4":"2","5":"virginica","6":"NA","7":"1","_rn_":"115"},{"1":"5.8","2":"2.8","3":"5.1","4":"2.4","5":"virginica","6":"NA","7":"1","_rn_":"116"},{"1":"6.4","2":"3.2","3":"5.3","4":"2.3","5":"virginica","6":"NA","7":"1","_rn_":"117"},{"1":"6.5","2":"3","3":"5.5","4":"1.8","5":"virginica","6":"NA","7":"1","_rn_":"118"},{"1":"7.7","2":"3.8","3":"6.7","4":"2.2","5":"virginica","6":"NA","7":"1","_rn_":"119"},{"1":"7.7","2":"2.6","3":"6.9","4":"2.3","5":"virginica","6":"NA","7":"1","_rn_":"120"},{"1":"6","2":"2.2","3":"5","4":"1.5","5":"virginica","6":"NA","7":"1","_rn_":"121"},{"1":"6.9","2":"3.2","3":"5.7","4":"2.3","5":"virginica","6":"NA","7":"1","_rn_":"122"},{"1":"5.6","2":"2.8","3":"4.9","4":"2","5":"virginica","6":"NA","7":"1","_rn_":"123"},{"1":"7.7","2":"2.8","3":"6.7","4":"2","5":"virginica","6":"NA","7":"1","_rn_":"124"},{"1":"6.3","2":"2.7","3":"4.9","4":"1.8","5":"virginica","6":"NA","7":"1","_rn_":"125"},{"1":"6.7","2":"3.3","3":"5.7","4":"2.1","5":"virginica","6":"NA","7":"1","_rn_":"126"},{"1":"7.2","2":"3.2","3":"6","4":"1.8","5":"virginica","6":"NA","7":"1","_rn_":"127"},{"1":"6.2","2":"2.8","3":"4.8","4":"1.8","5":"virginica","6":"NA","7":"1","_rn_":"128"},{"1":"6.1","2":"3","3":"4.9","4":"1.8","5":"virginica","6":"NA","7":"1","_rn_":"129"},{"1":"6.4","2":"2.8","3":"5.6","4":"2.1","5":"virginica","6":"NA","7":"1","_rn_":"130"},{"1":"7.2","2":"3","3":"5.8","4":"1.6","5":"virginica","6":"NA","7":"1","_rn_":"131"},{"1":"7.4","2":"2.8","3":"6.1","4":"1.9","5":"virginica","6":"NA","7":"1","_rn_":"132"},{"1":"7.9","2":"3.8","3":"6.4","4":"2","5":"virginica","6":"NA","7":"1","_rn_":"133"},{"1":"6.4","2":"2.8","3":"5.6","4":"2.2","5":"virginica","6":"NA","7":"1","_rn_":"134"},{"1":"6.3","2":"2.8","3":"5.1","4":"1.5","5":"virginica","6":"NA","7":"1","_rn_":"135"},{"1":"6.1","2":"2.6","3":"5.6","4":"1.4","5":"virginica","6":"NA","7":"1","_rn_":"136"},{"1":"7.7","2":"3","3":"6.1","4":"2.3","5":"virginica","6":"NA","7":"1","_rn_":"137"},{"1":"6.3","2":"3.4","3":"5.6","4":"2.4","5":"virginica","6":"NA","7":"1","_rn_":"138"},{"1":"6.4","2":"3.1","3":"5.5","4":"1.8","5":"virginica","6":"NA","7":"1","_rn_":"139"},{"1":"6","2":"3","3":"4.8","4":"1.8","5":"virginica","6":"NA","7":"1","_rn_":"140"},{"1":"6.9","2":"3.1","3":"5.4","4":"2.1","5":"virginica","6":"NA","7":"1","_rn_":"141"},{"1":"6.7","2":"3.1","3":"5.6","4":"2.4","5":"virginica","6":"NA","7":"1","_rn_":"142"},{"1":"6.9","2":"3.1","3":"5.1","4":"2.3","5":"virginica","6":"NA","7":"1","_rn_":"143"},{"1":"5.8","2":"2.7","3":"5.1","4":"1.9","5":"virginica","6":"NA","7":"1","_rn_":"144"},{"1":"6.8","2":"3.2","3":"5.9","4":"2.3","5":"virginica","6":"NA","7":"1","_rn_":"145"},{"1":"6.7","2":"3.3","3":"5.7","4":"2.5","5":"virginica","6":"NA","7":"1","_rn_":"146"},{"1":"6.7","2":"3","3":"5.2","4":"2.3","5":"virginica","6":"NA","7":"1","_rn_":"147"},{"1":"6.3","2":"2.5","3":"5","4":"1.9","5":"virginica","6":"NA","7":"1","_rn_":"148"},{"1":"6.5","2":"3","3":"5.2","4":"2","5":"virginica","6":"NA","7":"1","_rn_":"149"},{"1":"6.2","2":"3.4","3":"5.4","4":"2.3","5":"virginica","6":"NA","7":"1","_rn_":"150"},{"1":"5.9","2":"3","3":"5.1","4":"1.8","5":"virginica","6":"NA","7":"1","_rn_":"151"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[5],"max":[5]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="remove-empty-columns-and-rows" class="level2">
+<h2 class="anchored" data-anchor-id="remove-empty-columns-and-rows">Remove empty columns and rows</h2>
+<div class="justify">
+<p>I previously added empty rows and columns to the original <code>iris</code> dataset. Those can be removed with <code>janitor::remove_empty()</code> function.</p>
+<div class="cell" data-rows.print="5">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>iris_dirty <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">remove_empty</span>(iris_dirty, <span class="at">quiet =</span> F) <span class="co"># default removes both empty cols and rows</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>value for "which" not specified, defaulting to c("rows", "cols")</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Removing 1 empty rows of 150 rows total (0.667%).</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Removing 1 empty columns of 7 columns total (Removed: empty).</code></pre>
+</div>
+</div>
+</div>
+</section>
+<section id="remove-constant-column" class="level2">
+<h2 class="anchored" data-anchor-id="remove-constant-column">Remove constant column</h2>
+<div class="justify">
+<p>There’s also a function to remove columns with constant values, called <code>janitor::remove_constant()</code> . Previously I added to our dataset a ‘const’ column with all values equal to 1. Let’s remove it:</p>
+<div class="cell" data-rows.print="5">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>iris_dirty <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">remove_constant</span>(iris_dirty, <span class="at">quiet =</span> F)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Removing 1 constant columns of 6 columns total (Removed: const).</code></pre>
+</div>
+</div>
+<p>You can also set <code>na.rm = T</code> to ignore NA values when considering if a column is a constant.</p>
+</div>
+</section>
+<section id="frequency-and-contingency-tables" class="level2">
+<h2 class="anchored" data-anchor-id="frequency-and-contingency-tables">Frequency and contingency tables</h2>
+<div class="justify">
+<p>Before proceding, we set ‘iris_dirty’ columns to the correct datatypes, since previous manipulations changed all variables datatypes to character.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>iris_dirty[,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(iris_dirty[,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], as.numeric)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>iris_dirty<span class="sc">$</span>species <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(iris_dirty<span class="sc">$</span>species)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(iris_dirty)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>'data.frame':   149 obs. of  5 variables:
+ $ sepal_length_cm: num  5.1 4.9 4.7 4.6 5 5.4 4.6 5 4.4 5.4 ...
+ $ sepal_width_cm : num  3.5 3 3.2 3.1 3.6 3.9 3.4 3.4 2.9 3.7 ...
+ $ petal_length_cm: num  1.4 1.4 1.3 1.5 1.4 1.7 1.4 1.5 1.4 1.5 ...
+ $ petal_width_cm : num  0.2 0.2 0.2 0.2 0.2 0.4 0.3 0.2 0.2 0.2 ...
+ $ species        : Factor w/ 3 levels "setosa","versicolor",..: 1 1 1 1 1 1 1 1 1 1 ...</code></pre>
+</div>
+</div>
+<p>With <code>janitor::tabyl()</code> function we can produce frequency and contingency table. The main advantage of <code>tabyl()</code> , compared to R base <code>table()</code> function, is the former returns a data.frame object. The following code returns a frequency table with ‘species’ being the grouping variable.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>freq_tbl <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">tabyl</span>(iris_dirty, species)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>freq_tbl</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["species"],"name":[1],"type":["fct"],"align":["left"]},{"label":["n"],"name":[2],"type":["int"],"align":["right"]},{"label":["percent"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"setosa","2":"49","3":"0.3288591"},{"1":"versicolor","2":"50","3":"0.3355705"},{"1":"virginica","2":"50","3":"0.3355705"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>We can also return a contingency table for species and petal width, for example:</p>
+<div class="cell" data-rows.print="5">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>con_tbl <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">tabyl</span>(iris_dirty, petal_width_cm, species)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>con_tbl</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["petal_width_cm"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["setosa"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["versicolor"],"name":[3],"type":["dbl"],"align":["right"]},{"label":["virginica"],"name":[4],"type":["dbl"],"align":["right"]}],"data":[{"1":"0.1","2":"4","3":"0","4":"0"},{"1":"0.2","2":"29","3":"0","4":"0"},{"1":"0.3","2":"7","3":"0","4":"0"},{"1":"0.4","2":"7","3":"0","4":"0"},{"1":"0.5","2":"1","3":"0","4":"0"},{"1":"0.6","2":"1","3":"0","4":"0"},{"1":"1.0","2":"0","3":"7","4":"0"},{"1":"1.1","2":"0","3":"3","4":"0"},{"1":"1.2","2":"0","3":"5","4":"0"},{"1":"1.3","2":"0","3":"13","4":"0"},{"1":"1.4","2":"0","3":"7","4":"1"},{"1":"1.5","2":"0","3":"10","4":"2"},{"1":"1.6","2":"0","3":"3","4":"1"},{"1":"1.7","2":"0","3":"1","4":"1"},{"1":"1.8","2":"0","3":"1","4":"11"},{"1":"1.9","2":"0","3":"0","4":"5"},{"1":"2.0","2":"0","3":"0","4":"6"},{"1":"2.1","2":"0","3":"0","4":"6"},{"1":"2.2","2":"0","3":"0","4":"3"},{"1":"2.3","2":"0","3":"0","4":"8"},{"1":"2.4","2":"0","3":"0","4":"3"},{"1":"2.5","2":"0","3":"0","4":"3"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[5],"max":[5]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="formatting-tabulated-data" class="level2">
+<h2 class="anchored" data-anchor-id="formatting-tabulated-data">Formatting tabulated data</h2>
+<div class="justify">
+<p><code>janitor::adorn_*()</code> functions can be used to format tabulated data; these functions are useful for reporting in Quarto and Markdown documents, when paired with <code>knitr::kable()</code> and similar functions. For example, <code>adorn_pct_formatting()</code> can be used to format the percentage output of <code>tabyl()</code> . Below, we round the percentages to 2 decimal places, and add the percentage sign at the end.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>freq_tbl <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">adorn_pct_formatting</span>(freq_tbl, <span class="at">digits =</span> <span class="dv">2</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>freq_tbl</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["species"],"name":[1],"type":["fct"],"align":["left"]},{"label":["n"],"name":[2],"type":["dbl"],"align":["right"]},{"label":["percent"],"name":[3],"type":["chr"],"align":["left"]}],"data":[{"1":"setosa","2":"49","3":"32.89%"},{"1":"versicolor","2":"50","3":"33.56%"},{"1":"virginica","2":"50","3":"33.56%"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+<p>By default, the values in contingency tables are shown as counts. They can be changed to percentages with <code>adorn_percentages()</code> function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>con_tbl <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">adorn_percentages</span>(con_tbl) <span class="sc">|&gt;</span> </span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">adorn_pct_formatting</span>(<span class="at">digits =</span> <span class="dv">2</span>)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>con_tbl</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+
+<div data-pagedtable="false">
+  <script data-pagedtable-source="" type="application/json">
+{"columns":[{"label":["petal_width_cm"],"name":[1],"type":["dbl"],"align":["right"]},{"label":["setosa"],"name":[2],"type":["chr"],"align":["left"]},{"label":["versicolor"],"name":[3],"type":["chr"],"align":["left"]},{"label":["virginica"],"name":[4],"type":["chr"],"align":["left"]}],"data":[{"1":"0.1","2":"100.00%","3":"0.00%","4":"0.00%"},{"1":"0.2","2":"100.00%","3":"0.00%","4":"0.00%"},{"1":"0.3","2":"100.00%","3":"0.00%","4":"0.00%"},{"1":"0.4","2":"100.00%","3":"0.00%","4":"0.00%"},{"1":"0.5","2":"100.00%","3":"0.00%","4":"0.00%"},{"1":"0.6","2":"100.00%","3":"0.00%","4":"0.00%"},{"1":"1.0","2":"0.00%","3":"100.00%","4":"0.00%"},{"1":"1.1","2":"0.00%","3":"100.00%","4":"0.00%"},{"1":"1.2","2":"0.00%","3":"100.00%","4":"0.00%"},{"1":"1.3","2":"0.00%","3":"100.00%","4":"0.00%"},{"1":"1.4","2":"0.00%","3":"87.50%","4":"12.50%"},{"1":"1.5","2":"0.00%","3":"83.33%","4":"16.67%"},{"1":"1.6","2":"0.00%","3":"75.00%","4":"25.00%"},{"1":"1.7","2":"0.00%","3":"50.00%","4":"50.00%"},{"1":"1.8","2":"0.00%","3":"8.33%","4":"91.67%"},{"1":"1.9","2":"0.00%","3":"0.00%","4":"100.00%"},{"1":"2.0","2":"0.00%","3":"0.00%","4":"100.00%"},{"1":"2.1","2":"0.00%","3":"0.00%","4":"100.00%"},{"1":"2.2","2":"0.00%","3":"0.00%","4":"100.00%"},{"1":"2.3","2":"0.00%","3":"0.00%","4":"100.00%"},{"1":"2.4","2":"0.00%","3":"0.00%","4":"100.00%"},{"1":"2.5","2":"0.00%","3":"0.00%","4":"100.00%"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  </script>
+</div>
+</div>
+</div>
+</div>
+
+
+<!-- -->
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  const viewSource = window.document.getElementById('quarto-view-source') ||
+                     window.document.getElementById('quarto-code-tools-source');
+  if (viewSource) {
+    const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+    viewSource.addEventListener("click", function(e) {
+      if (sourceUrl) {
+        // rstudio viewer pane
+        if (/\bcapabilities=\b/.test(window.location)) {
+          window.open(sourceUrl);
+        } else {
+          window.location.href = sourceUrl;
+        }
+      } else {
+        const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+        modal.show();
+      }
+      return false;
+    });
+  }
+  function toggleCodeHandler(show) {
+    return function(e) {
+      const detailsSrc = window.document.querySelectorAll(".cell > details > .sourceCode");
+      for (let i=0; i<detailsSrc.length; i++) {
+        const details = detailsSrc[i].parentElement;
+        if (show) {
+          details.open = true;
+        } else {
+          details.removeAttribute("open");
+        }
+      }
+      const cellCodeDivs = window.document.querySelectorAll(".cell > .sourceCode");
+      const fromCls = show ? "hidden" : "unhidden";
+      const toCls = show ? "unhidden" : "hidden";
+      for (let i=0; i<cellCodeDivs.length; i++) {
+        const codeDiv = cellCodeDivs[i];
+        if (codeDiv.classList.contains(fromCls)) {
+          codeDiv.classList.remove(fromCls);
+          codeDiv.classList.add(toCls);
+        } 
+      }
+      return false;
+    }
+  }
+  const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+  if (hideAllCode) {
+    hideAllCode.addEventListener("click", toggleCodeHandler(false));
+  }
+  const showAllCode = window.document.getElementById("quarto-show-all-code");
+  if (showAllCode) {
+    showAllCode.addEventListener("click", toggleCodeHandler(true));
+  }
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<script src="https://utteranc.es/client.js" repo="G-Bez/my-portfolio" issue-term="pathname" theme="photon-dark" crossorigin="anonymous" async="">
+</script><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
+<div class="sourceCode" id="cb24" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="an">title:</span><span class="co"> "Data cleansing with Janitor R package"</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="an">date:</span><span class="co"> "2022-11-03"</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="an">categories:</span><span class="co"> [R, Data cleansing]</span></span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a><span class="an">image:</span><span class="co"> janitor_thumbnail.png</span></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a><span class="an">format:</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="co">  html:</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="co">    df-print: paged</span></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="co">    fontsize: 0.9em</span></span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a><span class="co">    code-tools: true</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a><span class="co">    include-in-header: navbar.html</span></span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a><span class="co">    css: theme.css</span></span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a><span class="co">    toc: true</span></span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a><span class="an">comments:</span><span class="co"> </span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a><span class="co">    utterances: </span></span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a><span class="co">      repo:  G-Bez/my-portfolio </span></span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a><span class="co">      theme: photon-dark</span></span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a><span class="an">title-block-banner:</span><span class="co"> false</span></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a><span class="an">editor:</span><span class="co"> visual</span></span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a><span class="co">---</span></span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a><span class="in">```{css, echo = FALSE}</span></span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a><span class="op">.</span><span class="fu">justify</span> <span class="op">{</span></span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a>  text<span class="op">-</span>align<span class="op">:</span> justify <span class="op">!</span>important</span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a><span class="op">}</span></span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a><span class="co">[</span><span class="ot">`janitor`</span><span class="co">](https://github.com/sfirke/janitor)</span> is a popular package for easy and quick data cleansing and data inspection in R. It's a <span class="co">[</span><span class="ot">`tidyverse`</span><span class="co">](https://www.tidyverse.org/)</span> oriented package, it plays nicely with <span class="in">`%&gt;%`</span> pipe operator and is optimized for cleaning data imported with <span class="in">`readr`</span> and <span class="in">`readxl`</span> packages.</span>
+<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a><span class="fu">## Install janitor</span></span>
+<span id="cb24-33"><a href="#cb24-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-34"><a href="#cb24-34" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb24-35"><a href="#cb24-35" aria-hidden="true" tabindex="-1"></a>You can install the most recent official version of <span class="in">`janitor`</span> from CRAN with:</span>
+<span id="cb24-36"><a href="#cb24-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-39"><a href="#cb24-39" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb24-40"><a href="#cb24-40" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false </span></span>
+<span id="cb24-41"><a href="#cb24-41" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"janitor"</span>)</span>
+<span id="cb24-42"><a href="#cb24-42" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-43"><a href="#cb24-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-44"><a href="#cb24-44" aria-hidden="true" tabindex="-1"></a>Or the developer version from GitHub:</span>
+<span id="cb24-45"><a href="#cb24-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-48"><a href="#cb24-48" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb24-49"><a href="#cb24-49" aria-hidden="true" tabindex="-1"></a><span class="co">#| eval: false</span></span>
+<span id="cb24-50"><a href="#cb24-50" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"sfirke/janitor"</span>)</span>
+<span id="cb24-51"><a href="#cb24-51" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-52"><a href="#cb24-52" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb24-53"><a href="#cb24-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-54"><a href="#cb24-54" aria-hidden="true" tabindex="-1"></a><span class="fu">## Example dataset</span></span>
+<span id="cb24-55"><a href="#cb24-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-56"><a href="#cb24-56" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb24-57"><a href="#cb24-57" aria-hidden="true" tabindex="-1"></a>We use a custom version of <span class="in">`iris`</span> R prebuilt dataset, which I manually made 'dirty' by changing column names and adding some dirty columns and rows.</span>
+<span id="cb24-58"><a href="#cb24-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-61"><a href="#cb24-61" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb24-62"><a href="#cb24-62" aria-hidden="true" tabindex="-1"></a>iris_custom <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb24-63"><a href="#cb24-63" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> datasets<span class="sc">::</span>iris</span>
+<span id="cb24-64"><a href="#cb24-64" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>Species <span class="ot">&lt;-</span> <span class="fu">as.character</span>(df<span class="sc">$</span>Species)</span>
+<span id="cb24-65"><a href="#cb24-65" aria-hidden="true" tabindex="-1"></a>  df[,<span class="dv">6</span>] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb24-66"><a href="#cb24-66" aria-hidden="true" tabindex="-1"></a>  df[,<span class="dv">7</span>] <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb24-67"><a href="#cb24-67" aria-hidden="true" tabindex="-1"></a>  df[<span class="dv">10</span>,] <span class="ot">&lt;-</span> <span class="cn">NA</span></span>
+<span id="cb24-68"><a href="#cb24-68" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(df) <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">1</span>,<span class="dv">7</span>) <span class="sc">|&gt;</span> <span class="fu">as.character</span>()</span>
+<span id="cb24-69"><a href="#cb24-69" aria-hidden="true" tabindex="-1"></a>  dirty_names <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Sepal length, (cm)"</span>, <span class="st">"Sepal width, (cm)"</span>, </span>
+<span id="cb24-70"><a href="#cb24-70" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"Petal length, (cm)"</span>, <span class="st">"Petal width, (cm)"</span>, </span>
+<span id="cb24-71"><a href="#cb24-71" aria-hidden="true" tabindex="-1"></a>                   <span class="st">"species"</span>, <span class="st">"empty"</span>, <span class="st">"const"</span>)</span>
+<span id="cb24-72"><a href="#cb24-72" aria-hidden="true" tabindex="-1"></a>  df <span class="ot">&lt;-</span> <span class="fu">rbind</span>(dirty_names, df)</span>
+<span id="cb24-73"><a href="#cb24-73" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(df)</span>
+<span id="cb24-74"><a href="#cb24-74" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb24-75"><a href="#cb24-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-76"><a href="#cb24-76" aria-hidden="true" tabindex="-1"></a>iris_dirty <span class="ot">&lt;-</span> <span class="fu">iris_custom</span>()</span>
+<span id="cb24-77"><a href="#cb24-77" aria-hidden="true" tabindex="-1"></a>iris_dirty</span>
+<span id="cb24-78"><a href="#cb24-78" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-79"><a href="#cb24-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-80"><a href="#cb24-80" aria-hidden="true" tabindex="-1"></a>Changes done:</span>
+<span id="cb24-81"><a href="#cb24-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-82"><a href="#cb24-82" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Converted 'species' column to character.</span>
+<span id="cb24-83"><a href="#cb24-83" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Replaced 10th row with NAs.</span>
+<span id="cb24-84"><a href="#cb24-84" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Added an empty column.</span>
+<span id="cb24-85"><a href="#cb24-85" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Added a constant column.</span>
+<span id="cb24-86"><a href="#cb24-86" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Changed colnames to a sequence on numbers from 1 to 7.</span>
+<span id="cb24-87"><a href="#cb24-87" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Added dirty column names as first row.</span>
+<span id="cb24-88"><a href="#cb24-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-89"><a href="#cb24-89" aria-hidden="true" tabindex="-1"></a>Now let's see some <span class="in">`janitor`</span> functions in action.</span>
+<span id="cb24-90"><a href="#cb24-90" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb24-91"><a href="#cb24-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-92"><a href="#cb24-92" aria-hidden="true" tabindex="-1"></a><span class="fu">## Set column names from row</span></span>
+<span id="cb24-93"><a href="#cb24-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-94"><a href="#cb24-94" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb24-95"><a href="#cb24-95" aria-hidden="true" tabindex="-1"></a>With <span class="in">`janitor::row_to_names()`</span> we can set our first row as column names.</span>
+<span id="cb24-96"><a href="#cb24-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-97"><a href="#cb24-97" aria-hidden="true" tabindex="-1"></a><span class="in">```{r rows.print = 5}</span></span>
+<span id="cb24-98"><a href="#cb24-98" aria-hidden="true" tabindex="-1"></a><span class="co">#| message: false</span></span>
+<span id="cb24-99"><a href="#cb24-99" aria-hidden="true" tabindex="-1"></a><span class="co">#| warning: false</span></span>
+<span id="cb24-100"><a href="#cb24-100" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
+<span id="cb24-101"><a href="#cb24-101" aria-hidden="true" tabindex="-1"></a>iris_dirty <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">row_to_names</span>(iris_dirty, <span class="at">row_number =</span> <span class="dv">1</span>)</span>
+<span id="cb24-102"><a href="#cb24-102" aria-hidden="true" tabindex="-1"></a>iris_dirty</span>
+<span id="cb24-103"><a href="#cb24-103" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-104"><a href="#cb24-104" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb24-105"><a href="#cb24-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-106"><a href="#cb24-106" aria-hidden="true" tabindex="-1"></a><span class="fu">## Clean column names</span></span>
+<span id="cb24-107"><a href="#cb24-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-108"><a href="#cb24-108" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb24-109"><a href="#cb24-109" aria-hidden="true" tabindex="-1"></a>Now we need to clean those column names since they have a very bad format. <span class="in">`janitor::clean_names()`</span> is a very useful and easy to use function that cleans badly formatted column names. You can choose to change all names to snake case (all lower case words, separated by underscores), variations on camel case (internal capital letters between words), title case or other styles. It can also be used to remove parts of names and any special characters, including replacing % symbols with the word 'percent'. See <span class="co">[</span><span class="ot">`snakecase::to_any_case()`</span><span class="co">](https://www.rdocumentation.org/packages/snakecase/versions/0.11.0/topics/to_any_case)</span> function documentation for a list of allowed cases. Below a few examples.</span>
+<span id="cb24-110"><a href="#cb24-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-113"><a href="#cb24-113" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb24-114"><a href="#cb24-114" aria-hidden="true" tabindex="-1"></a>snake_case <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">clean_names</span>(iris_dirty) <span class="sc">|&gt;</span> <span class="fu">names</span>() <span class="co"># default to snake case</span></span>
+<span id="cb24-115"><a href="#cb24-115" aria-hidden="true" tabindex="-1"></a>snake_case</span>
+<span id="cb24-116"><a href="#cb24-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-117"><a href="#cb24-117" aria-hidden="true" tabindex="-1"></a>big.camel_case <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">clean_names</span>(iris_dirty, <span class="at">case=</span><span class="st">"big_camel"</span>) <span class="sc">|&gt;</span> <span class="fu">names</span>()</span>
+<span id="cb24-118"><a href="#cb24-118" aria-hidden="true" tabindex="-1"></a>big.camel_case</span>
+<span id="cb24-119"><a href="#cb24-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-120"><a href="#cb24-120" aria-hidden="true" tabindex="-1"></a>all.caps_case <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">clean_names</span>(iris_dirty, <span class="at">case=</span><span class="st">"all_caps"</span>) <span class="sc">|&gt;</span> <span class="fu">names</span>()</span>
+<span id="cb24-121"><a href="#cb24-121" aria-hidden="true" tabindex="-1"></a>all.caps_case</span>
+<span id="cb24-122"><a href="#cb24-122" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-123"><a href="#cb24-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-124"><a href="#cb24-124" aria-hidden="true" tabindex="-1"></a>Now let's set <span class="in">`iris_dirty`</span> colnames to default snake case:</span>
+<span id="cb24-125"><a href="#cb24-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-126"><a href="#cb24-126" aria-hidden="true" tabindex="-1"></a><span class="in">```{r rows.print = 5}</span></span>
+<span id="cb24-127"><a href="#cb24-127" aria-hidden="true" tabindex="-1"></a>iris_dirty <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">clean_names</span>(iris_dirty)</span>
+<span id="cb24-128"><a href="#cb24-128" aria-hidden="true" tabindex="-1"></a>iris_dirty</span>
+<span id="cb24-129"><a href="#cb24-129" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-130"><a href="#cb24-130" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb24-131"><a href="#cb24-131" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-132"><a href="#cb24-132" aria-hidden="true" tabindex="-1"></a><span class="fu">## Remove empty columns and rows</span></span>
+<span id="cb24-133"><a href="#cb24-133" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-134"><a href="#cb24-134" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb24-135"><a href="#cb24-135" aria-hidden="true" tabindex="-1"></a>I previously added empty rows and columns to the original <span class="in">`iris`</span> dataset. Those can be removed with <span class="in">`janitor::remove_empty()`</span> function.</span>
+<span id="cb24-136"><a href="#cb24-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-137"><a href="#cb24-137" aria-hidden="true" tabindex="-1"></a><span class="in">```{r rows.print = 5}</span></span>
+<span id="cb24-138"><a href="#cb24-138" aria-hidden="true" tabindex="-1"></a>iris_dirty <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">remove_empty</span>(iris_dirty, <span class="at">quiet =</span> F) <span class="co"># default removes both empty cols and rows</span></span>
+<span id="cb24-139"><a href="#cb24-139" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-140"><a href="#cb24-140" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb24-141"><a href="#cb24-141" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-142"><a href="#cb24-142" aria-hidden="true" tabindex="-1"></a><span class="fu">## Remove constant column</span></span>
+<span id="cb24-143"><a href="#cb24-143" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-144"><a href="#cb24-144" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb24-145"><a href="#cb24-145" aria-hidden="true" tabindex="-1"></a>There's also a function to remove columns with constant values, called <span class="in">`janitor::remove_constant()`</span> . Previously I added to our dataset a 'const' column with all values equal to 1. Let's remove it:</span>
+<span id="cb24-146"><a href="#cb24-146" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-147"><a href="#cb24-147" aria-hidden="true" tabindex="-1"></a><span class="in">```{r rows.print = 5}</span></span>
+<span id="cb24-148"><a href="#cb24-148" aria-hidden="true" tabindex="-1"></a>iris_dirty <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">remove_constant</span>(iris_dirty, <span class="at">quiet =</span> F)</span>
+<span id="cb24-149"><a href="#cb24-149" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-150"><a href="#cb24-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-151"><a href="#cb24-151" aria-hidden="true" tabindex="-1"></a>You can also set <span class="in">`na.rm = T`</span> to ignore NA values when considering if a column is a constant.</span>
+<span id="cb24-152"><a href="#cb24-152" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb24-153"><a href="#cb24-153" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-154"><a href="#cb24-154" aria-hidden="true" tabindex="-1"></a><span class="fu">## Frequency and contingency tables</span></span>
+<span id="cb24-155"><a href="#cb24-155" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-156"><a href="#cb24-156" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb24-157"><a href="#cb24-157" aria-hidden="true" tabindex="-1"></a>Before proceding, we set 'iris_dirty' columns to the correct datatypes, since previous manipulations changed all variables datatypes to character.</span>
+<span id="cb24-158"><a href="#cb24-158" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-161"><a href="#cb24-161" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb24-162"><a href="#cb24-162" aria-hidden="true" tabindex="-1"></a>iris_dirty[,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>] <span class="ot">&lt;-</span> <span class="fu">lapply</span>(iris_dirty[,<span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>], as.numeric)</span>
+<span id="cb24-163"><a href="#cb24-163" aria-hidden="true" tabindex="-1"></a>iris_dirty<span class="sc">$</span>species <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(iris_dirty<span class="sc">$</span>species)</span>
+<span id="cb24-164"><a href="#cb24-164" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(iris_dirty)</span>
+<span id="cb24-165"><a href="#cb24-165" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-166"><a href="#cb24-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-167"><a href="#cb24-167" aria-hidden="true" tabindex="-1"></a>With <span class="in">`janitor::tabyl()`</span> function we can produce frequency and contingency table. The main advantage of <span class="in">`tabyl()`</span> , compared to R base <span class="in">`table()`</span> function, is the former returns a data.frame object. The following code returns a frequency table with 'species' being the grouping variable.</span>
+<span id="cb24-168"><a href="#cb24-168" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-171"><a href="#cb24-171" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb24-172"><a href="#cb24-172" aria-hidden="true" tabindex="-1"></a>freq_tbl <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">tabyl</span>(iris_dirty, species)</span>
+<span id="cb24-173"><a href="#cb24-173" aria-hidden="true" tabindex="-1"></a>freq_tbl</span>
+<span id="cb24-174"><a href="#cb24-174" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-175"><a href="#cb24-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-176"><a href="#cb24-176" aria-hidden="true" tabindex="-1"></a>We can also return a contingency table for species and petal width, for example:</span>
+<span id="cb24-177"><a href="#cb24-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-178"><a href="#cb24-178" aria-hidden="true" tabindex="-1"></a><span class="in">```{r rows.print = 5}</span></span>
+<span id="cb24-179"><a href="#cb24-179" aria-hidden="true" tabindex="-1"></a>con_tbl <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">tabyl</span>(iris_dirty, petal_width_cm, species)</span>
+<span id="cb24-180"><a href="#cb24-180" aria-hidden="true" tabindex="-1"></a>con_tbl</span>
+<span id="cb24-181"><a href="#cb24-181" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-182"><a href="#cb24-182" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb24-183"><a href="#cb24-183" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-184"><a href="#cb24-184" aria-hidden="true" tabindex="-1"></a><span class="fu">## Formatting tabulated data</span></span>
+<span id="cb24-185"><a href="#cb24-185" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-186"><a href="#cb24-186" aria-hidden="true" tabindex="-1"></a>::: justify</span>
+<span id="cb24-187"><a href="#cb24-187" aria-hidden="true" tabindex="-1"></a><span class="in">`janitor::adorn_*()`</span> functions can be used to format tabulated data; these functions are useful for reporting in Quarto and Markdown documents, when paired with <span class="in">`knitr::kable()`</span> and similar functions. For example, <span class="in">`adorn_pct_formatting()`</span> can be used to format the percentage output of <span class="in">`tabyl()`</span> . Below, we round the percentages to 2 decimal places, and add the percentage sign at the end.</span>
+<span id="cb24-188"><a href="#cb24-188" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-191"><a href="#cb24-191" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb24-192"><a href="#cb24-192" aria-hidden="true" tabindex="-1"></a>freq_tbl <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">adorn_pct_formatting</span>(freq_tbl, <span class="at">digits =</span> <span class="dv">2</span>)</span>
+<span id="cb24-193"><a href="#cb24-193" aria-hidden="true" tabindex="-1"></a>freq_tbl</span>
+<span id="cb24-194"><a href="#cb24-194" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-195"><a href="#cb24-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-196"><a href="#cb24-196" aria-hidden="true" tabindex="-1"></a>By default, the values in contingency tables are shown as counts. They can be changed to percentages with <span class="in">`adorn_percentages()`</span> function.</span>
+<span id="cb24-197"><a href="#cb24-197" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-200"><a href="#cb24-200" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb24-201"><a href="#cb24-201" aria-hidden="true" tabindex="-1"></a>con_tbl <span class="ot">&lt;-</span> janitor<span class="sc">::</span><span class="fu">adorn_percentages</span>(con_tbl) <span class="sc">|&gt;</span> </span>
+<span id="cb24-202"><a href="#cb24-202" aria-hidden="true" tabindex="-1"></a>  janitor<span class="sc">::</span><span class="fu">adorn_pct_formatting</span>(<span class="at">digits =</span> <span class="dv">2</span>)</span>
+<span id="cb24-203"><a href="#cb24-203" aria-hidden="true" tabindex="-1"></a>con_tbl</span>
+<span id="cb24-204"><a href="#cb24-204" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb24-205"><a href="#cb24-205" aria-hidden="true" tabindex="-1"></a>:::</span>
+</code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div></div></div></div></div>
+</div> <!-- /content -->
+
+
+
+</body></html>
