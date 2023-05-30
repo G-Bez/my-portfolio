@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://g-bez.github.io/my-portfolio/index.html</loc>
-    <lastmod>2023-05-28T14:26:38.816Z</lastmod>
+    <lastmod>2023-05-30T14:14:53.190Z</lastmod>
   </url>
   <url>
     <loc>https://g-bez.github.io/my-portfolio/about.html</loc>
@@ -11,5 +11,13 @@
   <url>
     <loc>https://g-bez.github.io/my-portfolio/archive.html</loc>
     <lastmod>2023-05-28T14:26:32.503Z</lastmod>
+  </url>
+  <url>
+    <loc>https://g-bez.github.io/my-portfolio/posts/gganimate/index.html</loc>
+    <lastmod>2023-05-30T14:14:21.644Z</lastmod>
+  </url>
+  <url>
+    <loc>https://g-bez.github.io/my-portfolio/posts/avgtemp/index.html</loc>
+    <lastmod>2023-05-30T14:15:18.336Z</lastmod>
   </url>
 </urlset>
