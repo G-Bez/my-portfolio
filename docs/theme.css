@@ -142,14 +142,14 @@ body::after {
 
 .text-hero {
     font-family: 'Josefin Sans', sans-serif;
-    font-size: 70px;
+    font-size: 55px;
     font-weight: 700;
     letter-spacing: 2px;
 }
 
 .sub-text-hero {
     font-family: 'Dosis', sans-serif;
-    letter-spacing: 9px;
+    letter-spacing: 8px;
     color: orange;
 }
 
