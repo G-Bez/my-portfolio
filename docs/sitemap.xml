@@ -2,7 +2,7 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://g-bez.github.io/my-portfolio/index.html</loc>
-    <lastmod>2023-05-31T14:59:31.998Z</lastmod>
+    <lastmod>2024-04-02T18:48:06.643Z</lastmod>
   </url>
   <url>
     <loc>https://g-bez.github.io/my-portfolio/about.html</loc>
@@ -14,10 +14,42 @@
   </url>
   <url>
     <loc>https://g-bez.github.io/my-portfolio/posts/gganimate/index.html</loc>
-    <lastmod>2023-05-30T14:14:21.644Z</lastmod>
+    <lastmod>2024-04-02T18:47:18.173Z</lastmod>
   </url>
   <url>
     <loc>https://g-bez.github.io/my-portfolio/posts/avgtemp/index.html</loc>
-    <lastmod>2023-05-30T14:15:18.336Z</lastmod>
+    <lastmod>2024-04-02T18:47:05.662Z</lastmod>
+  </url>
+  <url>
+    <loc>https://g-bez.github.io/my-portfolio/posts/renv_get_started/index.html</loc>
+    <lastmod>2024-04-02T18:47:45.167Z</lastmod>
+  </url>
+  <url>
+    <loc>https://g-bez.github.io/my-portfolio/posts/janitor/index.html</loc>
+    <lastmod>2024-04-02T18:47:35.309Z</lastmod>
+  </url>
+  <url>
+    <loc>https://g-bez.github.io/my-portfolio/posts/gis_raster/index.html</loc>
+    <lastmod>2024-04-02T18:47:26.620Z</lastmod>
+  </url>
+  <url>
+    <loc>https://g-bez.github.io/my-portfolio/posts/Case_study_Cyclistic/index.html</loc>
+    <lastmod>2024-04-02T18:47:12.805Z</lastmod>
+  </url>
+  <url>
+    <loc>https://g-bez.github.io/my-portfolio/posts/gis_crs/index.html</loc>
+    <lastmod>2024-04-02T18:47:23.275Z</lastmod>
+  </url>
+  <url>
+    <loc>https://g-bez.github.io/my-portfolio/posts/gis_vector/index.html</loc>
+    <lastmod>2024-04-02T18:47:31.109Z</lastmod>
+  </url>
+  <url>
+    <loc>https://g-bez.github.io/my-portfolio/posts/reg_diagn/index.html</loc>
+    <lastmod>2024-04-02T18:47:41.915Z</lastmod>
+  </url>
+  <url>
+    <loc>https://g-bez.github.io/my-portfolio/posts/viridisLite/index.html</loc>
+    <lastmod>2024-04-02T18:47:47.899Z</lastmod>
   </url>
 </urlset>
